@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Copyright 2018 Shine Solutions
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,6 +18,7 @@ require 'ruby_aem/consolidated'
 require 'ruby_aem/full_set'
 
 module RubyAemAws
+  # AemAws class represents the AWS stack for AEM.
   class AemAws
     # Initialise a Ruby AEM AWS instance.
     #
@@ -42,6 +45,5 @@ module RubyAemAws
     def full_set(stack_prefix)
       RubyAem::FullSet.new(@client, stack_prefix)
     end
-
   end
 end

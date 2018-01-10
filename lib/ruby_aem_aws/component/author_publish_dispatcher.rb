@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Copyright 2018 Shine Solutions
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -23,8 +25,7 @@ module RubyAemAws
       # @param client TODOs
       # @param stack_prefix TODO
       # @return new RubyAemAws::Consolidated::AuthorPublishDispatcher instance
-      def initialize(client, stack_prefix)
-      end
+      def initialize(client, _stack_prefix) end
     end
   end
 end

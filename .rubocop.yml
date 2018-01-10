@@ -1,6 +1,7 @@
 # TODO: re-enable Metric/AbcSize, Metrics/CyclomaticComplexity, and Metrics/PerceivedComplexity
 AllCops:
   DisplayCopNames: true
+  TargetRubyVersion: 2.4
 Metrics/AbcSize:
   Enabled: false
 Metrics/BlockLength:
@@ -16,13 +17,13 @@ Metrics/CyclomaticComplexity:
   Enabled: false
 Metrics/PerceivedComplexity:
   Enabled: false
-Style/AccessorMethodName:
+Naming/AccessorMethodName:
   Enabled: false
+Naming/PredicateName:
+  Enabled: true
 Style/BracesAroundHashParameters:
   EnforcedStyle: context_dependent
 Style/BlockDelimiters:
   Enabled: false
-Style/PredicateName:
-  Enabled: true
 Style/RaiseArgs:
   EnforcedStyle: compact

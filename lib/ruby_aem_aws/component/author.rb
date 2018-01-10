@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Copyright 2018 Shine Solutions
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -23,27 +25,21 @@ module RubyAemAws
       # @param client TODOs
       # @param stack_prefix TODO
       # @return new RubyAemAws::FullSet::Author
-      def initialize(client, stack_prefix)
+      def initialize(client, _stack_prefix)
         @client = client
       end
 
       def get_primary_instance
-      end
 
       def get_standby_instance
-      end
 
       def terminate_primary_instance
-      end
 
       def terminate_standby_instance
-      end
 
-      def is_healthy
-      end
+      def healthy?
 
       def wait_until_healthy
-      end
     end
   end
 end
