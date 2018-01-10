@@ -17,7 +17,7 @@
 require 'ruby_aem/full_set/author_dispatcher'
 
 module RubyAemAws
-  module Commponent
+  module Component
     #
     class Author
       # TODO

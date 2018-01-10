@@ -17,7 +17,7 @@
 require 'ruby_aem/consolidated/author_publish_dispatcher'
 
 module RubyAemAws
-  module Commponent
+  module Component
     #
     class AuthorPublishDispatcher
       # Initialise a consolidated instance.
