@@ -17,12 +17,10 @@ require 'ruby_aem_aws/component/author_publish_dispatcher'
 
 module RubyAemAws
   module Component
-    # Interface to a single AWS instance running all three AEM components.
+    # Interface to a single AWS instance running all three AEM components as a consolidated stack.
     class AuthorPublishDispatcher
-      # Initialise a consolidated instance.
-      #
-      # @param client TODOs
-      # @param stack_prefix The StackPrefix tag.
+      # @param client The AWS EC2 client.
+      # @param stack_prefix The StackPrefix AWS tag.
       # @return new RubyAemAws::Consolidated::AuthorPublishDispatcher instance
       def initialize(client, stack_prefix)
         @client = client
@@ -31,11 +29,9 @@ module RubyAemAws
 
       def healthy?
         has_instance = false
-        instances = @client.instances({filters: [
-                                  {name: 'tag:StackPrefix', values: [@stack_prefix]},
-                                  {name: 'tag:Component', values: ['author-publish-dispatcher']},
-                                  {name: 'tag:Name', values: ['AuthorPublishDispatcher']},
-                                 ]})
+        instances = @client.instances({filters: [{name: 'tag:StackPrefix', values: [@stack_prefix]},
+                                                 {name: 'tag:Component', values: ['author-publish-dispatcher']},
+                                                 {name: 'tag:Name', values: ['AuthorPublishDispatcher']}]})
         instances.each do |i|
           puts('AuthorPublishDispatcher instance: %s' % i.id)
           has_instance = true

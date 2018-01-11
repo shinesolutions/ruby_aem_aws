@@ -17,25 +17,22 @@ require 'ruby_aem_aws/component/author_dispatcher'
 
 module RubyAemAws
   module Component
-    #
+    # Interface to the AuthorDispatcher instance in a full-set AEM stack.
     class AuthorDispatcher
-      # TODO
-      #
-      # @param client TODO
-      # @param stack_prefix TODO
+      # @param client The AWS EC2 client.
+      # @param stack_prefix The StackPrefix AWS tag.
       # @return new RubyAemAws::FullSet::AuthorDispatcher
       def initialize(client, stack_prefix)
         @client = client
         @stack_prefix = stack_prefix
       end
 
+      # Check that the instance is running.
       def healthy?
         has_instance = false
-        instances = @client.instances({filters: [
-                                  {name: 'tag:StackPrefix', values: [@stack_prefix]},
-                                  {name: 'tag:Component', values: ['author-dispatcher']},
-                                  {name: 'tag:Name', values: ['AuthorDispatcher']},
-                                 ]})
+        instances = @client.instances({filters: [{name: 'tag:StackPrefix', values: [@stack_prefix]},
+                                                 {name: 'tag:Component', values: ['author-dispatcher']},
+                                                 {name: 'tag:Name', values: ['AuthorDispatcher']}]})
         instances.each do |i|
           puts('AuthorDispatcher instance: %s' % i.id)
           has_instance = true
