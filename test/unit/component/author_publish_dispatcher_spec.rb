@@ -14,25 +14,10 @@
 
 require_relative '../spec_helper'
 require_relative 'examples/health_checker'
+require_relative '../../../lib/ruby_aem_aws/component/author_publish_dispatcher'
 
-require_relative '../../../lib/ruby_aem_aws'
-
-aem_aws = RubyAemAws::AemAws.new
-author_publish_dispatcher = aem_aws.consolidated('sandpit-doug').author_publish_dispatcher
+author_publish_dispatcher = RubyAemAws::Component::AuthorPublishDispatcher.new(nil,nil)
 
 describe author_publish_dispatcher do
   it_behaves_like 'a health_checker'
-end
-
-describe 'AuthorPublishDispatcher' do
-  before do
-  end
-
-  after do
-  end
-
-  # TODO disabled while developing against full-stack
-  xit 'is healthy' do
-    expect(author_publish_dispatcher.healthy?).to eq(true)
-  end
 end

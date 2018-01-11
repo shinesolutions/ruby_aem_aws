@@ -12,20 +12,20 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-require_relative 'spec_helper'
+require_relative '../spec_helper'
+require_relative '../../../lib/ruby_aem_aws'
 
-require_relative '../../lib/ruby_aem_aws'
+aem_aws = init_client
+author_dispatcher = aem_aws.full_set('sandpit-doug').author_dispatcher
 
-aws = RubyAemAws::AemAws.new()
-
-describe 'AWS Connectivity' do
+describe 'AuthorDispatcher' do
   before do
   end
 
   after do
   end
 
-  it 'can connect' do
-    expect(aws.testConnection).to eq(true)
+  it 'is healthy' do
+    expect(author_dispatcher.healthy?).to eq(true)
   end
 end

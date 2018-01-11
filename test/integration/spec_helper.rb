@@ -12,12 +12,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-require_relative '../spec_helper'
-require_relative 'examples/health_checker'
-require_relative '../../../lib/ruby_aem_aws/component/author_dispatcher'
+require 'ruby_aem_aws'
+require 'simplecov'
+SimpleCov.start
 
-author_dispatcher = RubyAemAws::Component::AuthorDispatcher.new(nil,nil)
-
-describe author_dispatcher do
-  it_behaves_like 'a health_checker'
+def init_client
+  RubyAemAws::AemAws.new(
+    region: ENV['aws_region'] || 'ap-southeast-2'
+  )
 end

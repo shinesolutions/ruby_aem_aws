@@ -22,8 +22,10 @@ module RubyAemAws
     # - foobar: TODO desc here
     # @return new RubyAemAws::AemAws instance
     def initialize(conf = {})
+      conf[:region] ||= 'ap-southeast-2'
+
       @ec2Client = Aws::EC2::Client.new()
-      @ec2Resource = Aws::EC2::Resource.new(region: 'ap-southeast-2')
+      @ec2Resource = Aws::EC2::Resource.new(region: conf[:region])
     end
 
     def testConnection

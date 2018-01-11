@@ -13,11 +13,20 @@
 # limitations under the License.
 
 require_relative '../spec_helper'
-require_relative 'examples/health_checker'
-require_relative '../../../lib/ruby_aem_aws/component/author_dispatcher'
+require_relative '../../../lib/ruby_aem_aws'
 
-author_dispatcher = RubyAemAws::Component::AuthorDispatcher.new(nil,nil)
+aem_aws = RubyAemAws::AemAws.new
+author_publish_dispatcher = aem_aws.consolidated('sandpit-doug').author_publish_dispatcher
 
-describe author_dispatcher do
-  it_behaves_like 'a health_checker'
+describe 'AuthorPublishDispatcher' do
+  before do
+  end
+
+  after do
+  end
+
+  # TODO disabled while developing against full-stack
+  xit 'is healthy' do
+    expect(author_publish_dispatcher.healthy?).to eq(true)
+  end
 end

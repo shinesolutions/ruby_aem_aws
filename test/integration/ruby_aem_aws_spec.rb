@@ -12,12 +12,20 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-require_relative '../spec_helper'
-require_relative 'examples/health_checker'
-require_relative '../../../lib/ruby_aem_aws/component/author_dispatcher'
+require_relative 'spec_helper'
 
-author_dispatcher = RubyAemAws::Component::AuthorDispatcher.new(nil,nil)
+require_relative '../../lib/ruby_aem_aws'
 
-describe author_dispatcher do
-  it_behaves_like 'a health_checker'
+aws = init_client
+
+describe 'AWS Connectivity' do
+  before do
+  end
+
+  after do
+  end
+
+  it 'can connect' do
+    expect(aws.testConnection).to eq(true)
+  end
 end
