@@ -13,31 +13,30 @@
 # limitations under the License.
 
 require 'aws-sdk'
+require 'ruby_aem_aws/component/mixins/health_check'
+require 'ruby_aem_aws/component/component_descriptor'
 require 'ruby_aem_aws/component/author_publish_dispatcher'
 
 module RubyAemAws
   module Component
     # Interface to a single AWS instance running all three AEM components as a consolidated stack.
     class AuthorPublishDispatcher
+      include HealthCheck
+
+      def get_client
+        @client
+      end
+
+      def get_descriptor
+        @descriptor
+      end
+
       # @param client The AWS EC2 client.
       # @param stack_prefix The StackPrefix AWS tag.
       # @return new RubyAemAws::Consolidated::AuthorPublishDispatcher instance
       def initialize(client, stack_prefix)
         @client = client
-        @stack_prefix = stack_prefix
-      end
-
-      def healthy?
-        has_instance = false
-        instances = @client.instances({filters: [{name: 'tag:StackPrefix', values: [@stack_prefix]},
-                                                 {name: 'tag:Component', values: ['author-publish-dispatcher']},
-                                                 {name: 'tag:Name', values: ['AuthorPublishDispatcher']}]})
-        instances.each do |i|
-          puts('AuthorPublishDispatcher instance: %s' % i.id)
-          has_instance = true
-          return false if i.state.name != 'running'
-        end
-        has_instance
+        @descriptor = ComponentDescriptor.new(stack_prefix, 'author-publish-dispatcher', 'AuthorPublishDispatcher')
       end
 
       def get_all_instances

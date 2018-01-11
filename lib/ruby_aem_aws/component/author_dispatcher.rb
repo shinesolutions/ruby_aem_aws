@@ -19,26 +19,22 @@ module RubyAemAws
   module Component
     # Interface to the AuthorDispatcher instance in a full-set AEM stack.
     class AuthorDispatcher
+      include HealthCheck
+
+      def get_client
+        @client
+      end
+
+      def get_descriptor
+        @descriptor
+      end
+
       # @param client The AWS EC2 client.
       # @param stack_prefix The StackPrefix AWS tag.
       # @return new RubyAemAws::FullSet::AuthorDispatcher
       def initialize(client, stack_prefix)
         @client = client
-        @stack_prefix = stack_prefix
-      end
-
-      # Check that the instance is running.
-      def healthy?
-        has_instance = false
-        instances = @client.instances({filters: [{name: 'tag:StackPrefix', values: [@stack_prefix]},
-                                                 {name: 'tag:Component', values: ['author-dispatcher']},
-                                                 {name: 'tag:Name', values: ['AuthorDispatcher']}]})
-        instances.each do |i|
-          puts('AuthorDispatcher instance: %s' % i.id)
-          has_instance = true
-          return false if i.state.name != 'running'
-        end
-        has_instance
+        @descriptor = ComponentDescriptor.new(stack_prefix, 'author-dispatcher', 'AuthorDispatcher')
       end
 
       def get_all_instances
