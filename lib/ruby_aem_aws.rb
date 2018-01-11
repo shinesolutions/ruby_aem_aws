@@ -12,8 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-require 'ruby_aem/consolidated'
-require 'ruby_aem/full_set'
+require 'ruby_aem_aws/consolidated'
+require 'ruby_aem_aws/full_set'
 
 module RubyAemAws
   # AemAws class represents the AWS stack for AEM.

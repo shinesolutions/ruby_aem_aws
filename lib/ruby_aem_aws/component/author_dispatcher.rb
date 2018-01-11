@@ -12,21 +12,25 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-require 'ruby_aem/full_set/author_dispatcher'
+require 'ruby_aem_aws/component/author_dispatcher'
 
 module RubyAemAws
   module Component
-    #
     class AuthorDispatcher
       # TODO
       #
-      # @param client TODOs
+      # @param client TODO
       # @param stack_prefix TODO
       # @return new RubyAemAws::FullSet::AuthorDispatcher
       def initialize(client, _stack_prefix)
         @client = client
       end
 
+      def healthy?
+        # close enough
+      end
+
+=begin
       def get_all_instances
 
       def get_random_instance
@@ -37,9 +41,11 @@ module RubyAemAws
 
       def terminate_random_instance
 
-      def healthy?
-
       def wait_until_healthy
+=end
+      def to_s
+        'AuthorDispatcher(%s)' % @client
+      end
     end
   end
 end

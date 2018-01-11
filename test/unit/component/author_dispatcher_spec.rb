@@ -12,35 +12,27 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-require 'ruby_aem_aws/component/author_dispatcher'
+require_relative '../spec_helper'
+require_relative '../../../lib/ruby_aem_aws/component/author_dispatcher'
 
-module RubyAemAws
-  module Component
-    #
-    class ChaosMonkey
-      # TODO
-      #
-      # @param client TODOs
-      # @param stack_prefix TODO
-      # @return new RubyAemAws::FullSet::ChaosMonkey
-      def initialize(client, _stack_prefix)
-        @client = client
-      end
-=begin
-      def get_all_instances
-
-      def get_random_instance
-
-      def get_num_of_instances
-
-      def terminate_all_instances
-
-      def terminate_random_instance
-
-      def healthy?
-
-      def wait_until_healthy
-=end
+shared_examples 'a health_checker' do
+  context 'AuthorDispatcher' do
+    it 'contains method' do
+      is_expected.to respond_to(:healthy?)
     end
+  end
+end
+
+@author_dispatcher = RubyAemAws::Component::AuthorDispatcher.new(nil,nil)
+
+describe @author_dispatcher do
+  before do
+  end
+
+  after do
+  end
+
+  describe 'AuthorDispatcher' do
+    it_behaves_like 'a health_checker'
   end
 end

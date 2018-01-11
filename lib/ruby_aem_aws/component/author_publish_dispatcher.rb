@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-require 'ruby_aem/consolidated/author_publish_dispatcher'
+require 'ruby_aem_aws/component/author_publish_dispatcher'
 
 module RubyAemAws
   module Component

@@ -12,11 +12,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-require 'ruby_aem/component/author_publish_dispatcher'
+require 'ruby_aem_aws/component/author_publish_dispatcher'
 
 module RubyAemAws
   #
-  class Consolidated
+  class ConsolidatedStack
     # Initialise a consolidated instance.
     #
     # @param client TODOs

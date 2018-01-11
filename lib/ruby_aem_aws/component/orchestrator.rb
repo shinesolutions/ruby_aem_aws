@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-require 'ruby_aem/full_set/author_dispatcher'
+require 'ruby_aem_aws/component/author_dispatcher'
 
 module RubyAemAws
   module Component
@@ -26,7 +26,7 @@ module RubyAemAws
       def initialize(client, _stack_prefix)
         @client = client
       end
-
+=begin
       def get_all_instances
 
       def get_random_instance
@@ -40,6 +40,7 @@ module RubyAemAws
       def healthy?
 
       def wait_until_healthy
+=end
     end
   end
 end

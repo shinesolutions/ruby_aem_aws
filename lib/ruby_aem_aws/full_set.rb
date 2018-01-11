@@ -12,16 +12,16 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-require 'ruby_aem/component/author_dispatcher'
-require 'ruby_aem/component/author'
-require 'ruby_aem/component/chaos_monkey'
-require 'ruby_aem/component/orchestrator'
-require 'ruby_aem/component/publish_dispatcher'
-require 'ruby_aem/component/publish'
+require 'ruby_aem_aws/component/author_dispatcher'
+require 'ruby_aem_aws/component/author'
+require 'ruby_aem_aws/component/chaos_monkey'
+require 'ruby_aem_aws/component/orchestrator'
+require 'ruby_aem_aws/component/publish_dispatcher'
+require 'ruby_aem_aws/component/publish'
 
 module RubyAemAws
   #
-  class FullSet
+  class FullSetStack
     # Initialise a full set instance.
     #
     # @param client TODOs
