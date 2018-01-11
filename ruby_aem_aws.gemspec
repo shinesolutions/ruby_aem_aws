@@ -8,11 +8,11 @@ Gem::Specification.new do |s|
   s.summary           = 'AEM API Ruby client'
   s.description       = 'ruby_aem_aws is a Ruby client for Shine Solutions Adobe Experience Manager (AEM) Platform on AWS'
   s.license           = 'Apache-2.0'
-  s.required_ruby_version = '>= 2.4'
+  s.required_ruby_version = '>= 2.0'
   s.files             = Dir.glob('{conf,lib}/**/*')
   s.require_paths     = ['lib']
 
-  s.add_runtime_dependency 'aws-sdk', '~> 3.0.1'
+  s.add_runtime_dependency 'aws-sdk', '~> 3.0'
   s.add_runtime_dependency 'retries', '~> 0.0.5'
 
   s.add_development_dependency 'rspec', '~> 3.4'

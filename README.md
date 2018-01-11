@@ -5,7 +5,6 @@ ruby_aem_aws
 ------------
 
 ruby_aem_aws is a Ruby client for Shine Solutions [Adobe Experience Manager (AEM)](http://www.adobe.com/au/marketing-cloud/enterprise-content-management.html) (AEM) Platform on AWS.
-<!--It is written on top of [swagger_aem](https://github.com/shinesolutions/swagger-aem/blob/master/ruby/README.md) and provides resource-oriented API and convenient response handling.-->
 
 [Versions History](docs/versions.md)
 
