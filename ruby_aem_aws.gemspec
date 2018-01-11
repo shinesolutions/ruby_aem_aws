@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 Gem::Specification.new do |s|
   s.name              = 'ruby_aem_aws'
   s.version           = '0.9.0'
