@@ -29,11 +29,11 @@ module RubyAemAws
     end
 
     def testConnection
-      result = {}
+      result = []
       @ec2Client.describe_regions().regions.each do | region |
         result.push('#{region.region_name} (#{region.endpoint})')
       end
-      result.size > 0
+      result.length > 0
     end
 
     # Create a consolidated instance.
@@ -49,7 +49,7 @@ module RubyAemAws
     # @param stack_prefix desc here
     # @return new RubyAem::FullSetStack instance
     def full_set(stack_prefix)
-      RubyAem::FullSetStack.new(@ec2Resource, stack_prefix)
+      RubyAemAws::FullSetStack.new(@ec2Resource, stack_prefix)
     end
 
   end

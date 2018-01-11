@@ -31,7 +31,7 @@ describe 'AuthorPublishDispatcher' do
   after do
   end
 
-  xit 'is healthy' do
+  it 'is healthy' do
     expect(author_publish_dispatcher.healthy?).to eq(true)
   end
 end

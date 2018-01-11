@@ -26,6 +26,6 @@ describe 'AWS Connectivity' do
   end
 
   it 'can connect' do
-    expect(aws.testConnection.size).to eq(true)
+    expect(aws.testConnection).to eq(true)
   end
 end

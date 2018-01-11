@@ -26,34 +26,34 @@ module RubyAemAws
     #
     # @param client TODOs
     # @param stack_prefix TODO
-    # @return new RubyAemAws::FullSet instance
+    # @return new RubyAemAws::FullSetStack instance
     def initialize(client, stack_prefix)
       @client = client
       @stack_prefix = stack_prefix
     end
 
-    def author_publish_dispatcher
-      RubyAem::Component::AuthorPublishDispatcher.new(@client, stack_prefix)
+    def author_dispatcher
+      RubyAemAws::Component::AuthorDispatcher.new(@client, @stack_prefix)
     end
 
     def author
-      RubyAem::Consolidated::Author.new(@client, stack_prefix)
+      RubyAemAws::Component::Author.new(@client, @stack_prefix)
     end
 
     def chaos_monkey
-      RubyAem::Consolidated::ChaosMonkey.new(@client, stack_prefix)
+      RubyAemAws::Component::ChaosMonkey.new(@client, @stack_prefix)
     end
 
     def orchestrator
-      RubyAem::Consolidated::Orchestrator.new(@client, stack_prefix)
+      RubyAemAws::Component::Orchestrator.new(@client, @stack_prefix)
     end
 
     def publish
-      RubyAem::Consolidated::Publish.new(@client, stack_prefix)
+      RubyAemAws::Component::Publish.new(@client, @stack_prefix)
     end
 
     def publish_dispatcher
-      RubyAem::Consolidated::PublishDispatcher.new(@client, stack_prefix)
+      RubyAemAws::Component::PublishDispatcher.new(@client, @stack_prefix)
     end
   end
 end

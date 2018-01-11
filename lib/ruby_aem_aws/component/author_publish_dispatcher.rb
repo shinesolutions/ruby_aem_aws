@@ -30,15 +30,18 @@ module RubyAemAws
       end
 
       def healthy?
-        @client.instances({filters: [
+        has_instance = false
+        instances = @client.instances({filters: [
                                   {name: 'tag:StackPrefix', values: [@stack_prefix]},
                                   {name: 'tag:Component', values: ['author-publish-dispatcher']},
                                   {name: 'tag:Name', values: ['AuthorPublishDispatcher']},
-                                 ]}).each do |i|
-          puts 'ID:    ' + i.id
-          puts 'State: ' + i.state.name
+                                 ]})
+        instances.each do |i|
+          puts('AuthorPublishDispatcher instance: %s' % i.id)
+          has_instance = true
+          return false if i.state.name != 'running'
         end
-        true
+        has_instance
       end
 
       def get_all_instances
