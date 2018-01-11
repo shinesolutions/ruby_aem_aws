@@ -1,4 +1,4 @@
-#RUBYOPT = --enable-frozen-string-literal
+RUBYOPT = --enable-frozen-string-literal
 
 all: deps clean build lint install test-unit test-integration doc
 ci: deps clean build lint install test-unit doc
