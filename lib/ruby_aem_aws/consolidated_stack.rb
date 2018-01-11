@@ -15,18 +15,17 @@
 require 'ruby_aem_aws/component/author_publish_dispatcher'
 
 module RubyAemAws
-  #
+  # Factory for the consolidated AEM stack component interface.
   class ConsolidatedStack
-    # Initialise a consolidated instance.
-    #
-    # @param client TODOs
-    # @param stack_prefix TODO
+    # @param client AWS EC2 client
+    # @param stack_prefix AWS tag: StackPrefix
     # @return new RubyAemAws::ConsolidatedStack instance
     def initialize(client, stack_prefix)
       @client = client
       @stack_prefix = stack_prefix
     end
 
+    # @return new RubyAemAws::Component::AuthorPublishDispatcher instance
     def author_publish_dispatcher
       RubyAemAws::Component::AuthorPublishDispatcher.new(@client, @stack_prefix)
     end

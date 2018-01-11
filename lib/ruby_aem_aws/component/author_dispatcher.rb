@@ -17,7 +17,7 @@ require 'ruby_aem_aws/component/author_dispatcher'
 
 module RubyAemAws
   module Component
-    # Interface to the AuthorDispatcher instance in a full-set AEM stack.
+    # Interface to the AWS instance running the AuthorDispatcher component of a full-set AEM stack.
     class AuthorDispatcher
       include HealthCheck
 
@@ -29,8 +29,8 @@ module RubyAemAws
         @descriptor
       end
 
-      # @param client The AWS EC2 client.
-      # @param stack_prefix The StackPrefix AWS tag.
+      # @param client AWS EC2 client
+      # @param stack_prefix AWS tag: StackPrefix
       # @return new RubyAemAws::FullSet::AuthorDispatcher
       def initialize(client, stack_prefix)
         @client = client

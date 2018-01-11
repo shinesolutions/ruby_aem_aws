@@ -16,12 +16,10 @@ require 'ruby_aem_aws/component/author_dispatcher'
 
 module RubyAemAws
   module Component
-    #
+    # Interface to the AWS instance running the Author component of a full-set AEM stack.
     class Author
-      # TODO
-      #
-      # @param client TODOs
-      # @param stack_prefix TODO
+      # @param client AWS EC2 client
+      # @param stack_prefix AWS tag: StackPrefix
       # @return new RubyAemAws::FullSet::Author
       def initialize(client, _stack_prefix)
         @client = client

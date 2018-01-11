@@ -18,11 +18,9 @@ require 'ruby_aem_aws/full_set_stack'
 module RubyAemAws
   # AemAws class represents the AWS stack for AEM.
   class AemAws
-    # Initialise a Ruby AEM AWS instance.
-    #
     # @param conf configuration hash of the following configuration values:
-    # - foobar: desc here
-    # @return new RubyAem::Aem instance
+    # - foobar: TODO desc here
+    # @return new RubyAemAws::AemAws instance
     def initialize(conf = {})
       @ec2Client = Aws::EC2::Client.new()
       @ec2Resource = Aws::EC2::Resource.new(region: 'ap-southeast-2')
@@ -38,19 +36,18 @@ module RubyAemAws
 
     # Create a consolidated instance.
     #
-    # @param stack_prefix desc here
-    # @return new RubyAem::ConsolidatedStack instance
+    # @param stack_prefix AWS tag: StackPrefix
+    # @return new RubyAemAws::ConsolidatedStack instance
     def consolidated(stack_prefix)
       RubyAemAws::ConsolidatedStack.new(@ec2Resource, stack_prefix)
     end
 
     # Create a full set instance.
     #
-    # @param stack_prefix desc here
-    # @return new RubyAem::FullSetStack instance
+    # @param stack_prefix AWS tag: StackPrefix
+    # @return new RubyAemAws::FullSetStack instance
     def full_set(stack_prefix)
       RubyAemAws::FullSetStack.new(@ec2Resource, stack_prefix)
     end
-
   end
 end

@@ -31,8 +31,8 @@ module RubyAemAws
         @descriptor
       end
 
-      # @param client The AWS EC2 client.
-      # @param stack_prefix The StackPrefix AWS tag.
+      # @param client AWS EC2 client
+      # @param stack_prefix AWS tag: StackPrefix
       # @return new RubyAemAws::Consolidated::AuthorPublishDispatcher instance
       def initialize(client, stack_prefix)
         @client = client

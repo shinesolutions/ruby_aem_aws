@@ -28,4 +28,5 @@ Style/BlockDelimiters:
 Style/RaiseArgs:
   EnforcedStyle: compact
 Style/FrozenStringLiteralComment:
-  Enabled: false # TODO: re-enable when RUBYOPT = --enable-frozen-string-literal freezes globally.
+  # TODO: re-enable when RUBYOPT = --enable-frozen-string-literal freezes globally.
+  Enabled: false

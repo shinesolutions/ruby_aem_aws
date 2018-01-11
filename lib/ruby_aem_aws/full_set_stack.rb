@@ -20,38 +20,42 @@ require 'ruby_aem_aws/component/publish_dispatcher'
 require 'ruby_aem_aws/component/publish'
 
 module RubyAemAws
-  #
+  # Factory for the full-set AEM stack component interfaces.
   class FullSetStack
-    # Initialise a full set instance.
-    #
-    # @param client TODOs
-    # @param stack_prefix TODO
+    # @param client AWS EC2 client
+    # @param stack_prefix AWS tag: StackPrefix
     # @return new RubyAemAws::FullSetStack instance
     def initialize(client, stack_prefix)
       @client = client
       @stack_prefix = stack_prefix
     end
 
+    # @return new RubyAemAws::Component::AuthorDispatcher instance
     def author_dispatcher
       RubyAemAws::Component::AuthorDispatcher.new(@client, @stack_prefix)
     end
 
+    # @return new RubyAemAws::Component::Author instance
     def author
       RubyAemAws::Component::Author.new(@client, @stack_prefix)
     end
 
+    # @return new RubyAemAws::Component::ChaosMonkey instance
     def chaos_monkey
       RubyAemAws::Component::ChaosMonkey.new(@client, @stack_prefix)
     end
 
+    # @return new RubyAemAws::Component::Orchestrator instance
     def orchestrator
       RubyAemAws::Component::Orchestrator.new(@client, @stack_prefix)
     end
 
+    # @return new RubyAemAws::Component::Publish instance
     def publish
       RubyAemAws::Component::Publish.new(@client, @stack_prefix)
     end
 
+    # @return new RubyAemAws::Component::PublishDispatcher instance
     def publish_dispatcher
       RubyAemAws::Component::PublishDispatcher.new(@client, @stack_prefix)
     end
