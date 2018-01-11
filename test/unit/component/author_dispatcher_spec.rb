@@ -16,23 +16,25 @@ require_relative '../spec_helper'
 require_relative '../../../lib/ruby_aem_aws/component/author_dispatcher'
 
 shared_examples 'a health_checker' do
-  context 'AuthorDispatcher' do
-    it 'contains method' do
-      is_expected.to respond_to(:healthy?)
-    end
+  it 'because it knows about healthiness' do
+    is_expected.to respond_to(:healthy?)
   end
 end
 
-@author_dispatcher = RubyAemAws::Component::AuthorDispatcher.new(nil,nil)
+author_dispatcher = RubyAemAws::Component::AuthorDispatcher.new(nil,'sandpit-doug')
 
-describe @author_dispatcher do
+describe author_dispatcher do
+  it_behaves_like 'a health_checker'
+end
+
+describe 'AuthorDispatcher' do
   before do
   end
 
   after do
   end
 
-  describe 'AuthorDispatcher' do
-    it_behaves_like 'a health_checker'
+  it 'is healthy' do
+    expect(author_dispatcher.healthy?).to eq(true)
   end
 end
