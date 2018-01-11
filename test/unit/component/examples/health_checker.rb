@@ -12,25 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-require_relative '../spec_helper'
-require_relative 'examples/health_checker'
-
-require_relative '../../../lib/ruby_aem_aws/component/author_dispatcher'
-
-author_dispatcher = RubyAemAws::Component::AuthorDispatcher.new(nil,'sandpit-doug')
-
-describe author_dispatcher do
-  it_behaves_like 'a health_checker'
-end
-
-describe 'AuthorDispatcher' do
-  before do
-  end
-
-  after do
-  end
-
-  xit 'is healthy' do
-    expect(author_dispatcher.healthy?).to eq(true)
+shared_examples 'a health_checker' do
+  it 'because it knows about healthiness' do
+    is_expected.to respond_to(:healthy?)
   end
 end

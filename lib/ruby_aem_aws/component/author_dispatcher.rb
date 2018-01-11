@@ -27,11 +27,10 @@ module RubyAemAws
       def initialize(client, stack_prefix)
         @client = client
         @stack_prefix = stack_prefix
-        @ec2 = Aws::EC2::Resource.new(region: 'ap-southeast')
       end
 
       def healthy?
-#        @ec2.instances({filters: [
+#        @client.instances({filters: [
 #                                  {name: 'tag:StackPrefix', values: [@stack_prefix]},
 #                                  {name: 'tag:Component', values: ['author-publish-dispatcher']},
 #                                  {name: 'tag:Name', values: ['AuthorPublishDispatcher']},

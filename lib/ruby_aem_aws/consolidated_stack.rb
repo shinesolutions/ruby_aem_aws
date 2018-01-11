@@ -12,25 +12,23 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-require_relative '../spec_helper'
-require_relative 'examples/health_checker'
+require 'ruby_aem_aws/component/author_publish_dispatcher'
 
-require_relative '../../../lib/ruby_aem_aws/component/author_dispatcher'
+module RubyAemAws
+  #
+  class ConsolidatedStack
+    # Initialise a consolidated instance.
+    #
+    # @param client TODOs
+    # @param stack_prefix TODO
+    # @return new RubyAemAws::ConsolidatedStack instance
+    def initialize(client, stack_prefix)
+      @client = client
+      @stack_prefix = stack_prefix
+    end
 
-author_dispatcher = RubyAemAws::Component::AuthorDispatcher.new(nil,'sandpit-doug')
-
-describe author_dispatcher do
-  it_behaves_like 'a health_checker'
-end
-
-describe 'AuthorDispatcher' do
-  before do
-  end
-
-  after do
-  end
-
-  xit 'is healthy' do
-    expect(author_dispatcher.healthy?).to eq(true)
+    def author_publish_dispatcher
+      RubyAemAws::Component::AuthorPublishDispatcher.new(@client, @stack_prefix)
+    end
   end
 end

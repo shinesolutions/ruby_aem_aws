@@ -17,26 +17,28 @@ require 'ruby_aem_aws/component/author_publish_dispatcher'
 
 module RubyAemAws
   module Component
-    #
+    # Interface to a single AWS instance running all three AEM components.
     class AuthorPublishDispatcher
-=begin
       # Initialise a consolidated instance.
       #
       # @param client TODOs
-      # @param stack_prefix TODO
+      # @param stack_prefix The StackPrefix tag.
       # @return new RubyAemAws::Consolidated::AuthorPublishDispatcher instance
-      def initialize(client, _stack_prefix)
+      def initialize(client, stack_prefix)
         @client = client
-        @ec2 = Aws::EC2::Resource.new(region: 'ap-southeast')
+        @stack_prefix = stack_prefix
       end
 
       def healthy?
-        @ec2.instances({filters: [{name: 'tag:Component', values: ['author-publish-dispatcher']},
+        @client.instances({filters: [
+                                  {name: 'tag:StackPrefix', values: [@stack_prefix]},
+                                  {name: 'tag:Component', values: ['author-publish-dispatcher']},
                                   {name: 'tag:Name', values: ['AuthorPublishDispatcher']},
                                  ]}).each do |i|
           puts 'ID:    ' + i.id
           puts 'State: ' + i.state.name
         end
+        true
       end
 
       def get_all_instances
@@ -56,7 +58,6 @@ module RubyAemAws
 
       def wait_until_healthy
       end
-=end
     end
   end
 end

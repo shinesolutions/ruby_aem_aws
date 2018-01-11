@@ -12,8 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-require 'ruby_aem_aws/consolidated'
-require 'ruby_aem_aws/full_set'
+require 'ruby_aem_aws/consolidated_stack'
+require 'ruby_aem_aws/full_set_stack'
 
 module RubyAemAws
   # AemAws class represents the AWS stack for AEM.
@@ -24,24 +24,33 @@ module RubyAemAws
     # - foobar: desc here
     # @return new RubyAem::Aem instance
     def initialize(conf = {})
-      # TODO: replace this client with aws-sdk-client or a wrapper
-      @client = nil
+      @ec2Client = Aws::EC2::Client.new()
+      @ec2Resource = Aws::EC2::Resource.new(region: 'ap-southeast-2')
+    end
+
+    def testConnection
+      result = {}
+      @ec2Client.describe_regions().regions.each do | region |
+        result.push('#{region.region_name} (#{region.endpoint})')
+      end
+      result.size > 0
     end
 
     # Create a consolidated instance.
     #
     # @param stack_prefix desc here
-    # @return new RubyAem::Consolidated instance
+    # @return new RubyAem::ConsolidatedStack instance
     def consolidated(stack_prefix)
-      RubyAemAws::Consolidated.new(@client, stack_prefix)
+      RubyAemAws::ConsolidatedStack.new(@ec2Resource, stack_prefix)
     end
 
     # Create a full set instance.
     #
     # @param stack_prefix desc here
-    # @return new RubyAem::FullSet instance
+    # @return new RubyAem::FullSetStack instance
     def full_set(stack_prefix)
-      RubyAem::FullSet.new(@client, stack_prefix)
+      RubyAem::FullSetStack.new(@ec2Resource, stack_prefix)
     end
+
   end
 end

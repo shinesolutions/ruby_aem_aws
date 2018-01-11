@@ -12,23 +12,20 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-require 'ruby_aem_aws/component/author_publish_dispatcher'
+require_relative 'spec_helper'
 
-module RubyAemAws
-  #
-  class ConsolidatedStack
-    # Initialise a consolidated instance.
-    #
-    # @param client TODOs
-    # @param stack_prefix TODO
-    # @return new RubyAemAws::Consolidated instance
-    def initialize(client, stack_prefix)
-      @client = client
-      @stack_prefix = stack_prefix
-    end
+require_relative '../../lib/ruby_aem_aws'
 
-    def author_publish_dispatcher
-      RubyAem::Consolidated::AuthorPublishDispatcher.new(@client, stack_prefix)
-    end
+aws = RubyAemAws::AemAws.new()
+
+describe 'AWS Connectivity' do
+  before do
+  end
+
+  after do
+  end
+
+  it 'can connect' do
+    expect(aws.testConnection.size).to eq(true)
   end
 end
