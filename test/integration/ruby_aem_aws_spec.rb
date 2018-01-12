@@ -13,7 +13,6 @@
 # limitations under the License.
 
 require_relative 'spec_helper'
-
 require_relative '../../lib/ruby_aem_aws'
 
 aws = init_client

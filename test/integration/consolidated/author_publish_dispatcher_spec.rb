@@ -25,8 +25,7 @@ describe 'AuthorPublishDispatcher' do
   after do
   end
 
-  # TODO disabled while developing against full-stack
-  xit 'is healthy' do
+  it 'is healthy' do
     expect(author_publish_dispatcher.healthy?).to eq(true)
   end
 end
