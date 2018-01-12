@@ -14,6 +14,8 @@
 
 module RubyAemAws
   module Component
-    ComponentDescriptor = Struct.new(:stack_prefix, :component, :name)
+    ComponentDescriptor = Struct.new(:stack_prefix, :ec2, :elb)
+    EC2Descriptor = Struct.new(:component, :name)
+    ELBDescriptor = Struct.new(:id, :name)
   end
 end

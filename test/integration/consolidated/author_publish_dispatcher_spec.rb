@@ -13,9 +13,9 @@
 # limitations under the License.
 
 require_relative '../spec_helper'
-require_relative '../../../lib/ruby_aem_aws'
+require 'ruby_aem_aws'
 
-aem_aws = RubyAemAws::AemAws.new
+aem_aws = init_client
 author_publish_dispatcher = aem_aws.consolidated('sandpit-doug').author_publish_dispatcher
 
 describe 'AuthorPublishDispatcher' do

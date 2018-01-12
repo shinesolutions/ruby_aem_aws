@@ -13,7 +13,7 @@
 # limitations under the License.
 
 require_relative 'spec_helper'
-require_relative '../../lib/ruby_aem_aws'
+require 'ruby_aem_aws'
 
 aws = init_client
 
@@ -25,6 +25,6 @@ describe 'AWS Connectivity' do
   end
 
   it 'can connect' do
-    expect(aws.testConnection).to eq(true)
+    expect(aws.test_connection).to eq(true)
   end
 end

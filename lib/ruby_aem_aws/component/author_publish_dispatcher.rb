@@ -13,15 +13,14 @@
 # limitations under the License.
 
 require 'aws-sdk'
-require 'ruby_aem_aws/component/mixins/health_check'
-require 'ruby_aem_aws/component/component_descriptor'
-require 'ruby_aem_aws/component/author_publish_dispatcher'
+require_relative 'mixins/health_check_ec2'
+require_relative 'component_descriptor'
 
 module RubyAemAws
   module Component
     # Interface to a single AWS instance running all three AEM components as a consolidated stack.
     class AuthorPublishDispatcher
-      include HealthCheck
+      include HealthCheckEC2
 
       def get_client
         @client
@@ -36,9 +35,9 @@ module RubyAemAws
       # @return new RubyAemAws::Consolidated::AuthorPublishDispatcher instance
       def initialize(client, stack_prefix)
         @client = client
-        @descriptor = ComponentDescriptor.new(stack_prefix, 'author-publish-dispatcher', 'AuthorPublishDispatcher')
+        @descriptor = ComponentDescriptor.new(stack_prefix, 'author-publish-dispatcher', 'AuthorPublishDispatcher', '')
       end
-
+=begin
       def get_all_instances
       end
 
@@ -56,6 +55,7 @@ module RubyAemAws
 
       def wait_until_healthy
       end
+=end
     end
   end
 end

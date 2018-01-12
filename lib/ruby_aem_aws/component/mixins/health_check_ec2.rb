@@ -12,16 +12,17 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-module HealthCheck
+# Mixin for checking health of a component via EC2 instance state.
+module HealthCheckEC2
   def healthy?
-    @descriptor = self.get_descriptor
+    @descriptor = get_descriptor
 
     has_instance = false
-    instances = self.get_client.instances({filters: [{name: 'tag:StackPrefix', values: [@descriptor.stack_prefix]},
-                                                     {name: 'tag:Component', values: [@descriptor.component]},
-                                                     {name: 'tag:Name', values: [@descriptor.name]}]})
+    instances = get_ec2_client.instances(filters: [{ name: 'tag:StackPrefix', values: [@descriptor.stack_prefix] },
+                                                   { name: 'tag:Component', values: [@descriptor.ec2.component] },
+                                                   { name: 'tag:Name', values: [@descriptor.ec2.name] }])
     instances.each do |i|
-#      puts('%s instance: %s' % [@descriptor.name, i.id])
+      puts("#{@descriptor.ec2.name}: #{i.id}")
       has_instance = true
       return false if i.state.name != 'running'
     end

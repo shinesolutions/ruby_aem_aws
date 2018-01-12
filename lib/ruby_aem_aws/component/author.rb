@@ -12,14 +12,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-require 'ruby_aem_aws/component/author_dispatcher'
-
 module RubyAemAws
   module Component
     # Interface to the AWS instance running the Author component of a full-set AEM stack.
     class Author
       # @param client AWS EC2 client
-      # @param stack_prefix AWS tag: StackPrefix
+      # @param _stack_prefix AWS tag: StackPrefix
       # @return new RubyAemAws::FullSet::Author
       def initialize(client, _stack_prefix)
         @client = client

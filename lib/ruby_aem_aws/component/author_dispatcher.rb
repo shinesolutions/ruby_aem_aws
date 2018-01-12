@@ -13,30 +13,43 @@
 # limitations under the License.
 
 require 'aws-sdk'
-require 'ruby_aem_aws/component/author_dispatcher'
+require_relative 'mixins/health_check_ec2'
+require_relative 'mixins/health_check_elb'
+require_relative 'component_descriptor'
 
 module RubyAemAws
   module Component
     # Interface to the AWS instance running the AuthorDispatcher component of a full-set AEM stack.
     class AuthorDispatcher
-      include HealthCheck
+      include HealthCheckEC2
+      include HealthCheckELB
 
-      def get_client
-        @client
+      def get_ec2_client
+        @ec2
+      end
+
+      def get_elb_client
+        @elb
       end
 
       def get_descriptor
         @descriptor
       end
 
-      # @param client AWS EC2 client
+      # @param ec2 AWS EC2 client
+      # @param elb AWS ELB client
       # @param stack_prefix AWS tag: StackPrefix
       # @return new RubyAemAws::FullSet::AuthorDispatcher
-      def initialize(client, stack_prefix)
-        @client = client
-        @descriptor = ComponentDescriptor.new(stack_prefix, 'author-dispatcher', 'AuthorDispatcher')
+      def initialize(ec2, elb, stack_prefix)
+        @ec2 = ec2
+        @elb = elb
+        @descriptor = ComponentDescriptor.new(stack_prefix,
+                                              EC2Descriptor.new('author-dispatcher',
+                                                                'AuthorDispatcher'),
+                                              ELBDescriptor.new('AuthorDispatcherLoadBalancer',
+                                                                'AEM Author Dispatcher Load Balancer'))
       end
-
+=begin
       def get_all_instances
       end
 
@@ -58,6 +71,7 @@ module RubyAemAws
       def to_s
         'AuthorDispatcher(%s)' % @client
       end
+=end
     end
   end
 end

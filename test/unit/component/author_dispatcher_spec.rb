@@ -14,9 +14,9 @@
 
 require_relative '../spec_helper'
 require_relative 'examples/health_checker'
-require_relative '../../../lib/ruby_aem_aws/component/author_dispatcher'
+require 'ruby_aem_aws/component/author_dispatcher'
 
-author_dispatcher = RubyAemAws::Component::AuthorDispatcher.new(nil,nil)
+author_dispatcher = RubyAemAws::Component::AuthorDispatcher.new(nil,nil, nil)
 
 describe author_dispatcher do
   it_behaves_like 'a health_checker'

@@ -13,7 +13,7 @@
 # limitations under the License.
 
 require_relative '../spec_helper'
-require_relative '../../../lib/ruby_aem_aws'
+require 'ruby_aem_aws'
 
 aem_aws = init_client
 author_dispatcher = aem_aws.full_set('sandpit-doug').author_dispatcher

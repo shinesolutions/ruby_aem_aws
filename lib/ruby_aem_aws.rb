@@ -12,8 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-require 'ruby_aem_aws/consolidated_stack'
-require 'ruby_aem_aws/full_set_stack'
+require_relative 'ruby_aem_aws/consolidated_stack'
+require_relative 'ruby_aem_aws/full_set_stack'
 
 module RubyAemAws
   # AemAws class represents the AWS stack for AEM.
@@ -24,13 +24,16 @@ module RubyAemAws
     def initialize(conf = {})
       conf[:region] ||= 'ap-southeast-2'
 
-      @ec2Client = Aws::EC2::Client.new()
-      @ec2Resource = Aws::EC2::Resource.new(region: conf[:region])
+      @ec2_client = Aws::EC2::Client.new
+      @ec2_resource = Aws::EC2::Resource.new(region: conf[:region])
+      @elb_client = Aws::ElasticLoadBalancing::Client.new(region: conf[:region])
+      # The V2 API only supports Application ELBs, and we currently use Classic.
+      # @elb_client = Aws::ElasticLoadBalancingV2::Client.new(region: conf[:region])
     end
 
-    def testConnection
+    def test_connection
       result = []
-      @ec2Client.describe_regions().regions.each do | region |
+      @ec2_client.describe_regions.regions.each do | region |
         result.push('#{region.region_name} (#{region.endpoint})')
       end
       result.length > 0
@@ -41,7 +44,7 @@ module RubyAemAws
     # @param stack_prefix AWS tag: StackPrefix
     # @return new RubyAemAws::ConsolidatedStack instance
     def consolidated(stack_prefix)
-      RubyAemAws::ConsolidatedStack.new(@ec2Resource, stack_prefix)
+      RubyAemAws::ConsolidatedStack.new(@ec2_resource, stack_prefix)
     end
 
     # Create a full set instance.
@@ -49,7 +52,7 @@ module RubyAemAws
     # @param stack_prefix AWS tag: StackPrefix
     # @return new RubyAemAws::FullSetStack instance
     def full_set(stack_prefix)
-      RubyAemAws::FullSetStack.new(@ec2Resource, stack_prefix)
+      RubyAemAws::FullSetStack.new(@ec2_resource, @elb_client, stack_prefix)
     end
   end
 end
