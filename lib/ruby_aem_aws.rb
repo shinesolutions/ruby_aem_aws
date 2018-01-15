@@ -22,7 +22,7 @@ module RubyAemAws
     # - foobar: TODO desc here
     # @return new RubyAemAws::AemAws instance
     def initialize(conf = {})
-      conf[:region] ||= 'ap-southeast-2'
+      conf[:region] ||= Constants.REGION_DEFAULT
 
       @ec2_client = Aws::EC2::Client.new
       @ec2_resource = Aws::EC2::Resource.new(region: conf[:region])

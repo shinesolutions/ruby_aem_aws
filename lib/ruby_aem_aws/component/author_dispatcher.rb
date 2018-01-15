@@ -39,6 +39,11 @@ module RubyAemAws
         @descriptor
       end
 
+      EC2_COMPONENT = 'author-dispatcher'
+      EC2_NAME = 'AuthorDispatcher'
+      ELB_ID = 'AuthorDispatcherLoadBalancer'
+      ELB_NAME = 'AEM Author Dispatcher Load Balancer'
+
       # @param ec2 AWS EC2 client
       # @param elb AWS ELB client
       # @param stack_prefix AWS tag: StackPrefix
@@ -48,10 +53,8 @@ module RubyAemAws
         @elb = elb
         @asg = asg
         @descriptor = ComponentDescriptor.new(stack_prefix,
-                                              EC2Descriptor.new('author-dispatcher',
-                                                                'AuthorDispatcher'),
-                                              ELBDescriptor.new('AuthorDispatcherLoadBalancer',
-                                                                'AEM Author Dispatcher Load Balancer'))
+                                              EC2Descriptor.new(EC2_COMPONENT, EC2_NAME),
+                                              ELBDescriptor.new(ELB_ID, ELB_NAME))
       end
 =begin
       def get_all_instances

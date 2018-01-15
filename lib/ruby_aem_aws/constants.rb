@@ -13,5 +13,7 @@
 # limitations under the License.
 
 class Constants
+  REGION_DEFAULT = 'ap-southeast-2'.freeze
+
   ELB_INSTANCE_STATE_HEALTHY = 'running'.freeze
 end
