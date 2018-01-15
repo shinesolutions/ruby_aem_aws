@@ -41,6 +41,31 @@ module HealthyInstanceCountVerifier
     !elb.nil? && !asg.nil? && healthy_instance_count == asg.desired_capacity
   end
 
+  # @return AutoScalingGroup by StackPrefix and Component tags.
+  private def find_auto_scaling_group(asg_client)
+    autoscaling_groups = asg_client.describe_auto_scaling_groups
+    autoscaling_groups.auto_scaling_groups.each do |autoscaling_group|
+      asg_matches_stack_prefix = false
+      asg_matches_component = false
+      tags = autoscaling_group.tags
+      tags.each do |tag|
+        if tag.key == 'StackPrefix' && tag.value == @descriptor.stack_prefix
+          asg_matches_stack_prefix = true
+          break if asg_matches_component
+          next
+        end
+
+        if tag.key == 'Component' && tag.value == @descriptor.ec2.component
+          asg_matches_component = true
+          break if asg_matches_stack_prefix
+        end
+      end
+
+      return autoscaling_group if asg_matches_stack_prefix && asg_matches_component
+    end
+    nil
+  end
+
   # @return ElasticLoadBalancer by StackPrefix and logical-id tags.
   private def find_elb(elb_client)
     elbs = elb_client.describe_load_balancers.load_balancer_descriptions
@@ -64,31 +89,6 @@ module HealthyInstanceCountVerifier
       return elb if elb_matches_stack_prefix && elb_matches_logical_id
     end
 
-    nil
-  end
-
-  # @return AutoScalingGroup by StackPrefix and Component tags.
-  private def find_auto_scaling_group(asg_client)
-    autoscaling_groups = asg_client.describe_auto_scaling_groups
-    autoscaling_groups.auto_scaling_groups.each do |autoscaling_group|
-      asg_matches_stack_prefix = false
-      asg_matches_component = false
-      tags = autoscaling_group.tags
-      tags.each do |tag|
-        if tag.key == 'StackPrefix' && tag.value == @descriptor.stack_prefix
-          asg_matches_stack_prefix = true
-          break if asg_matches_component
-          next
-        end
-
-        if tag.key == 'Component' && tag.value == @descriptor.ec2.component
-          asg_matches_component = true
-          break if asg_matches_stack_prefix
-        end
-      end
-
-      return autoscaling_group if asg_matches_stack_prefix && asg_matches_component
-    end
     nil
   end
 
