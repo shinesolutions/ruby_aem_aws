@@ -13,12 +13,38 @@
 # limitations under the License.
 
 # Mixin for checking health of a component via ELB count.
-module HealthCheckELB
+module HealthyInstanceCountVerifier
   def healthy?
     @descriptor = get_descriptor
 
     elb_client = get_elb_client
     ec2_client = get_ec2_client
+    asg_client = get_asg_client
+
+    asg = nil
+    healthy_instance_count = 0
+
+    autoscaling_groups = asg_client.describe_auto_scaling_groups
+    autoscaling_groups.auto_scaling_groups.each do |autoscaling_group|
+      asg_matches_stack_prefix = false
+      asg_matches_component = false
+      tags = autoscaling_group.tags
+      tags.each do |tag|
+        if tag.key == 'StackPrefix' && tag.value == @descriptor.stack_prefix
+          asg_matches_stack_prefix = true
+          break if asg_matches_component
+          next
+        end
+
+        if tag.key == 'Component' && tag.value == @descriptor.ec2.component
+          asg_matches_component = true
+          break if asg_matches_stack_prefix
+        end
+      end
+
+      next unless asg_matches_stack_prefix && asg_matches_component
+      asg = autoscaling_group
+    end
 
     has_elb = false
     elbs = elb_client.describe_load_balancers.load_balancer_descriptions
@@ -41,7 +67,13 @@ module HealthCheckELB
 
       next unless elb_matches_stack_prefix && elb_matches_logical_id
 
-      puts("Name: #{elb.load_balancer_name}, #{elb.instances.length}")
+      unless asg.nil?
+        puts("ASG: #{asg.auto_scaling_group_name} (#{asg.desired_capacity})")
+        asg.instances.each do |i|
+          puts("   Instance #{i.instance_id}: #{i.health_status}")
+        end
+      end
+      puts("ELB: #{elb.load_balancer_name}, #{elb.instances.length}")
 
       stack_prefix_instances = []
       elb.instances.each do |i|
@@ -50,19 +82,18 @@ module HealthCheckELB
           next if tag.key != 'StackPrefix'
           break if tag.value != @descriptor.stack_prefix
 
-          stack_prefix_instances.push(i)
+          stack_prefix_instances.push(id: i.instance_id, state: instance.state.name)
         end
       end
 
       stack_prefix_instances.each do |i|
-        puts("  Instance: #{i.instance_id}")
-        # TODO: client.describe_instance_health == InService
-        # TODO: compare to AutoScaling::AutoScalingGroup::desired_capacity
+        puts("  Instance #{i[:id]}: #{i[:state]}")
+        healthy_instance_count += 1 if i[:state] == 'running'
       end
 
       has_elb = true
     end
 
-    has_elb
+    has_elb && !asg.nil? && healthy_instance_count == asg.desired_capacity
   end
 end

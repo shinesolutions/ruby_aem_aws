@@ -13,7 +13,7 @@
 # limitations under the License.
 
 # Mixin for checking health of a component via EC2 instance state.
-module HealthCheckEC2
+module HealthyInstanceStateVerifier
   def healthy?
     @descriptor = get_descriptor
 

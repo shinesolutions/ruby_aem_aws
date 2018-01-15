@@ -26,15 +26,16 @@ module RubyAemAws
     # @param elb_client AWS ELB client
     # @param stack_prefix AWS tag: StackPrefix
     # @return new RubyAemAws::FullSetStack instance
-    def initialize(ec2_resource, elb_client, stack_prefix)
+    def initialize(ec2_resource, elb_client, autoscaling_client, stack_prefix)
       @ec2_resource = ec2_resource
       @elb_client = elb_client
+      @autoscaling_client = autoscaling_client
       @stack_prefix = stack_prefix
     end
 
     # @return new RubyAemAws::Component::AuthorDispatcher instance
     def author_dispatcher
-      RubyAemAws::Component::AuthorDispatcher.new(@ec2_resource, @elb_client, @stack_prefix)
+      RubyAemAws::Component::AuthorDispatcher.new(@ec2_resource, @elb_client, @autoscaling_client, @stack_prefix)
     end
 
     # @return new RubyAemAws::Component::Author instance

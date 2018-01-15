@@ -27,6 +27,7 @@ module RubyAemAws
       @ec2_client = Aws::EC2::Client.new
       @ec2_resource = Aws::EC2::Resource.new(region: conf[:region])
       @elb_client = Aws::ElasticLoadBalancing::Client.new(region: conf[:region])
+      @autoscaling_client = Aws::AutoScaling::Client.new(region: conf[:region])
       # The V2 API only supports Application ELBs, and we currently use Classic.
       # @elb_client = Aws::ElasticLoadBalancingV2::Client.new(region: conf[:region])
     end
@@ -52,7 +53,7 @@ module RubyAemAws
     # @param stack_prefix AWS tag: StackPrefix
     # @return new RubyAemAws::FullSetStack instance
     def full_set(stack_prefix)
-      RubyAemAws::FullSetStack.new(@ec2_resource, @elb_client, stack_prefix)
+      RubyAemAws::FullSetStack.new(@ec2_resource, @elb_client, @autoscaling_client, stack_prefix)
     end
   end
 end
