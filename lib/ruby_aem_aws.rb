@@ -35,7 +35,7 @@ module RubyAemAws
     def test_connection
       result = []
       @ec2_client.describe_regions.regions.each do | region |
-        result.push('#{region.region_name} (#{region.endpoint})')
+        result.push("Region #{region.region_name} (#{region.endpoint})")
       end
       result.length > 0
     end
