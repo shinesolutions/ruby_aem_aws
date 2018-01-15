@@ -35,7 +35,10 @@ module RubyAemAws
       # @return new RubyAemAws::Consolidated::AuthorPublishDispatcher instance
       def initialize(client, stack_prefix)
         @client = client
-        @descriptor = ComponentDescriptor.new(stack_prefix, 'author-publish-dispatcher', 'AuthorPublishDispatcher', '')
+        @descriptor = ComponentDescriptor.new(stack_prefix,
+                                              EC2Descriptor.new('author-publish-dispatcher',
+                                                                'AuthorPublishDispatcher'),
+                                              nil)
       end
 =begin
       def get_all_instances

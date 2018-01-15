@@ -19,9 +19,8 @@ require_relative 'component_descriptor'
 
 module RubyAemAws
   module Component
-    # Interface to the AWS instance running the AuthorDispatcher component of a full-set AEM stack.
+    # Interface to the AWS instances playing and supporting the AuthorDispatcher role in a full-set AEM stack.
     class AuthorDispatcher
-      include HealthyInstanceStateVerifier
       include HealthyInstanceCountVerifier
 
       def get_ec2_client
