@@ -12,8 +12,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+require_relative '../../constants'
+
 # Mixin for checking health of a component via EC2 instance state.
 module HealthyInstanceStateVerifier
+  # return true if there are one or more instances matching the descriptor and they are all healthy.
   def healthy?
     @descriptor = get_descriptor
 
@@ -22,9 +25,9 @@ module HealthyInstanceStateVerifier
                                                    { name: 'tag:Component', values: [@descriptor.ec2.component] },
                                                    { name: 'tag:Name', values: [@descriptor.ec2.name] }])
     instances.each do |i|
-      puts("#{@descriptor.ec2.name}: #{i.id}")
+      puts("Instance #{@descriptor.ec2.name} (#{i.id}): #{i.state.name}")
       has_instance = true
-      return false if i.state.name != 'running'
+      return false if i.state.name != Constants::ELB_INSTANCE_STATE_HEALTHY
     end
     has_instance
   end
