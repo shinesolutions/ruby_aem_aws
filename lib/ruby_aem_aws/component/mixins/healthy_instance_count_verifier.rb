@@ -32,7 +32,7 @@ module HealthyInstanceCountVerifier
     unless elb.nil?
       puts("ELB: #{elb.load_balancer_name}, #{elb.instances.length}")
 
-      getInstancesStateFromELB(elb).each do |i|
+      get_instances_state_from_elb(elb).each do |i|
         puts("  Instance #{i[:id]}: #{i[:state]}")
         healthy_instance_count += 1 if i[:state] == Constants::ELB_INSTANCE_STATE_HEALTHY
       end
@@ -92,8 +92,7 @@ module HealthyInstanceCountVerifier
     nil
   end
 
-  private
-  def getInstancesStateFromELB(elb)
+  private def get_instances_state_from_elb(elb)
     stack_prefix_instances = []
     elb.instances.each do |i|
       instance = get_ec2_client.instance(i.instance_id)
