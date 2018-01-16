@@ -20,18 +20,20 @@ module HealthyInstanceCountVerifier
     @descriptor = get_descriptor
 
     asg = find_auto_scaling_group(get_asg_client)
+
+    # Debug:
     unless asg.nil?
       puts("ASG: #{asg.auto_scaling_group_name} (#{asg.desired_capacity})")
       asg.instances.each do |i|
-        puts("   Instance #{i.instance_id}: #{i.health_status}")
+        puts("  Instance #{i.instance_id}: #{i.health_status}")
       end
     end
 
     healthy_instance_count = 0
     elb = find_elb(get_elb_client)
-    unless elb.nil?
-      puts("ELB: #{elb.load_balancer_name}, #{elb.instances.length}")
 
+    unless elb.nil?
+      puts("ELB: #{elb.load_balancer_name} (#{elb.instances.length})")
       get_instances_state_from_elb(elb).each do |i|
         puts("  Instance #{i[:id]}: #{i[:state]}")
         healthy_instance_count += 1 if i[:state] == Constants::ELB_INSTANCE_STATE_HEALTHY

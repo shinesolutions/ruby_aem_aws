@@ -39,10 +39,10 @@ module RubyAemAws
         @descriptor
       end
 
-      EC2_COMPONENT = 'author-dispatcher'
-      EC2_NAME = 'AuthorDispatcher'
-      ELB_ID = 'AuthorDispatcherLoadBalancer'
-      ELB_NAME = 'AEM Author Dispatcher Load Balancer'
+      EC2_COMPONENT = 'author-dispatcher'.freeze
+      EC2_NAME = 'AuthorDispatcher'.freeze
+      ELB_ID = 'AuthorDispatcherLoadBalancer'.freeze
+      ELB_NAME = 'AEM Author Dispatcher Load Balancer'.freeze
 
       # @param ec2 AWS EC2 client
       # @param elb AWS ELB client

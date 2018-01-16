@@ -19,7 +19,7 @@ module RubyAemAws
   # AemAws class represents the AWS stack for AEM.
   class AemAws
     # @param conf configuration hash of the following configuration values:
-    # - foobar: TODO desc here
+    # - region: the AWS region (eg ap-southeast-2)
     # @return new RubyAemAws::AemAws instance
     def initialize(conf = {})
       conf[:region] ||= Constants.REGION_DEFAULT

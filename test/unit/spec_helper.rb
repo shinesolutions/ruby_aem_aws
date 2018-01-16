@@ -12,6 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-require 'ruby_aem_aws'
+require_relative '../../lib/ruby_aem_aws'
 require 'simplecov'
 SimpleCov.start
