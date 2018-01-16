@@ -33,7 +33,7 @@ test-integration-connection: install
 test-integration-consolidated: install test-integration-connection
 	rspec test/integration/consolidated
 
-test-integration-full: install test-integration-connection
+test-integration-full-set: install test-integration-connection
 	rspec test/integration/full-set
 
 doc:
@@ -48,4 +48,4 @@ publish:
 tools:
 	npm install -g gh-pages
 
-.PHONY: all ci deps clean build lint install test-unit test-integration test-integration-connection test-integration-consolidated test-integration-full doc doc-publish publish tools
+.PHONY: all ci deps clean build lint install test-unit test-integration test-integration-connection test-integration-consolidated test-integration-full-set doc doc-publish publish tools
