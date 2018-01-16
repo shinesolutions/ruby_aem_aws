@@ -98,6 +98,8 @@ module HealthyInstanceCountVerifier
     stack_prefix_instances = []
     elb.instances.each do |i|
       instance = get_ec2_client.instance(i.instance_id)
+      next if instance.nil?
+
       instance.tags.each do |tag|
         next if tag.key != 'StackPrefix'
         break if tag.value != @descriptor.stack_prefix

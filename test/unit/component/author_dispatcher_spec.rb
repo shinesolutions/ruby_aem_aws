@@ -27,11 +27,8 @@ describe 'AuthorDispatcher.healthy?' do
   STACK_PREFIX = 'test-prefix'.freeze
 
   before do
-    # @mock_ec2 = Aws::EC2::Resource.new(region: Constants::REGION_DEFAULT)
     @mock_ec2 = double('mock_ec2')
-    # @mock_elb = Aws::ElasticLoadBalancing::Client.new(region: Constants::REGION_DEFAULT)
     @mock_elb = double('mock_elb')
-    # @mock_as = Aws::AutoScaling::Client.new(region: Constants::REGION_DEFAULT)
     @mock_as = double('mock_as')
 
     EC2_NAME = RubyAemAws::Component::AuthorDispatcher::EC2_NAME
@@ -70,12 +67,12 @@ describe 'AuthorDispatcher.healthy?' do
     @instances[INSTANCE_1_ID] = mock_ec2_instance(INSTANCE_1_ID,
                                                   Constants::ELB_INSTANCE_STATE_HEALTHY,
                                                   ec2_tag(INSTANCE_1_ID, 'StackPrefix', STACK_PREFIX))
-    allow(@mock_ec2).to receive(:instance).with(INSTANCE_1_ID) { @instances.fetch(INSTANCE_1_ID) }
+    allow(@mock_ec2).to receive(:instance).with(INSTANCE_1_ID) { @instances[INSTANCE_1_ID] }
 
     @author_dispatcher = RubyAemAws::Component::AuthorDispatcher.new(@mock_ec2, @mock_elb, @mock_as, STACK_PREFIX)
   end
 
-  it 'hits correct endpoints' do
+  it 'verifies ELB running instances against ASG desired capacity' do
     expect(@author_dispatcher.healthy?).to equal true
   end
 end
