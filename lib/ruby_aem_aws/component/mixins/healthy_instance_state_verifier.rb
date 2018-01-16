@@ -27,7 +27,7 @@ module HealthyInstanceStateVerifier
     instances.each do |i|
       puts("Instance #{@descriptor.ec2.name} (#{i.id}): #{i.state.name}")
       has_instance = true
-      return false if i.state.name != Constants::ELB_INSTANCE_STATE_HEALTHY
+      return false if i.state.name != Constants::INSTANCE_STATE_HEALTHY
     end
     has_instance
   end

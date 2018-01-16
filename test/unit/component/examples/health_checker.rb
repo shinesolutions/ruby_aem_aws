@@ -13,7 +13,7 @@
 # limitations under the License.
 
 shared_examples 'a health_checker' do
-  it 'because it knows about healthiness' do
+  it 'because it contains .healthy? method' do
     is_expected.to respond_to(:healthy?)
   end
 end

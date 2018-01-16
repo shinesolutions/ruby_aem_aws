@@ -40,6 +40,8 @@ describe 'AuthorDispatcher.healthy?' do
   INSTANCE_2_ID = 'i-00525b1a281aee5b7'.freeze
   INSTANCE_2_COMPONENT = 'instance-b'.freeze
 
+  INSTANCE_STATE_UNHEALTHY = 'not-so-good'.freeze
+
   def add_instance(id, state, tags)
     @instances[id] = mock_ec2_instance(id, state, tags)
     allow(@mock_ec2).to receive(:instance).with(id) { @instances[id] }
@@ -77,6 +79,9 @@ describe 'AuthorDispatcher.healthy?' do
                                  mock_elb_tag('StackPrefix', STACK_PREFIX),
                                  mock_elb_tag('aws:cloudformation:logical-id', ELB_ID)))
     }
+    allow(@mock_elb).to receive(:describe_load_balancers) {
+      mock_elb_access_points(mock_lb_description(ELB_NAME, []))
+    }
 
     @instances = Hash.new {}
 
@@ -85,23 +90,44 @@ describe 'AuthorDispatcher.healthy?' do
 
   it 'verifies ELB running instances (1) against ASG desired capacity (1)' do
     allow(@asg).to receive(:desired_capacity) { 1 }
-    add_instance(INSTANCE_1_ID, Constants::ELB_INSTANCE_STATE_HEALTHY, StackPrefix: STACK_PREFIX)
+    add_instance(INSTANCE_1_ID, Constants::INSTANCE_STATE_HEALTHY, StackPrefix: STACK_PREFIX)
 
     expect(@author_dispatcher.healthy?).to equal true
   end
 
   it 'verifies ELB running instances (1) against ASG desired capacity (2)' do
     allow(@asg).to receive(:desired_capacity) { 2 }
-    add_instance(INSTANCE_1_ID, Constants::ELB_INSTANCE_STATE_HEALTHY, StackPrefix: STACK_PREFIX)
+    add_instance(INSTANCE_1_ID, Constants::INSTANCE_STATE_HEALTHY, StackPrefix: STACK_PREFIX)
 
     expect(@author_dispatcher.healthy?).to equal false
   end
 
   it 'verifies ELB non-running instances (1/2) against ASG desired capacity (2)' do
     allow(@asg).to receive(:desired_capacity) { 2 }
-    add_instance(INSTANCE_2_ID, 'not-so-good', StackPrefix: STACK_PREFIX)
+    add_instance(INSTANCE_1_ID, Constants::INSTANCE_STATE_HEALTHY, StackPrefix: STACK_PREFIX)
+    add_instance(INSTANCE_2_ID, INSTANCE_STATE_UNHEALTHY, StackPrefix: STACK_PREFIX)
 
     expect(@author_dispatcher.healthy?).to equal false
+  end
+
+  it 'verifies ELB instances (0) against ASG desired capacity (0)' do
+    allow(@asg).to receive(:desired_capacity) { 0 }
+
+    expect(@author_dispatcher.healthy?).to equal true
+  end
+
+  it 'verifies ELB running instances (1) against ASG desired capacity (0)' do
+    add_instance(INSTANCE_1_ID, Constants::INSTANCE_STATE_HEALTHY, StackPrefix: STACK_PREFIX)
+    allow(@asg).to receive(:desired_capacity) { 0 }
+
+    expect(@author_dispatcher.healthy?).to equal false
+  end
+
+  it 'verifies ELB non-running instances (1) against ASG desired capacity (0)' do
+    add_instance(INSTANCE_1_ID, INSTANCE_STATE_UNHEALTHY, StackPrefix: STACK_PREFIX)
+    allow(@asg).to receive(:desired_capacity) { 0 }
+
+    expect(@author_dispatcher.healthy?).to equal true
   end
 end
 
