@@ -23,30 +23,23 @@ module RubyAemAws
       # @param client TODOs
       # @param stack_prefix TODO
       # @return new RubyAemAws::FullSet::ChaosMonkey
-      def initialize(client, stack_prefix)
+      def initialize(client, _stack_prefix)
         @client = client
       end
 
       def get_all_instances
-      end
 
       def get_random_instance
-      end
 
       def get_num_of_instances
-      end
 
       def terminate_all_instances
-      end
 
       def terminate_random_instance
-      end
 
-      def is_healthy
-      end
+      def healthy?
 
       def wait_until_healthy
-      end
     end
   end
 end

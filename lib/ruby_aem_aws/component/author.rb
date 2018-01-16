@@ -15,7 +15,7 @@
 require 'ruby_aem/full_set/author_dispatcher'
 
 module RubyAemAws
-  module Commponent
+  module Component
     #
     class Author
       # TODO
@@ -23,27 +23,21 @@ module RubyAemAws
       # @param client TODOs
       # @param stack_prefix TODO
       # @return new RubyAemAws::FullSet::Author
-      def initialize(client, stack_prefix)
+      def initialize(client, _stack_prefix)
         @client = client
       end
 
       def get_primary_instance
-      end
 
       def get_standby_instance
-      end
 
       def terminate_primary_instance
-      end
 
       def terminate_standby_instance
-      end
 
-      def is_healthy
-      end
+      def healthy?
 
       def wait_until_healthy
-      end
     end
   end
 end

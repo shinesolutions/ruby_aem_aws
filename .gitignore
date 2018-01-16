@@ -3,3 +3,11 @@
 coverage
 doc
 ruby_aem_aws-*.gem
+*.lock
+
+# IntelliJ Idea
+.idea/
+*.iml
+
+# rbenv
+.ruby-version

@@ -15,7 +15,7 @@
 require 'ruby_aem/consolidated/author_publish_dispatcher'
 
 module RubyAemAws
-  module Commponent
+  module Component
     #
     class AuthorPublishDispatcher
       # Initialise a consolidated instance.
@@ -23,8 +23,7 @@ module RubyAemAws
       # @param client TODOs
       # @param stack_prefix TODO
       # @return new RubyAemAws::Consolidated::AuthorPublishDispatcher instance
-      def initialize(client, stack_prefix)
-      end
+      def initialize(client, _stack_prefix) end
     end
   end
 end
