@@ -51,7 +51,7 @@ module AwsMocker
     elb_instance
   end
 
-  def mock_lb_description(elb_name, *instances)
+  def mock_lb_description(elb_name, instances)
     lb_description = Aws::ElasticLoadBalancing::Types::LoadBalancerDescription.new
     allow(lb_description).to receive(:load_balancer_name) { elb_name }
     allow(lb_description).to receive(:instances) { instances }
@@ -94,14 +94,18 @@ module AwsMocker
     ec2_instance_state
   end
 
-  def ec2_tag(resource_id, key, value)
-    Aws::EC2::Tag.new(resource_id, key, value)
-  end
-
-  def mock_ec2_instance(id, state, *tags)
+  def mock_ec2_instance(id, state, tags)
     ec2_instance = Aws::EC2::Instance.new(id)
     allow(ec2_instance).to receive(:state) { mock_ec2_instance_state(state) }
-    allow(ec2_instance).to receive(:tags) { tags }
+    ec2_tags = []
+    tags.each do |key, value|
+      ec2_tags.push(ec2_tag(id, key.to_s, value))
+    end
+    allow(ec2_instance).to receive(:tags) { ec2_tags }
     ec2_instance
+  end
+
+  private def ec2_tag(resource_id, key, value)
+    Aws::EC2::Tag.new(resource_id, key, value)
   end
 end
