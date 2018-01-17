@@ -74,11 +74,10 @@ module RubyAemAws
 
       def wait_until_healthy
       end
-
+=end
       def to_s
         'AuthorDispatcher(%s)' % @client
       end
-=end
     end
   end
 end
