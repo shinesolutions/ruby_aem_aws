@@ -34,10 +34,10 @@ module RubyAemAws
 
     def test_connection
       result = []
-      @ec2_client.describe_regions.regions.each do | region |
+      @ec2_client.describe_regions.regions.each do |region|
         result.push("Region #{region.region_name} (#{region.endpoint})")
       end
-      result.length > 0
+      !result.empty?
     end
 
     # Create a consolidated instance.

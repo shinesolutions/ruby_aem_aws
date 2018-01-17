@@ -72,7 +72,7 @@ module RubyAemAws
       # def wait_until_healthy
 
       def to_s
-        'AuthorDispatcher(%s)' % @client
+        "AuthorDispatcher(#{@descriptor.stack_prefix})"
       end
     end
   end

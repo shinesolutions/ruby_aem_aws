@@ -15,7 +15,6 @@
 require_relative '../spec_helper'
 require_relative '../../../lib/ruby_aem_aws'
 
-
 describe 'AuthorDispatcher' do
   before do
     @author_dispatcher = init_full_set.author_dispatcher

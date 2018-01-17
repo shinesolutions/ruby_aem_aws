@@ -56,13 +56,11 @@ module HealthyInstanceCountVerifier
           break if asg_matches_component
           next
         end
-
         if tag.key == 'Component' && tag.value == @descriptor.ec2.component
           asg_matches_component = true
           break if asg_matches_stack_prefix
         end
       end
-
       return autoscaling_group if asg_matches_stack_prefix && asg_matches_component
     end
     nil
@@ -81,16 +79,13 @@ module HealthyInstanceCountVerifier
           break if elb_matches_logical_id
           next
         end
-
         if tag.key == 'aws:cloudformation:logical-id' && tag.value == @descriptor.elb.id
           elb_matches_logical_id = true
           break if elb_matches_stack_prefix
         end
       end
-
       return elb if elb_matches_stack_prefix && elb_matches_logical_id
     end
-
     nil
   end
 
@@ -99,11 +94,9 @@ module HealthyInstanceCountVerifier
     elb.instances.each do |i|
       instance = get_ec2_resource.instance(i.instance_id)
       next if instance.nil?
-
       instance.tags.each do |tag|
         next if tag.key != 'StackPrefix'
         break if tag.value != @descriptor.stack_prefix
-
         stack_prefix_instances.push(id: i.instance_id, state: instance.state.name)
       end
     end

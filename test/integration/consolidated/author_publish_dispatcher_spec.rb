@@ -15,7 +15,6 @@
 require_relative '../spec_helper'
 require_relative '../../../lib/ruby_aem_aws'
 
-
 describe 'AuthorPublishDispatcher' do
   before do
     @author_publish_dispatcher = init_consolidated.author_publish_dispatcher
