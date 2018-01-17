@@ -21,24 +21,23 @@ module RubyAemAws
       # TODO
       #
       # @param client TODOs
-      # @param stack_prefix TODO
+      # @param _stack_prefix TODO
       # @return new RubyAemAws::FullSet::Author
       def initialize(client, _stack_prefix)
         @client = client
       end
-=begin
-      def get_primary_instance
 
-      def get_standby_instance
+      # def get_primary_instance
 
-      def terminate_primary_instance
+      # def get_standby_instance
 
-      def terminate_standby_instance
+      # def terminate_primary_instance
 
-      def healthy?
+      # def terminate_standby_instance
 
-      def wait_until_healthy
-=end
+      # def healthy?
+
+      # def wait_until_healthy
     end
   end
 end

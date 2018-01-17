@@ -20,10 +20,10 @@ module RubyAemAws
   class AemAws
     # Initialise a Ruby AEM AWS instance.
     #
-    # @param conf configuration hash of the following configuration values:
+    # @param _conf configuration hash of the following configuration values:
     # - foobar: desc here
     # @return new RubyAem::Aem instance
-    def initialize(conf = {})
+    def initialize(_conf = {})
       # TODO: replace this client with aws-sdk-client or a wrapper
       @client = nil
     end
