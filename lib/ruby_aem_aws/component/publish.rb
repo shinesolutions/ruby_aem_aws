@@ -26,13 +26,13 @@ module RubyAemAws
       def initialize(client, _stack_prefix)
         @client = client
       end
-
+=begin
       def get_all_instances
 
       def get_random_instance
 
       def get_num_of_instances
-      
+
       def terminate_all_instances
 
       def terminate_random_instance
@@ -40,6 +40,7 @@ module RubyAemAws
       def healthy?
 
       def wait_until_healthy
+=end
     end
   end
 end

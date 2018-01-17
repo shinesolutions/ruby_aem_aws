@@ -26,7 +26,7 @@ module RubyAemAws
       def initialize(client, _stack_prefix)
         @client = client
       end
-
+=begin
       def get_primary_instance
 
       def get_standby_instance
@@ -38,6 +38,7 @@ module RubyAemAws
       def healthy?
 
       def wait_until_healthy
+=end
     end
   end
 end
