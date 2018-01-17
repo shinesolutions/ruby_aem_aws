@@ -12,6 +12,7 @@ deps:
 
 clean:
 	rm -f ruby_aem_aws-*.gem
+	rm -rf out
 
 lint:
 	rubocop

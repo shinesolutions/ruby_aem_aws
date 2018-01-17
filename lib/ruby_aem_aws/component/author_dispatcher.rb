@@ -56,25 +56,21 @@ module RubyAemAws
                                               EC2Descriptor.new(EC2_COMPONENT, EC2_NAME),
                                               ELBDescriptor.new(ELB_ID, ELB_NAME))
       end
-=begin
-      def get_all_instances
-      end
 
-      def get_random_instance
-      end
+      # def get_all_instances
 
-      def get_num_of_instances
-      end
+      # def get_random_instance
 
-      def terminate_all_instances
-      end
+      # def get_num_of_instances
 
-      def terminate_random_instance
-      end
+      # def terminate_all_instances
 
-      def wait_until_healthy
-      end
-=end
+      # def terminate_random_instance
+
+      # def healthy?
+
+      # def wait_until_healthy
+
       def to_s
         'AuthorDispatcher(%s)' % @client
       end
