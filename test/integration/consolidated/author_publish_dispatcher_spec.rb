@@ -13,19 +13,18 @@
 # limitations under the License.
 
 require_relative '../spec_helper'
-require 'ruby_aem_aws'
+require_relative '../../../lib/ruby_aem_aws'
 
-aem_aws = init_client
-author_publish_dispatcher = aem_aws.consolidated('sandpit-doug').author_publish_dispatcher
 
 describe 'AuthorPublishDispatcher' do
   before do
+    @author_publish_dispatcher = init_consolidated.author_publish_dispatcher
   end
 
   after do
   end
 
   it 'is healthy' do
-    expect(author_publish_dispatcher.healthy?).to eq(true)
+    expect(@author_publish_dispatcher.healthy?).to eq(true)
   end
 end

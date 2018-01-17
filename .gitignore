@@ -1,6 +1,5 @@
 .DS_Store
 .yardoc
-coverage
 doc
 ruby_aem_aws-*.gem
 *.lock

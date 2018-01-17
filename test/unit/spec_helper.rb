@@ -12,10 +12,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-require_relative 'aws_mocker'
-require_relative '../../lib/ruby_aem_aws'
 require 'simplecov'
 SimpleCov.start
+
+require_relative 'aws_mocker'
+require_relative '../../lib/ruby_aem_aws'
 
 RSpec.configure do |config|
   config.mock_with :rspec do |mocks|
@@ -29,3 +30,6 @@ RSpec.configure do |config|
   end
   config.include AwsMocker
 end
+
+STACK_PREFIX = 'test-prefix'.freeze
+INSTANCE_STATE_UNHEALTHY = 'not-so-good'.freeze

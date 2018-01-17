@@ -12,12 +12,25 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-require 'ruby_aem_aws'
 require 'simplecov'
 SimpleCov.start
 
+require_relative '../../lib/ruby_aem_aws'
+
+DEFAULT_REGION = 'ap-southeast-2'.freeze
+
 def init_client
   RubyAemAws::AemAws.new(
-    region: ENV['aws_region'] || 'ap-southeast-2'
+    region: ENV['aws_region'] || DEFAULT_REGION
   )
+end
+
+DEFAULT_STACK_PREFIX = 'sandpit-ramses001'.freeze
+
+def init_consolidated
+  init_client.consolidated(stack_prefix: ENV['stack_prefix'] || DEFAULT_STACK_PREFIX)
+end
+
+def init_full_set
+  init_client.full_set(stack_prefix: ENV['stack_prefix'] || DEFAULT_STACK_PREFIX)
 end

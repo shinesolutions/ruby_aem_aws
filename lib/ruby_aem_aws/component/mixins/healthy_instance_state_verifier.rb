@@ -21,11 +21,15 @@ module HealthyInstanceStateVerifier
     @descriptor = get_descriptor
 
     has_instance = false
-    instances = get_ec2_client.instances(filters: [{ name: 'tag:StackPrefix', values: [@descriptor.stack_prefix] },
-                                                   { name: 'tag:Component', values: [@descriptor.ec2.component] },
-                                                   { name: 'tag:Name', values: [@descriptor.ec2.name] }])
+    instances = get_ec2_resource.instances(
+      filters: [
+        { name: 'tag:StackPrefix', values: [@descriptor.stack_prefix] },
+        { name: 'tag:Component', values: [@descriptor.ec2.component] },
+        { name: 'tag:Name', values: [@descriptor.ec2.name] }
+      ]
+    )
+
     instances.each do |i|
-      puts("Instance #{@descriptor.ec2.name} (#{i.id}): #{i.state.name}")
       has_instance = true
       return false if i.state.name != Constants::INSTANCE_STATE_HEALTHY
     end

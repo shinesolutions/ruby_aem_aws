@@ -24,25 +24,23 @@ describe author_dispatcher do
 end
 
 describe 'AuthorDispatcher.healthy?' do
-  STACK_PREFIX = 'test-prefix'.freeze
+  module self::TestConstants
+    EC2_NAME = RubyAemAws::Component::AuthorDispatcher::EC2_NAME
+    EC2_COMPONENT = RubyAemAws::Component::AuthorDispatcher::EC2_COMPONENT
 
-  EC2_NAME = RubyAemAws::Component::AuthorDispatcher::EC2_NAME
-  EC2_COMPONENT = RubyAemAws::Component::AuthorDispatcher::EC2_COMPONENT
+    ELB_NAME = RubyAemAws::Component::AuthorDispatcher::ELB_NAME
+    ELB_ID = RubyAemAws::Component::AuthorDispatcher::ELB_ID
 
-  ELB_NAME = RubyAemAws::Component::AuthorDispatcher::ELB_NAME
-  ELB_ID = RubyAemAws::Component::AuthorDispatcher::ELB_ID
+    ASG_NAME = 'asg-test'.freeze
 
-  ASG_NAME = 'asg-test'.freeze
+    INSTANCE_1_ID = 'i-00525b1a281aee5b9'.freeze
+    INSTANCE_1_COMPONENT = 'instance-a'.freeze
 
-  INSTANCE_1_ID = 'i-00525b1a281aee5b9'.freeze
-  INSTANCE_1_COMPONENT = 'instance-a'.freeze
+    INSTANCE_2_ID = 'i-00525b1a281aee5b7'.freeze
+    INSTANCE_2_COMPONENT = 'instance-b'.freeze
+  end
 
-  INSTANCE_2_ID = 'i-00525b1a281aee5b7'.freeze
-  INSTANCE_2_COMPONENT = 'instance-b'.freeze
-
-  INSTANCE_STATE_UNHEALTHY = 'not-so-good'.freeze
-
-  def add_instance(id, state, tags)
+  private def add_instance(id, state, tags)
     @instances[id] = mock_ec2_instance(id, state, tags)
     allow(@mock_ec2).to receive(:instance).with(id) { @instances[id] }
 
@@ -55,7 +53,7 @@ describe 'AuthorDispatcher.healthy?' do
     allow(@asg).to receive(:instances) { asg_instances }
 
     allow(@mock_elb).to receive(:describe_load_balancers) {
-      mock_elb_access_points(mock_lb_description(ELB_NAME, elb_instances))
+      mock_elb_access_points(mock_lb_description(self.class::TestConstants::ELB_NAME, elb_instances))
     }
   end
 
@@ -66,21 +64,21 @@ describe 'AuthorDispatcher.healthy?' do
     @mock_elb = double('mock_elb')
     @mock_as = double('mock_as')
 
-    @asg = mock_as_group(ASG_NAME,
+    @asg = mock_as_group(self.class::TestConstants::ASG_NAME,
                          1,
                          [],
                          mock_as_tag('StackPrefix', STACK_PREFIX),
-                         mock_as_tag('Component', EC2_COMPONENT))
+                         mock_as_tag('Component', self.class::TestConstants::EC2_COMPONENT))
     allow(@mock_as).to receive(:describe_auto_scaling_groups) { mock_as_groups_type(@asg) }
 
     allow(@mock_elb).to receive(:describe_tags) {
       mock_elb_describe_tags_output(
-        mock_elb_tag_description(ELB_NAME,
+        mock_elb_tag_description(self.class::TestConstants::ELB_NAME,
                                  mock_elb_tag('StackPrefix', STACK_PREFIX),
-                                 mock_elb_tag('aws:cloudformation:logical-id', ELB_ID)))
+                                 mock_elb_tag('aws:cloudformation:logical-id', self.class::TestConstants::ELB_ID)))
     }
     allow(@mock_elb).to receive(:describe_load_balancers) {
-      mock_elb_access_points(mock_lb_description(ELB_NAME, []))
+      mock_elb_access_points(mock_lb_description(self.class::TestConstants::ELB_NAME, []))
     }
 
     @instances = Hash.new {}
@@ -90,22 +88,30 @@ describe 'AuthorDispatcher.healthy?' do
 
   it 'verifies ELB running instances (1) against ASG desired capacity (1)' do
     allow(@asg).to receive(:desired_capacity) { 1 }
-    add_instance(INSTANCE_1_ID, Constants::INSTANCE_STATE_HEALTHY, StackPrefix: STACK_PREFIX)
+    add_instance(self.class::TestConstants::INSTANCE_1_ID,
+                 Constants::INSTANCE_STATE_HEALTHY,
+                 StackPrefix: STACK_PREFIX)
 
     expect(@author_dispatcher.healthy?).to equal true
   end
 
   it 'verifies ELB running instances (1) against ASG desired capacity (2)' do
     allow(@asg).to receive(:desired_capacity) { 2 }
-    add_instance(INSTANCE_1_ID, Constants::INSTANCE_STATE_HEALTHY, StackPrefix: STACK_PREFIX)
+    add_instance(self.class::TestConstants::INSTANCE_1_ID,
+                 Constants::INSTANCE_STATE_HEALTHY,
+                 StackPrefix: STACK_PREFIX)
 
     expect(@author_dispatcher.healthy?).to equal false
   end
 
   it 'verifies ELB non-running instances (1/2) against ASG desired capacity (2)' do
     allow(@asg).to receive(:desired_capacity) { 2 }
-    add_instance(INSTANCE_1_ID, Constants::INSTANCE_STATE_HEALTHY, StackPrefix: STACK_PREFIX)
-    add_instance(INSTANCE_2_ID, INSTANCE_STATE_UNHEALTHY, StackPrefix: STACK_PREFIX)
+    add_instance(self.class::TestConstants::INSTANCE_1_ID,
+                 Constants::INSTANCE_STATE_HEALTHY,
+                 StackPrefix: STACK_PREFIX)
+    add_instance(self.class::TestConstants::INSTANCE_2_ID,
+                 INSTANCE_STATE_UNHEALTHY,
+                 StackPrefix: STACK_PREFIX)
 
     expect(@author_dispatcher.healthy?).to equal false
   end
@@ -117,14 +123,18 @@ describe 'AuthorDispatcher.healthy?' do
   end
 
   it 'verifies ELB running instances (1) against ASG desired capacity (0)' do
-    add_instance(INSTANCE_1_ID, Constants::INSTANCE_STATE_HEALTHY, StackPrefix: STACK_PREFIX)
+    add_instance(self.class::TestConstants::INSTANCE_1_ID,
+                 Constants::INSTANCE_STATE_HEALTHY,
+                 StackPrefix: STACK_PREFIX)
     allow(@asg).to receive(:desired_capacity) { 0 }
 
     expect(@author_dispatcher.healthy?).to equal false
   end
 
   it 'verifies ELB non-running instances (1) against ASG desired capacity (0)' do
-    add_instance(INSTANCE_1_ID, INSTANCE_STATE_UNHEALTHY, StackPrefix: STACK_PREFIX)
+    add_instance(self.class::TestConstants::INSTANCE_1_ID,
+                 INSTANCE_STATE_UNHEALTHY,
+                 StackPrefix: STACK_PREFIX)
     allow(@asg).to receive(:desired_capacity) { 0 }
 
     expect(@author_dispatcher.healthy?).to equal true

@@ -23,7 +23,7 @@ module RubyAemAws
     class AuthorDispatcher
       include HealthyInstanceCountVerifier
 
-      def get_ec2_client
+      def get_ec2_resource
         @ec2
       end
 

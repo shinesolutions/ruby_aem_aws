@@ -22,8 +22,9 @@ require_relative 'component/publish'
 module RubyAemAws
   # Factory for the full-set AEM stack component interfaces.
   class FullSetStack
-    # @param ec2_resource AWS EC2 client
+    # @param ec2_resource AWS EC2 resource
     # @param elb_client AWS ELB client
+    # @param autoscaling_client AWS AutoScaling client
     # @param stack_prefix AWS tag: StackPrefix
     # @return new RubyAemAws::FullSetStack instance
     def initialize(ec2_resource, elb_client, autoscaling_client, stack_prefix)

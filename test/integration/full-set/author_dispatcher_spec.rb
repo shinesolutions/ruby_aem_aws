@@ -13,19 +13,18 @@
 # limitations under the License.
 
 require_relative '../spec_helper'
-require 'ruby_aem_aws'
+require_relative '../../../lib/ruby_aem_aws'
 
-aem_aws = init_client
-author_dispatcher = aem_aws.full_set('sandpit-doug').author_dispatcher
 
 describe 'AuthorDispatcher' do
   before do
+    @author_dispatcher = init_full_set.author_dispatcher
   end
 
   after do
   end
 
   it 'is healthy' do
-    expect(author_dispatcher.healthy?).to eq(true)
+    expect(@author_dispatcher.healthy?).to eq(true)
   end
 end
