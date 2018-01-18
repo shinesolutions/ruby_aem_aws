@@ -94,8 +94,8 @@ module AwsMocker
     ec2_instance_state
   end
 
-  def mock_ec2_instance(id, state, tags)
-    ec2_instance = Aws::EC2::Instance.new(id)
+  def mock_ec2_instance(region, id, state, tags)
+    ec2_instance = Aws::EC2::Instance.new(id, region: region)
     allow(ec2_instance).to receive(:id) { id }
     allow(ec2_instance).to receive(:state) { mock_ec2_instance_state(state) }
     ec2_tags = []

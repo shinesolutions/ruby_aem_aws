@@ -62,7 +62,7 @@ module RubyAemAws
   class AwsCreator
     def self.create_aws(region = Constants::REGION_DEFAULT)
       {
-        Ec2Client: Aws::EC2::Client.new,
+        Ec2Client: Aws::EC2::Client.new(region: region),
         Ec2Resource: Aws::EC2::Resource.new(region: region),
         ElbClient: Aws::ElasticLoadBalancing::Client.new(region: region),
         AutoScalingClient: Aws::AutoScaling::Client.new(region: region)
