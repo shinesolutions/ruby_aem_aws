@@ -13,7 +13,7 @@
 # limitations under the License.
 
 module RubyAemAws
-  module FullSet
+  module Component
     # Interface to the AWS instance running the Publish component of a full-set AEM stack.
     class Publish
       # @param client AWS EC2 client
@@ -21,6 +21,10 @@ module RubyAemAws
       # @return new RubyAemAws::FullSet::Publish
       def initialize(client, _stack_prefix)
         @client = client
+      end
+
+      def healthy?
+        raise NotYetImplementedError
       end
 
       # def get_all_instances
@@ -32,8 +36,6 @@ module RubyAemAws
       # def terminate_all_instances
 
       # def terminate_random_instance
-
-      # def healthy?
 
       # def wait_until_healthy
     end

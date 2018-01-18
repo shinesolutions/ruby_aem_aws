@@ -23,6 +23,10 @@ module RubyAemAws
         @client = client
       end
 
+      def healthy?
+        raise NotYetImplementedError
+      end
+
       # def get_primary_instance
 
       # def get_standby_instance
@@ -30,8 +34,6 @@ module RubyAemAws
       # def terminate_primary_instance
 
       # def terminate_standby_instance
-
-      # def healthy?
 
       # def wait_until_healthy
     end

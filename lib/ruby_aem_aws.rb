@@ -56,4 +56,11 @@ module RubyAemAws
       RubyAemAws::FullSetStack.new(@ec2_resource, @elb_client, @autoscaling_client, stack_prefix)
     end
   end
+
+  # Raise this when a method is not yet implemented.
+  class NotYetImplementedError < StandardError
+    def initialize(msg = 'Not yet implemented')
+      super
+    end
+  end
 end

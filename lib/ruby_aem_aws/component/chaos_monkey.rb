@@ -23,6 +23,10 @@ module RubyAemAws
         @client = client
       end
 
+      def healthy?
+        raise NotYetImplementedError
+      end
+
       # def get_all_instances
 
       # def get_random_instance
@@ -32,8 +36,6 @@ module RubyAemAws
       # def terminate_all_instances
 
       # def terminate_random_instance
-
-      # def healthy?
 
       # def wait_until_healthy
     end
