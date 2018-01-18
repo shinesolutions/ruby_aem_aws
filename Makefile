@@ -1,8 +1,8 @@
-RUBYOPT = --enable-frozen-string-literal
+#export RUBYOPT = --enable-frozen-string-literal
+export AWS_PROFILE = sandpit
 
 all: deps clean build lint install test-unit test-integration doc
-#ci: deps clean build lint install test-unit doc
-ci: deps clean build lint install doc
+ci: deps clean build lint install test-unit doc
 
 deps:
 	gem install bundler
@@ -28,6 +28,15 @@ test-unit:
 test-integration: install
 	rspec test/integration
 
+test-integration-connection: install
+	rspec test/integration/ruby_aem_aws_spec.rb
+
+test-integration-consolidated: install test-integration-connection
+	rspec test/integration/consolidated
+
+test-integration-full-set: install test-integration-connection
+	rspec test/integration/full-set
+
 doc:
 	yard doc --output-dir doc/api/master/
 
@@ -40,4 +49,4 @@ publish:
 tools:
 	npm install -g gh-pages
 
-.PHONY: all ci deps clean build lint install test-unit test-integration doc doc-publish publish tools
+.PHONY: all ci deps clean build lint install test-unit test-integration test-integration-connection test-integration-consolidated test-integration-full-set doc doc-publish publish tools

@@ -12,36 +12,68 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-require 'ruby_aem/consolidated'
-require 'ruby_aem/full_set'
+require_relative 'ruby_aem_aws/consolidated_stack'
+require_relative 'ruby_aem_aws/full_set_stack'
 
 module RubyAemAws
   # AemAws class represents the AWS stack for AEM.
   class AemAws
-    # Initialise a Ruby AEM AWS instance.
-    #
-    # @param _conf configuration hash of the following configuration values:
-    # - foobar: desc here
-    # @return new RubyAem::Aem instance
-    def initialize(_conf = {})
-      # TODO: replace this client with aws-sdk-client or a wrapper
-      @client = nil
+    # @param conf configuration hash of the following configuration values:
+    # - region: the AWS region (eg ap-southeast-2)
+    # @return new RubyAemAws::AemAws instance
+    def initialize(conf = {})
+      conf[:region] ||= Constants::REGION_DEFAULT
+
+      aws = AwsCreator.create_aws
+      @ec2_client = aws[:Ec2Client]
+      @ec2_resource = aws[:Ec2Resource]
+      @elb_client = aws[:ElbClient]
+      @auto_scaling_client = aws[:AutoScalingClient]
+      # The V2 API only supports Application ELBs, and we currently use Classic.
+      # @elb_client = Aws::ElasticLoadBalancingV2::Client.new(region: conf[:region])
+    end
+
+    def test_connection
+      result = []
+      @ec2_client.describe_regions.regions.each do |region|
+        result.push("Region #{region.region_name} (#{region.endpoint})")
+      end
+      !result.empty?
     end
 
     # Create a consolidated instance.
     #
-    # @param stack_prefix desc here
-    # @return new RubyAem::Consolidated instance
+    # @param stack_prefix AWS tag: StackPrefix
+    # @return new RubyAemAws::ConsolidatedStack instance
     def consolidated(stack_prefix)
-      RubyAemAws::Consolidated.new(@client, stack_prefix)
+      RubyAemAws::ConsolidatedStack.new(@ec2_resource, stack_prefix)
     end
 
     # Create a full set instance.
     #
-    # @param stack_prefix desc here
-    # @return new RubyAem::FullSet instance
+    # @param stack_prefix AWS tag: StackPrefix
+    # @return new RubyAemAws::FullSetStack instance
     def full_set(stack_prefix)
-      RubyAem::FullSet.new(@client, stack_prefix)
+      RubyAemAws::FullSetStack.new(@ec2_resource, @elb_client, @auto_scaling_client, stack_prefix)
+    end
+  end
+
+  # Encapsulate AWS class creation for mocking.
+  class AwsCreator
+    def self.create_aws(region = Constants::REGION_DEFAULT)
+      {
+        Ec2Client: Aws::EC2::Client.new(region: region),
+        Ec2Resource: Aws::EC2::Resource.new(region: region),
+        ElbClient: Aws::ElasticLoadBalancing::Client.new(region: region),
+        AutoScalingClient: Aws::AutoScaling::Client.new(region: region)
+      }
+    end
+  end
+
+  # Raise this when a method is not yet implemented.
+  class NotYetImplementedError < StandardError
+    def initialize(msg = 'Not yet implemented')
+      super
     end
   end
 end

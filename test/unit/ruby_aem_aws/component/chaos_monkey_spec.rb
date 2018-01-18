@@ -12,23 +12,24 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-require 'ruby_aem/component/author_publish_dispatcher'
+require_relative '../../spec_helper'
+require_relative 'examples/health_checker'
+require_relative '../../../../lib/ruby_aem_aws/component/chaos_monkey'
 
-module RubyAemAws
-  #
-  class Consolidated
-    # Initialise a consolidated instance.
-    #
-    # @param client TODOs
-    # @param stack_prefix TODO
-    # @return new RubyAemAws::Consolidated instance
-    def initialize(client, stack_prefix)
-      @client = client
-      @stack_prefix = stack_prefix
-    end
+chaos_monkey = RubyAemAws::Component::ChaosMonkey.new(nil, nil)
 
-    def author_publish_dispatcher
-      RubyAem::Consolidated::AuthorPublishDispatcher.new(@client, stack_prefix)
-    end
+describe chaos_monkey do
+  it_behaves_like 'a health_checker'
+end
+
+describe 'ChaosMonkey.healthy?' do
+  before do
+    @mock_ec2 = double('mock_ec2')
+
+    @chaos_monkey = RubyAemAws::Component::ChaosMonkey.new(@mock_ec2, TEST_STACK_PREFIX)
+  end
+
+  it 'runs healthy method' do
+    expect { @chaos_monkey.healthy? }.to raise_error(RubyAemAws::NotYetImplementedError)
   end
 end

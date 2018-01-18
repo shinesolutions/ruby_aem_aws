@@ -13,29 +13,8 @@
 # limitations under the License.
 
 module RubyAemAws
-  module Component
-    # Interface to the AWS instance running the Author component of a full-set AEM stack.
-    class Author
-      # @param client AWS EC2 client
-      # @param _stack_prefix AWS tag: StackPrefix
-      # @return new RubyAemAws::FullSet::Author
-      def initialize(client, _stack_prefix)
-        @client = client
-      end
-
-      def healthy?
-        raise NotYetImplementedError
-      end
-
-      # def get_primary_instance
-
-      # def get_standby_instance
-
-      # def terminate_primary_instance
-
-      # def terminate_standby_instance
-
-      # def wait_until_healthy
-    end
+  class Constants
+    REGION_DEFAULT = 'ap-southeast-2'.freeze
+    INSTANCE_STATE_HEALTHY = 'running'.freeze
   end
 end

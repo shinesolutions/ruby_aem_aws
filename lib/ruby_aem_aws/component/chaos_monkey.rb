@@ -12,19 +12,19 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-require 'ruby_aem/full_set/author_dispatcher'
-
 module RubyAemAws
   module Component
-    #
+    # Interface to the AWS instance running the ChaosMonkey component of a full-set AEM stack.
     class ChaosMonkey
-      # TODO
-      #
-      # @param client TODOs
-      # @param _stack_prefix TODO
+      # @param client AWS EC2 client
+      # @param _stack_prefix AWS tag: StackPrefix
       # @return new RubyAemAws::FullSet::ChaosMonkey
       def initialize(client, _stack_prefix)
         @client = client
+      end
+
+      def healthy?
+        raise NotYetImplementedError
       end
 
       # def get_all_instances
@@ -36,8 +36,6 @@ module RubyAemAws
       # def terminate_all_instances
 
       # def terminate_random_instance
-
-      # def healthy?
 
       # def wait_until_healthy
     end

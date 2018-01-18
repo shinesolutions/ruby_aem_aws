@@ -14,30 +14,8 @@
 
 module RubyAemAws
   module Component
-    # Interface to the AWS instance running the Publish component of a full-set AEM stack.
-    class Publish
-      # @param client AWS EC2 client
-      # @param _stack_prefix AWS tag: StackPrefix
-      # @return new RubyAemAws::FullSet::Publish
-      def initialize(client, _stack_prefix)
-        @client = client
-      end
-
-      def healthy?
-        raise NotYetImplementedError
-      end
-
-      # def get_all_instances
-
-      # def get_random_instance
-
-      # def get_num_of_instances
-
-      # def terminate_all_instances
-
-      # def terminate_random_instance
-
-      # def wait_until_healthy
-    end
+    ComponentDescriptor = Struct.new(:stack_prefix, :ec2, :elb)
+    EC2Descriptor = Struct.new(:component, :name)
+    ELBDescriptor = Struct.new(:id, :name)
   end
 end

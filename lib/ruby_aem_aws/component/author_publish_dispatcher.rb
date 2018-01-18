@@ -12,18 +12,48 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-require 'ruby_aem/consolidated/author_publish_dispatcher'
+require 'aws-sdk'
+require_relative 'mixins/healthy_instance_state_verifier'
+require_relative 'component_descriptor'
 
 module RubyAemAws
   module Component
-    #
+    # Interface to a single AWS instance running all three AEM components as a consolidated stack.
     class AuthorPublishDispatcher
-      # Initialise a consolidated instance.
-      #
-      # @param client TODOs
-      # @param stack_prefix TODO
+      include HealthyInstanceStateVerifier
+
+      def get_ec2_resource
+        @ec2
+      end
+
+      def get_descriptor
+        @descriptor
+      end
+
+      EC2_COMPONENT = 'author-publish-dispatcher'.freeze
+      EC2_NAME = 'AuthorPublishDispatcher'.freeze
+
+      # @param ec2 AWS EC2 client
+      # @param stack_prefix AWS tag: StackPrefix
       # @return new RubyAemAws::Consolidated::AuthorPublishDispatcher instance
-      def initialize(client, _stack_prefix) end
+      def initialize(ec2, stack_prefix)
+        @ec2 = ec2
+        @descriptor = ComponentDescriptor.new(stack_prefix,
+                                              EC2Descriptor.new(EC2_COMPONENT, EC2_NAME),
+                                              nil)
+      end
+
+      # def get_all_instances
+
+      # def get_random_instance
+
+      # def get_num_of_instances
+
+      # def terminate_all_instances
+
+      # def terminate_random_instance
+
+      # def wait_until_healthy
     end
   end
 end
