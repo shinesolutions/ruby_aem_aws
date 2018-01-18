@@ -95,7 +95,7 @@ describe 'AuthorPublishDispatcher.healthy?' do
     tags[:Component] = @instance_component if tags[:Component].nil?
     tags[:Name] = @instance_name if tags[:Name].nil?
 
-    @instances.push(mock_ec2_instance(TEST_REGION, id, state, tags))
+    @instances.push(mock_ec2_instance(id, state, tags))
     allow(@mock_ec2).to receive(:instances) { filter_instances(@instances, @instance_filter) }
   end
 end

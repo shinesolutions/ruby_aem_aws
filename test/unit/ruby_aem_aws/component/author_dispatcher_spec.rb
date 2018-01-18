@@ -107,7 +107,7 @@ describe 'AuthorDispatcher.healthy?' do
   def add_instance(id, state, tags = {})
     tags[:StackPrefix] = TEST_STACK_PREFIX if tags[:StackPrefix].nil?
 
-    @instances[id] = mock_ec2_instance(TEST_REGION, id, state, tags)
+    @instances[id] = mock_ec2_instance(id, state, tags)
     allow(@mock_ec2).to receive(:instance).with(id) { @instances[id] }
 
     asg_instances = []
