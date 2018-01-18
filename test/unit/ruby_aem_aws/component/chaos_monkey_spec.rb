@@ -12,25 +12,24 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-require_relative '../spec_helper'
+require_relative '../../spec_helper'
 require_relative 'examples/health_checker'
-require_relative '../../../lib/ruby_aem_aws'
-require_relative '../../../lib/ruby_aem_aws/component/publish_dispatcher'
+require_relative '../../../../lib/ruby_aem_aws/component/chaos_monkey'
 
-publish_dispatcher = RubyAemAws::Component::PublishDispatcher.new(nil, nil)
+chaos_monkey = RubyAemAws::Component::ChaosMonkey.new(nil, nil)
 
-describe publish_dispatcher do
+describe chaos_monkey do
   it_behaves_like 'a health_checker'
 end
 
-describe 'PublishDispatcher.healthy?' do
+describe 'ChaosMonkey.healthy?' do
   before do
     @mock_ec2 = double('mock_ec2')
 
-    @publish_dispatcher = RubyAemAws::Component::PublishDispatcher.new(@mock_ec2, STACK_PREFIX)
+    @chaos_monkey = RubyAemAws::Component::ChaosMonkey.new(@mock_ec2, STACK_PREFIX)
   end
 
   it 'runs healthy method' do
-    expect { @publish_dispatcher.healthy? }.to raise_error(RubyAemAws::NotYetImplementedError)
+    expect { @chaos_monkey.healthy? }.to raise_error(RubyAemAws::NotYetImplementedError)
   end
 end

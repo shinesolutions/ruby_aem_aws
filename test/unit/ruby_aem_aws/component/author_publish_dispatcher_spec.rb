@@ -12,9 +12,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-require_relative '../spec_helper'
+require_relative '../../spec_helper'
 require_relative 'examples/health_checker'
-require_relative '../../../lib/ruby_aem_aws/component/author_publish_dispatcher'
+require_relative '../../../../lib/ruby_aem_aws/component/author_publish_dispatcher'
 
 author_publish_dispatcher = RubyAemAws::Component::AuthorPublishDispatcher.new(nil, nil)
 

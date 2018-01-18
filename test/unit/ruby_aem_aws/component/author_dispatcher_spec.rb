@@ -13,10 +13,10 @@
 # limitations under the License.
 
 # require 'unit_helper'
-require_relative '../spec_helper'
+require_relative '../../spec_helper'
 require_relative 'examples/health_checker'
-require_relative '../../../lib/ruby_aem_aws/constants'
-require_relative '../../../lib/ruby_aem_aws/component/author_dispatcher'
+require_relative '../../../../lib/ruby_aem_aws/constants'
+require_relative '../../../../lib/ruby_aem_aws/component/author_dispatcher'
 
 author_dispatcher = RubyAemAws::Component::AuthorDispatcher.new(nil, nil, nil, nil)
 describe author_dispatcher do

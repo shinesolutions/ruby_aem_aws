@@ -12,25 +12,24 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-require_relative '../spec_helper'
+require_relative '../../spec_helper'
 require_relative 'examples/health_checker'
-require_relative '../../../lib/ruby_aem_aws'
-require_relative '../../../lib/ruby_aem_aws/component/publish'
+require_relative '../../../../lib/ruby_aem_aws/component/author'
 
-publish = RubyAemAws::Component::Publish.new(nil, nil)
+author = RubyAemAws::Component::Author.new(nil, nil)
 
-describe publish do
+describe author do
   it_behaves_like 'a health_checker'
 end
 
-describe 'Publish.healthy?' do
+describe 'Author.healthy?' do
   before do
     @mock_ec2 = double('mock_ec2')
 
-    @publish = RubyAemAws::Component::Publish.new(@mock_ec2, STACK_PREFIX)
+    @author = RubyAemAws::Component::Author.new(@mock_ec2, STACK_PREFIX)
   end
 
   it 'runs healthy method' do
-    expect { @publish.healthy? }.to raise_error(RubyAemAws::NotYetImplementedError)
+    expect { @author.healthy? }.to raise_error(RubyAemAws::NotYetImplementedError)
   end
 end
