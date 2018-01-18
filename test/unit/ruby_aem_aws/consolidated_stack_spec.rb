@@ -12,24 +12,16 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-require_relative '../../spec_helper'
-require_relative 'examples/health_checker'
-require_relative '../../../../lib/ruby_aem_aws/component/chaos_monkey'
+require_relative '../spec_helper'
+require_relative '../../../lib/ruby_aem_aws/consolidated_stack'
 
-chaos_monkey = RubyAemAws::Component::ChaosMonkey.new(nil, nil)
-
-describe chaos_monkey do
-  it_behaves_like 'a health_checker'
-end
-
-describe 'ChaosMonkey.healthy?' do
+describe 'ConsolidatedStack' do
   before do
     @mock_ec2 = double('mock_ec2')
-
-    @chaos_monkey = RubyAemAws::Component::ChaosMonkey.new(@mock_ec2, TEST_STACK_PREFIX)
+    @consolidated_stack = RubyAemAws::ConsolidatedStack.new(@mock_ec2, TEST_STACK_PREFIX)
   end
 
-  it 'runs healthy method' do
-    expect { @chaos_monkey.healthy? }.to raise_error(RubyAemAws::NotYetImplementedError)
+  it 'should create author_publish_dispatcher' do
+    expect(@consolidated_stack.author_publish_dispatcher).to_not be_nil
   end
 end

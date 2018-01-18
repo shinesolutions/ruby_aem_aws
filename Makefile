@@ -2,8 +2,7 @@
 export AWS_PROFILE = sandpit
 
 all: deps clean build lint install test-unit test-integration doc
-#ci: deps clean build lint install test-unit doc
-ci: deps clean build lint install doc
+ci: deps clean build lint install test-unit doc
 
 deps:
 	gem install bundler

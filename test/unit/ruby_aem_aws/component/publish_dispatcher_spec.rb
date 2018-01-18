@@ -26,7 +26,7 @@ describe 'PublishDispatcher.healthy?' do
   before do
     @mock_ec2 = double('mock_ec2')
 
-    @publish_dispatcher = RubyAemAws::Component::PublishDispatcher.new(@mock_ec2, STACK_PREFIX)
+    @publish_dispatcher = RubyAemAws::Component::PublishDispatcher.new(@mock_ec2, TEST_STACK_PREFIX)
   end
 
   it 'runs healthy method' do

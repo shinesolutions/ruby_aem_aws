@@ -26,7 +26,7 @@ describe 'Publish.healthy?' do
   before do
     @mock_ec2 = double('mock_ec2')
 
-    @publish = RubyAemAws::Component::Publish.new(@mock_ec2, STACK_PREFIX)
+    @publish = RubyAemAws::Component::Publish.new(@mock_ec2, TEST_STACK_PREFIX)
   end
 
   it 'runs healthy method' do

@@ -12,7 +12,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-class Constants
-  REGION_DEFAULT = 'ap-southeast-2'.freeze
-  INSTANCE_STATE_HEALTHY = 'running'.freeze
+module RubyAemAws
+  class Constants
+    REGION_DEFAULT = 'ap-southeast-2'.freeze
+    INSTANCE_STATE_HEALTHY = 'running'.freeze
+  end
 end

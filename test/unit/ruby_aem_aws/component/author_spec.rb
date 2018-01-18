@@ -26,7 +26,7 @@ describe 'Author.healthy?' do
   before do
     @mock_ec2 = double('mock_ec2')
 
-    @author = RubyAemAws::Component::Author.new(@mock_ec2, STACK_PREFIX)
+    @author = RubyAemAws::Component::Author.new(@mock_ec2, TEST_STACK_PREFIX)
   end
 
   it 'runs healthy method' do

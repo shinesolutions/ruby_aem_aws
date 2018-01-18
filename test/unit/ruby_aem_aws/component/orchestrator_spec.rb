@@ -26,7 +26,7 @@ describe 'Orchestrator.healthy?' do
   before do
     @mock_ec2 = double('mock_ec2')
 
-    @orchestrator = RubyAemAws::Component::Orchestrator.new(@mock_ec2, STACK_PREFIX)
+    @orchestrator = RubyAemAws::Component::Orchestrator.new(@mock_ec2, TEST_STACK_PREFIX)
   end
 
   it 'runs healthy method' do

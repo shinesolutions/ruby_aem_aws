@@ -15,24 +15,27 @@
 require_relative '../../constants'
 
 # Mixin for checking health of a component via EC2 instance state.
-module HealthyInstanceStateVerifier
-  # return true if there are one or more instances matching the descriptor and they are all healthy.
-  def healthy?
-    @descriptor = get_descriptor
+module RubyAemAws
+  # Add this to a component to make it capable of determining its own health.
+  module HealthyInstanceStateVerifier
+    # return true if there are one or more instances matching the descriptor and they are all healthy.
+    def healthy?
+      @descriptor = get_descriptor
 
-    has_instance = false
-    instances = get_ec2_resource.instances(
-      filters: [
-        { name: 'tag:StackPrefix', values: [@descriptor.stack_prefix] },
-        { name: 'tag:Component', values: [@descriptor.ec2.component] },
-        { name: 'tag:Name', values: [@descriptor.ec2.name] }
-      ]
-    )
+      has_instance = false
+      instances = get_ec2_resource.instances(
+        filters: [
+          { name: 'tag:StackPrefix', values: [@descriptor.stack_prefix] },
+          { name: 'tag:Component', values: [@descriptor.ec2.component] },
+          { name: 'tag:Name', values: [@descriptor.ec2.name] }
+        ]
+      )
 
-    instances.each do |i|
-      has_instance = true
-      return false if i.state.name != Constants::INSTANCE_STATE_HEALTHY
+      instances.each do |i|
+        has_instance = true
+        return false if i.state.name != Constants::INSTANCE_STATE_HEALTHY
+      end
+      has_instance
     end
-    has_instance
   end
 end

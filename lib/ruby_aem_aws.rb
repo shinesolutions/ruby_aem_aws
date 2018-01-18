@@ -22,12 +22,13 @@ module RubyAemAws
     # - region: the AWS region (eg ap-southeast-2)
     # @return new RubyAemAws::AemAws instance
     def initialize(conf = {})
-      conf[:region] ||= Constants.REGION_DEFAULT
+      conf[:region] ||= Constants::REGION_DEFAULT
 
-      @ec2_client = Aws::EC2::Client.new
-      @ec2_resource = Aws::EC2::Resource.new(region: conf[:region])
-      @elb_client = Aws::ElasticLoadBalancing::Client.new(region: conf[:region])
-      @autoscaling_client = Aws::AutoScaling::Client.new(region: conf[:region])
+      aws = AwsCreator.create_aws
+      @ec2_client = aws[:Ec2Client]
+      @ec2_resource = aws[:Ec2Resource]
+      @elb_client = aws[:ElbClient]
+      @auto_scaling_client = aws[:AutoScalingClient]
       # The V2 API only supports Application ELBs, and we currently use Classic.
       # @elb_client = Aws::ElasticLoadBalancingV2::Client.new(region: conf[:region])
     end
@@ -53,7 +54,19 @@ module RubyAemAws
     # @param stack_prefix AWS tag: StackPrefix
     # @return new RubyAemAws::FullSetStack instance
     def full_set(stack_prefix)
-      RubyAemAws::FullSetStack.new(@ec2_resource, @elb_client, @autoscaling_client, stack_prefix)
+      RubyAemAws::FullSetStack.new(@ec2_resource, @elb_client, @auto_scaling_client, stack_prefix)
+    end
+  end
+
+  # Encapsulate AWS class creation for mocking.
+  class AwsCreator
+    def self.create_aws(region = Constants::REGION_DEFAULT)
+      {
+        Ec2Client: Aws::EC2::Client.new,
+        Ec2Resource: Aws::EC2::Resource.new(region: region),
+        ElbClient: Aws::ElasticLoadBalancing::Client.new(region: region),
+        AutoScalingClient: Aws::AutoScaling::Client.new(region: region)
+      }
     end
   end
 

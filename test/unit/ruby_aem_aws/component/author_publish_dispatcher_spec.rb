@@ -27,7 +27,7 @@ describe 'AuthorPublishDispatcher.healthy?' do
     @instance_component = RubyAemAws::Component::AuthorPublishDispatcher::EC2_COMPONENT
     @instance_name = RubyAemAws::Component::AuthorPublishDispatcher::EC2_NAME
     @instance_filter = [
-      { StackPrefix: STACK_PREFIX },
+      { StackPrefix: TEST_STACK_PREFIX },
       { Component: @instance_component },
       { Name: @instance_name }
     ].freeze
@@ -39,13 +39,13 @@ describe 'AuthorPublishDispatcher.healthy?' do
 
     @instances = []
 
-    @author_dispatcher = RubyAemAws::Component::AuthorPublishDispatcher.new(@mock_ec2, STACK_PREFIX)
+    @author_dispatcher = RubyAemAws::Component::AuthorPublishDispatcher.new(@mock_ec2, TEST_STACK_PREFIX)
   end
 
   it 'verifies EC2 running instance' do
     add_instance(@instance_1_id,
-                 Constants::INSTANCE_STATE_HEALTHY,
-                 StackPrefix: STACK_PREFIX,
+                 RubyAemAws::Constants::INSTANCE_STATE_HEALTHY,
+                 StackPrefix: TEST_STACK_PREFIX,
                  Component: @instance_component,
                  Name: @instance_name)
 
@@ -55,7 +55,7 @@ describe 'AuthorPublishDispatcher.healthy?' do
   it 'verifies EC2 not-running instance' do
     add_instance(@instance_1_id,
                  INSTANCE_STATE_UNHEALTHY,
-                 StackPrefix: STACK_PREFIX,
+                 StackPrefix: TEST_STACK_PREFIX,
                  Component: @instance_component,
                  Name: @instance_name)
 
@@ -64,18 +64,18 @@ describe 'AuthorPublishDispatcher.healthy?' do
 
   it 'verifies EC2 running instance (one of many)' do
     add_instance(@instance_1_id,
-                 Constants::INSTANCE_STATE_HEALTHY,
-                 StackPrefix: STACK_PREFIX,
+                 RubyAemAws::Constants::INSTANCE_STATE_HEALTHY,
+                 StackPrefix: TEST_STACK_PREFIX,
                  Component: @instance_component,
                  Name: @instance_name)
     add_instance(@instance_2_id,
-                 Constants::INSTANCE_STATE_HEALTHY,
-                 StackPrefix: STACK_PREFIX,
+                 RubyAemAws::Constants::INSTANCE_STATE_HEALTHY,
+                 StackPrefix: TEST_STACK_PREFIX,
                  Component: @instance_component,
                  Name: 'bob')
     add_instance(@instance_3_id,
                  INSTANCE_STATE_UNHEALTHY,
-                 StackPrefix: STACK_PREFIX,
+                 StackPrefix: TEST_STACK_PREFIX,
                  Component: 'bob',
                  Name: @instance_name)
 
@@ -85,17 +85,17 @@ describe 'AuthorPublishDispatcher.healthy?' do
   it 'verifies EC2 non-running instance (one of many)' do
     add_instance(@instance_1_id,
                  INSTANCE_STATE_UNHEALTHY,
-                 StackPrefix: STACK_PREFIX,
+                 StackPrefix: TEST_STACK_PREFIX,
                  Component: @instance_component,
                  Name: @instance_name)
     add_instance(@instance_2_id,
-                 Constants::INSTANCE_STATE_HEALTHY,
-                 StackPrefix: STACK_PREFIX,
+                 RubyAemAws::Constants::INSTANCE_STATE_HEALTHY,
+                 StackPrefix: TEST_STACK_PREFIX,
                  Component: @instance_component,
                  Name: 'bob')
     add_instance(@instance_3_id,
                  INSTANCE_STATE_UNHEALTHY,
-                 StackPrefix: STACK_PREFIX,
+                 StackPrefix: TEST_STACK_PREFIX,
                  Component: 'bob',
                  Name: @instance_name)
 

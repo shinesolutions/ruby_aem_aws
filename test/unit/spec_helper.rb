@@ -29,5 +29,6 @@ RSpec.configure do |config|
   config.include AwsMocker
 end
 
-STACK_PREFIX = 'test-prefix'.freeze
+TEST_STACK_PREFIX = 'test-prefix'.freeze
+TEST_REGION = 'test-region'.freeze
 INSTANCE_STATE_UNHEALTHY = 'not-so-good'.freeze

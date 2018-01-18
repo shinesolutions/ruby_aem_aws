@@ -30,13 +30,13 @@ module RubyAemAws
     def initialize(ec2_resource, elb_client, autoscaling_client, stack_prefix)
       @ec2_resource = ec2_resource
       @elb_client = elb_client
-      @autoscaling_client = autoscaling_client
+      @auto_scaling_client = autoscaling_client
       @stack_prefix = stack_prefix
     end
 
     # @return new RubyAemAws::Component::AuthorDispatcher instance
     def author_dispatcher
-      RubyAemAws::Component::AuthorDispatcher.new(@ec2_resource, @elb_client, @autoscaling_client, @stack_prefix)
+      RubyAemAws::Component::AuthorDispatcher.new(@ec2_resource, @elb_client, @auto_scaling_client, @stack_prefix)
     end
 
     # @return new RubyAemAws::Component::Author instance
