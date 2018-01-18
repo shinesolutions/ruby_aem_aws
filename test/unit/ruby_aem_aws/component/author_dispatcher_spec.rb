@@ -62,30 +62,22 @@ describe 'AuthorDispatcher.healthy?' do
 
   it 'verifies ELB running instances (1) against ASG desired capacity (1)' do
     allow(@asg).to receive(:desired_capacity) { 1 }
-    add_instance(@instance_1_id,
-                 RubyAemAws::Constants::INSTANCE_STATE_HEALTHY,
-                 StackPrefix: TEST_STACK_PREFIX)
+    add_instance(@instance_1_id, RubyAemAws::Constants::INSTANCE_STATE_HEALTHY)
 
     expect(@author_dispatcher.healthy?).to equal true
   end
 
   it 'verifies ELB running instances (1) against ASG desired capacity (2)' do
     allow(@asg).to receive(:desired_capacity) { 2 }
-    add_instance(@instance_1_id,
-                 RubyAemAws::Constants::INSTANCE_STATE_HEALTHY,
-                 StackPrefix: TEST_STACK_PREFIX)
+    add_instance(@instance_1_id, RubyAemAws::Constants::INSTANCE_STATE_HEALTHY)
 
     expect(@author_dispatcher.healthy?).to equal false
   end
 
   it 'verifies ELB non-running instances (1/2) against ASG desired capacity (2)' do
     allow(@asg).to receive(:desired_capacity) { 2 }
-    add_instance(@instance_1_id,
-                 RubyAemAws::Constants::INSTANCE_STATE_HEALTHY,
-                 StackPrefix: TEST_STACK_PREFIX)
-    add_instance(@instance_2_id,
-                 INSTANCE_STATE_UNHEALTHY,
-                 StackPrefix: TEST_STACK_PREFIX)
+    add_instance(@instance_1_id, RubyAemAws::Constants::INSTANCE_STATE_HEALTHY)
+    add_instance(@instance_2_id, INSTANCE_STATE_UNHEALTHY)
 
     expect(@author_dispatcher.healthy?).to equal false
   end
@@ -97,18 +89,14 @@ describe 'AuthorDispatcher.healthy?' do
   end
 
   it 'verifies ELB running instances (1) against ASG desired capacity (0)' do
-    add_instance(@instance_1_id,
-                 RubyAemAws::Constants::INSTANCE_STATE_HEALTHY,
-                 StackPrefix: TEST_STACK_PREFIX)
+    add_instance(@instance_1_id, RubyAemAws::Constants::INSTANCE_STATE_HEALTHY)
     allow(@asg).to receive(:desired_capacity) { 0 }
 
     expect(@author_dispatcher.healthy?).to equal false
   end
 
   it 'verifies ELB non-running instances (1) against ASG desired capacity (0)' do
-    add_instance(@instance_1_id,
-                 INSTANCE_STATE_UNHEALTHY,
-                 StackPrefix: TEST_STACK_PREFIX)
+    add_instance(@instance_1_id, INSTANCE_STATE_UNHEALTHY)
     allow(@asg).to receive(:desired_capacity) { 0 }
 
     expect(@author_dispatcher.healthy?).to equal true
@@ -116,7 +104,9 @@ describe 'AuthorDispatcher.healthy?' do
 
   private
 
-  def add_instance(id, state, tags)
+  def add_instance(id, state, tags = {})
+    tags[:StackPrefix] = TEST_STACK_PREFIX if tags[:StackPrefix].nil?
+
     @instances[id] = mock_ec2_instance(id, state, tags)
     allow(@mock_ec2).to receive(:instance).with(id) { @instances[id] }
 

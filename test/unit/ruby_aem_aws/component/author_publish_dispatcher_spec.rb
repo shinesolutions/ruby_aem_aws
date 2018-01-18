@@ -43,61 +43,29 @@ describe 'AuthorPublishDispatcher.healthy?' do
   end
 
   it 'verifies EC2 running instance' do
-    add_instance(@instance_1_id,
-                 RubyAemAws::Constants::INSTANCE_STATE_HEALTHY,
-                 StackPrefix: TEST_STACK_PREFIX,
-                 Component: @instance_component,
-                 Name: @instance_name)
+    add_instance(@instance_1_id, RubyAemAws::Constants::INSTANCE_STATE_HEALTHY)
 
     expect(@author_dispatcher.healthy?).to equal true
   end
 
   it 'verifies EC2 not-running instance' do
-    add_instance(@instance_1_id,
-                 INSTANCE_STATE_UNHEALTHY,
-                 StackPrefix: TEST_STACK_PREFIX,
-                 Component: @instance_component,
-                 Name: @instance_name)
+    add_instance(@instance_1_id, INSTANCE_STATE_UNHEALTHY)
 
     expect(@author_dispatcher.healthy?).to equal false
   end
 
   it 'verifies EC2 running instance (one of many)' do
-    add_instance(@instance_1_id,
-                 RubyAemAws::Constants::INSTANCE_STATE_HEALTHY,
-                 StackPrefix: TEST_STACK_PREFIX,
-                 Component: @instance_component,
-                 Name: @instance_name)
-    add_instance(@instance_2_id,
-                 RubyAemAws::Constants::INSTANCE_STATE_HEALTHY,
-                 StackPrefix: TEST_STACK_PREFIX,
-                 Component: @instance_component,
-                 Name: 'bob')
-    add_instance(@instance_3_id,
-                 INSTANCE_STATE_UNHEALTHY,
-                 StackPrefix: TEST_STACK_PREFIX,
-                 Component: 'bob',
-                 Name: @instance_name)
+    add_instance(@instance_1_id, RubyAemAws::Constants::INSTANCE_STATE_HEALTHY)
+    add_instance(@instance_2_id, RubyAemAws::Constants::INSTANCE_STATE_HEALTHY, Name: 'bob')
+    add_instance(@instance_3_id, INSTANCE_STATE_UNHEALTHY, Component: 'bob')
 
     expect(@author_dispatcher.healthy?).to equal true
   end
 
   it 'verifies EC2 non-running instance (one of many)' do
-    add_instance(@instance_1_id,
-                 INSTANCE_STATE_UNHEALTHY,
-                 StackPrefix: TEST_STACK_PREFIX,
-                 Component: @instance_component,
-                 Name: @instance_name)
-    add_instance(@instance_2_id,
-                 RubyAemAws::Constants::INSTANCE_STATE_HEALTHY,
-                 StackPrefix: TEST_STACK_PREFIX,
-                 Component: @instance_component,
-                 Name: 'bob')
-    add_instance(@instance_3_id,
-                 INSTANCE_STATE_UNHEALTHY,
-                 StackPrefix: TEST_STACK_PREFIX,
-                 Component: 'bob',
-                 Name: @instance_name)
+    add_instance(@instance_1_id, INSTANCE_STATE_UNHEALTHY)
+    add_instance(@instance_2_id, RubyAemAws::Constants::INSTANCE_STATE_HEALTHY, Name: 'bob')
+    add_instance(@instance_3_id, INSTANCE_STATE_UNHEALTHY, Component: 'bob')
 
     expect(@author_dispatcher.healthy?).to equal false
   end
@@ -105,7 +73,7 @@ describe 'AuthorPublishDispatcher.healthy?' do
   private
 
   # Intentional replication of AWS instance filter logic for use by mock EC2 Resource.
-  private def filter_instances(instances, filters)
+  def filter_instances(instances, filters)
     filtered = instances
     # Include only instances that match all filters.
     filters.each do |filter|
@@ -121,7 +89,12 @@ describe 'AuthorPublishDispatcher.healthy?' do
     filtered
   end
 
-  private def add_instance(id, state, tags)
+  def add_instance(id, state, tags = {})
+    # Add default tags.
+    tags[:StackPrefix] = TEST_STACK_PREFIX if tags[:StackPrefix].nil?
+    tags[:Component] = @instance_component if tags[:Component].nil?
+    tags[:Name] = @instance_name if tags[:Name].nil?
+
     @instances.push(mock_ec2_instance(id, state, tags))
     allow(@mock_ec2).to receive(:instances) { filter_instances(@instances, @instance_filter) }
   end
