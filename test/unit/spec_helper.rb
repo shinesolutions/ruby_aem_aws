@@ -16,7 +16,6 @@ require 'simplecov'
 SimpleCov.start
 
 require_relative 'aws_mocker'
-require_relative '../../lib/ruby_aem_aws'
 
 RSpec.configure do |config|
   config.mock_with :rspec do |mocks|

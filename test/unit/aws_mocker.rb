@@ -107,6 +107,10 @@ module AwsMocker
   end
 
   private def ec2_tag(resource_id, key, value)
-    Aws::EC2::Tag.new(resource_id, key, value)
+    ec2_tag = double('ec2_tag')
+    allow(ec2_tag).to receive(:resource_id) { resource_id }
+    allow(ec2_tag).to receive(:key) { key }
+    allow(ec2_tag).to receive(:value) { value }
+    ec2_tag
   end
 end
