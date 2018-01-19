@@ -19,9 +19,7 @@ module RubyAemAws
   # Add this to a component to make it capable of determining its own health.
   module HealthyInstanceCountVerifier
     def healthy?
-      h = health_state
-      puts("health_state == #{h}")
-      %i[ready scaling].include? h
+      %i[ready scaling].include? health_state
     end
 
     def health_state
@@ -49,7 +47,7 @@ module RubyAemAws
       end
 
       desired_capacity = asg.desired_capacity
-      puts("calc health_state: #{elb_running_instances} / #{desired_capacity}")
+      # puts("calc health_state: #{elb_running_instances} / #{desired_capacity}")
       return :misconfigured if desired_capacity < 1
 
       return :recovering if elb_running_instances < desired_capacity
