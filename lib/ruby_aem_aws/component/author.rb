@@ -13,6 +13,7 @@
 # limitations under the License.
 
 require_relative 'abstract_component'
+require_relative 'mixins/metric_verifier'
 
 module RubyAemAws
   module Component
@@ -20,11 +21,15 @@ module RubyAemAws
     class Author
       include AbstractComponent
 
-      # @param client AWS EC2 client
+      def get_ec2_resource
+        @ec2_resource
+      end
+
       # @param _stack_prefix AWS tag: StackPrefix
+      # @param ec2_resource AWS EC2 resource
       # @return new RubyAemAws::FullSet::Author
-      def initialize(client, _stack_prefix)
-        @client = client
+      def initialize(_stack_prefix, ec2_resource)
+        @ec2_resource = ec2_resource
       end
 
       def healthy?

@@ -57,7 +57,7 @@ describe 'AuthorDispatcher.health_state and .healthy?' do
 
     @instances = Hash.new {}
 
-    @author_dispatcher = RubyAemAws::Component::AuthorDispatcher.new(@mock_ec2, @mock_elb, @mock_as, TEST_STACK_PREFIX)
+    @author_dispatcher = RubyAemAws::Component::AuthorDispatcher.new(TEST_STACK_PREFIX, @mock_ec2, @mock_elb, @mock_as)
   end
 
   it 'verifies ELB running instances (1) against ASG desired capacity (1)' do

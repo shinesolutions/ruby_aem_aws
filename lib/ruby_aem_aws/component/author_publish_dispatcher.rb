@@ -25,7 +25,7 @@ module RubyAemAws
       include HealthyInstanceStateVerifier
 
       def get_ec2_resource
-        @ec2
+        @ec2_resource
       end
 
       def get_descriptor
@@ -35,14 +35,14 @@ module RubyAemAws
       EC2_COMPONENT = 'author-publish-dispatcher'.freeze
       EC2_NAME = 'AuthorPublishDispatcher'.freeze
 
-      # @param ec2 AWS EC2 client
       # @param stack_prefix AWS tag: StackPrefix
+      # @param ec2_resource AWS EC2 resource
       # @return new RubyAemAws::Consolidated::AuthorPublishDispatcher instance
-      def initialize(ec2, stack_prefix)
-        @ec2 = ec2
+      def initialize(stack_prefix, ec2_resource)
         @descriptor = ComponentDescriptor.new(stack_prefix,
                                               EC2Descriptor.new(EC2_COMPONENT, EC2_NAME),
                                               nil)
+        @ec2_resource = ec2_resource
       end
 
       # def get_all_instances

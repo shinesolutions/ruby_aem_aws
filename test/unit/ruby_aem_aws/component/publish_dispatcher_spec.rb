@@ -16,7 +16,7 @@ require_relative '../../spec_helper'
 require_relative 'examples/health_checker'
 require_relative '../../../../lib/ruby_aem_aws/component/publish_dispatcher'
 
-publish_dispatcher = RubyAemAws::Component::PublishDispatcher.new(nil, nil)
+publish_dispatcher = RubyAemAws::Component::PublishDispatcher.new(nil)
 
 describe publish_dispatcher do
   it_behaves_like 'a health flagged component'
@@ -24,9 +24,7 @@ end
 
 describe 'PublishDispatcher.healthy?' do
   before do
-    @mock_ec2 = double('mock_ec2')
-
-    @publish_dispatcher = RubyAemAws::Component::PublishDispatcher.new(@mock_ec2, TEST_STACK_PREFIX)
+    @publish_dispatcher = RubyAemAws::Component::PublishDispatcher.new(TEST_STACK_PREFIX)
   end
 
   it 'runs healthy method' do

@@ -20,11 +20,9 @@ module RubyAemAws
     class Publish
       include AbstractComponent
 
-      # @param client AWS EC2 client
       # @param _stack_prefix AWS tag: StackPrefix
       # @return new RubyAemAws::FullSet::Publish
-      def initialize(client, _stack_prefix)
-        @client = client
+      def initialize(_stack_prefix)
       end
 
       def healthy?

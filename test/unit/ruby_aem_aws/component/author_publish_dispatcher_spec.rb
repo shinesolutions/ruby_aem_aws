@@ -39,7 +39,7 @@ describe 'AuthorPublishDispatcher.healthy?' do
 
     @instances = []
 
-    @author_dispatcher = RubyAemAws::Component::AuthorPublishDispatcher.new(@mock_ec2, TEST_STACK_PREFIX)
+    @author_dispatcher = RubyAemAws::Component::AuthorPublishDispatcher.new(TEST_STACK_PREFIX, @mock_ec2)
   end
 
   it 'verifies EC2 running instance' do

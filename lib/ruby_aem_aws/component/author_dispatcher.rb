@@ -25,15 +25,15 @@ module RubyAemAws
       include HealthyInstanceCountVerifier
 
       def get_ec2_resource
-        @ec2
+        @ec2_resource
       end
 
       def get_elb_client
-        @elb
+        @elb_client
       end
 
       def get_asg_client
-        @asg
+        @asg_client
       end
 
       def get_descriptor
@@ -45,17 +45,18 @@ module RubyAemAws
       ELB_ID = 'AuthorDispatcherLoadBalancer'.freeze
       ELB_NAME = 'AEM Author Dispatcher Load Balancer'.freeze
 
-      # @param ec2 AWS EC2 client
-      # @param elb AWS ELB client
       # @param stack_prefix AWS tag: StackPrefix
+      # @param ec2_resource AWS EC2 resource
+      # @param elb_client AWS ElasticLoadBalancer client
+      # @param asg_client AWS AutoScalingGroup client
       # @return new RubyAemAws::FullSet::AuthorDispatcher
-      def initialize(ec2, elb, asg, stack_prefix)
-        @ec2 = ec2
-        @elb = elb
-        @asg = asg
+      def initialize(stack_prefix, ec2_resource, elb_client, asg_client)
         @descriptor = ComponentDescriptor.new(stack_prefix,
                                               EC2Descriptor.new(EC2_COMPONENT, EC2_NAME),
                                               ELBDescriptor.new(ELB_ID, ELB_NAME))
+        @ec2_resource = ec2_resource
+        @elb_client = elb_client
+        @asg_client = asg_client
       end
 
       # def get_all_instances
