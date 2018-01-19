@@ -12,22 +12,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-require_relative '../../spec_helper'
-require_relative 'examples/check_methods_exist'
-require_relative '../../../../lib/ruby_aem_aws/component/orchestrator'
-
-orchestrator = RubyAemAws::Component::Orchestrator.new(nil)
-
-describe orchestrator do
-  it_behaves_like 'a health flagged component'
-end
-
-describe 'Orchestrator.healthy?' do
-  before do
-    @orchestrator = RubyAemAws::Component::Orchestrator.new(TEST_STACK_PREFIX)
-  end
-
-  it 'runs healthy method' do
-    expect { @orchestrator.healthy? }.to raise_error(RubyAemAws::NotYetImplementedError)
+module RubyAemAws
+  # Mixin for checking that an instance has associated CloudWatch metrics.
+  module MetricVerifier
+    # @param name the name of the metric to check for.
+    # @return true if the instance has a metric with @name.
+    def has_metric(name)
+      true
+    end
   end
 end

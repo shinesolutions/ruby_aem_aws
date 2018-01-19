@@ -13,7 +13,7 @@
 # limitations under the License.
 
 require_relative '../../spec_helper'
-require_relative 'examples/health_checker'
+require_relative 'examples/check_methods_exist'
 require_relative '../../../../lib/ruby_aem_aws/component/chaos_monkey'
 
 chaos_monkey = RubyAemAws::Component::ChaosMonkey.new(nil)

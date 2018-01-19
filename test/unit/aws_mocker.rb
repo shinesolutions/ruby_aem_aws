@@ -94,7 +94,34 @@ module AwsMocker
     ec2_instance_state
   end
 
-  def mock_ec2_instance(id, state, tags)
+  def add_instance(instances, id, state, tags = {})
+    # Add default tags.
+    tags[:StackPrefix] = TEST_STACK_PREFIX if tags[:StackPrefix].nil?
+    tags[:Component] = @instance_component if tags[:Component].nil?
+    tags[:Name] = @instance_name if tags[:Name].nil?
+
+    instances.push(mock_ec2_instance(id, state, tags))
+    allow(@mock_ec2).to receive(:instances) { filter_instances(instances, @instance_filter) }
+  end
+
+  # Intentional replication of AWS instance filter logic for use by mock EC2 Resource.
+  private def filter_instances(instances, filters)
+    filtered = instances
+    # Include only instances that match all filters.
+    filters.each do |filter|
+      key, value = filter.first
+      filtered = filtered.select { |i|
+        found_tag = i.tags.find { |t|
+          t.key == key.to_s
+        }
+        next if found_tag.nil?
+        found_tag.value == value
+      }
+    end
+    filtered
+  end
+
+  private def mock_ec2_instance(id, state, tags)
     ec2_instance = double('ec2_instance')
     allow(ec2_instance).to receive(:id) { id }
     allow(ec2_instance).to receive(:state) { mock_ec2_instance_state(state) }

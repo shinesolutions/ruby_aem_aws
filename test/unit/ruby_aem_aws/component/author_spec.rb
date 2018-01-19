@@ -13,7 +13,7 @@
 # limitations under the License.
 
 require_relative '../../spec_helper'
-require_relative 'examples/health_checker'
+require_relative 'examples/check_methods_exist'
 require_relative '../../../../lib/ruby_aem_aws/component/author'
 
 author = RubyAemAws::Component::Author.new(nil, nil)
@@ -24,12 +24,25 @@ end
 
 describe 'Author.healthy?' do
   before do
+    @instance_component = RubyAemAws::Component::Author::EC2_COMPONENT
+    @instance_name = RubyAemAws::Component::Author::EC2_NAME
+    @instance_filter = [
+      { StackPrefix: TEST_STACK_PREFIX },
+      { Component: @instance_component },
+      { Name: @instance_name }
+    ].freeze
+    @instance_1_id = 'i-00525b1a281aee5b9'.freeze
+
     @mock_ec2 = double('mock_ec2')
+
+    @instances = []
 
     @author = RubyAemAws::Component::Author.new(TEST_STACK_PREFIX, @mock_ec2)
   end
 
-  it 'runs healthy method' do
-    expect { @author.healthy? }.to raise_error(RubyAemAws::NotYetImplementedError)
+  it 'verifies EC2 running instance' do
+    add_instance(@instances, @instance_1_id, INSTANCE_STATE_HEALTHY)
+
+    expect(@author.healthy?).to equal true
   end
 end
