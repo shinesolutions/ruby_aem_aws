@@ -19,7 +19,7 @@ require_relative '../../../../lib/ruby_aem_aws/component/author'
 author = RubyAemAws::Component::Author.new(nil, nil)
 
 describe author do
-  it_behaves_like 'a health_checker'
+  it_behaves_like 'a health flagged component'
 end
 
 describe 'Author.healthy?' do

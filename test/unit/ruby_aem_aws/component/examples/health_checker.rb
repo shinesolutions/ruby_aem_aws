@@ -12,8 +12,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-shared_examples 'a health_checker' do
+shared_examples 'a health flagged component' do
   it 'because it contains .healthy? method' do
     is_expected.to respond_to(:healthy?)
+  end
+end
+
+shared_examples 'a health state-aware component' do
+  it 'because it contains .health_state method' do
+    is_expected.to respond_to(:health_state)
   end
 end

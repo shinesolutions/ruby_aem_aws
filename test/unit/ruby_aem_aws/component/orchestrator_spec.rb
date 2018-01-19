@@ -19,7 +19,7 @@ require_relative '../../../../lib/ruby_aem_aws/component/orchestrator'
 orchestrator = RubyAemAws::Component::Orchestrator.new(nil, nil)
 
 describe orchestrator do
-  it_behaves_like 'a health_checker'
+  it_behaves_like 'a health flagged component'
 end
 
 describe 'Orchestrator.healthy?' do

@@ -19,7 +19,7 @@ require_relative '../../../../lib/ruby_aem_aws/component/publish'
 publish = RubyAemAws::Component::Publish.new(nil, nil)
 
 describe publish do
-  it_behaves_like 'a health_checker'
+  it_behaves_like 'a health flagged component'
 end
 
 describe 'Publish.healthy?' do
