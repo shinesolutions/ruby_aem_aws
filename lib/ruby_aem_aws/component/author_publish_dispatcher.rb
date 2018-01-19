@@ -21,16 +21,9 @@ module RubyAemAws
   module Component
     # Interface to a single AWS instance running all three AEM components as a consolidated stack.
     class AuthorPublishDispatcher
+      attr_reader :descriptor, :ec2_resource
       include AbstractComponent
       include HealthyInstanceStateVerifier
-
-      def get_ec2_resource
-        @ec2_resource
-      end
-
-      def get_descriptor
-        @descriptor
-      end
 
       EC2_COMPONENT = 'author-publish-dispatcher'.freeze
       EC2_NAME = 'AuthorPublishDispatcher'.freeze

@@ -16,7 +16,7 @@ require_relative '../../spec_helper'
 require_relative 'examples/check_methods_exist'
 require_relative '../../../../lib/ruby_aem_aws/component/author'
 
-author = RubyAemAws::Component::Author.new(nil, nil)
+author = RubyAemAws::Component::Author.new(nil, nil, nil)
 
 describe author do
   it_behaves_like 'a health flagged component'
@@ -34,10 +34,11 @@ describe 'Author.healthy?' do
     @instance_1_id = 'i-00525b1a281aee5b9'.freeze
 
     @mock_ec2 = double('mock_ec2')
+    @mock_cloud_watch = double('mock_cloud_watch')
 
     @instances = []
 
-    @author = RubyAemAws::Component::Author.new(TEST_STACK_PREFIX, @mock_ec2)
+    @author = RubyAemAws::Component::Author.new(TEST_STACK_PREFIX, @mock_ec2, @mock_cloud_watch)
   end
 
   it 'verifies EC2 running instance' do

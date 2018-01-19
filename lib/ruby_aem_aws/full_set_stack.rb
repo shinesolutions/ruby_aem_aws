@@ -25,13 +25,15 @@ module RubyAemAws
     # @param stack_prefix AWS tag: StackPrefix
     # @param ec2_resource AWS EC2 resource
     # @param elb_client AWS ELB client
-    # @param autoscaling_client AWS AutoScaling client
+    # @param auto_scaling_client AWS AutoScaling client
+    # @param cloud_watch_client AWS CloudWatch client
     # @return new RubyAemAws::FullSetStack instance
-    def initialize(stack_prefix, ec2_resource, elb_client, autoscaling_client)
+    def initialize(stack_prefix, ec2_resource, elb_client, auto_scaling_client, cloud_watch_client)
       @stack_prefix = stack_prefix
       @ec2_resource = ec2_resource
       @elb_client = elb_client
-      @auto_scaling_client = autoscaling_client
+      @auto_scaling_client = auto_scaling_client
+      @cloud_watch_client = cloud_watch_client
     end
 
     # @return new RubyAemAws::Component::AuthorDispatcher instance
@@ -41,7 +43,7 @@ module RubyAemAws
 
     # @return new RubyAemAws::Component::Author instance
     def author
-      RubyAemAws::Component::Author.new(@stack_prefix, @ec2_resource)
+      RubyAemAws::Component::Author.new(@stack_prefix, @ec2_resource, @cloud_watch_client)
     end
 
     # @return new RubyAemAws::Component::ChaosMonkey instance

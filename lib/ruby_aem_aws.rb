@@ -31,6 +31,7 @@ module RubyAemAws
       @auto_scaling_client = aws[:AutoScalingClient]
       # The V2 API only supports Application ELBs, and we currently use Classic.
       # @elb_client = Aws::ElasticLoadBalancingV2::Client.new(region: conf[:region])
+      @cloud_watch_client = aws[:CloudWatchClient]
     end
 
     def test_connection
@@ -46,7 +47,7 @@ module RubyAemAws
     # @param stack_prefix AWS tag: StackPrefix
     # @return new RubyAemAws::ConsolidatedStack instance
     def consolidated(stack_prefix)
-      RubyAemAws::ConsolidatedStack.new(@ec2_resource, stack_prefix)
+      RubyAemAws::ConsolidatedStack.new(stack_prefix, @ec2_resource)
     end
 
     # Create a full set instance.
@@ -54,7 +55,7 @@ module RubyAemAws
     # @param stack_prefix AWS tag: StackPrefix
     # @return new RubyAemAws::FullSetStack instance
     def full_set(stack_prefix)
-      RubyAemAws::FullSetStack.new(@ec2_resource, @elb_client, @auto_scaling_client, stack_prefix)
+      RubyAemAws::FullSetStack.new(stack_prefix, @ec2_resource, @elb_client, @auto_scaling_client, @cloud_watch_client)
     end
   end
 
@@ -65,7 +66,8 @@ module RubyAemAws
         Ec2Client: Aws::EC2::Client.new(region: region),
         Ec2Resource: Aws::EC2::Resource.new(region: region),
         ElbClient: Aws::ElasticLoadBalancing::Client.new(region: region),
-        AutoScalingClient: Aws::AutoScaling::Client.new(region: region)
+        AutoScalingClient: Aws::AutoScaling::Client.new(region: region),
+        CloudWatchClient: Aws::CloudWatch::Client.new(region: region)
       }
     end
   end

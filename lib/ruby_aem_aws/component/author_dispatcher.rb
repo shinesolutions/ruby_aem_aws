@@ -21,24 +21,9 @@ module RubyAemAws
   module Component
     # Interface to the AWS instances playing and supporting the AuthorDispatcher role in a full-set AEM stack.
     class AuthorDispatcher
+      attr_reader :descriptor, :ec2_resource, :elb_client, :asg_client
       include AbstractComponent
       include HealthyInstanceCountVerifier
-
-      def get_ec2_resource
-        @ec2_resource
-      end
-
-      def get_elb_client
-        @elb_client
-      end
-
-      def get_asg_client
-        @asg_client
-      end
-
-      def get_descriptor
-        @descriptor
-      end
 
       EC2_COMPONENT = 'author-dispatcher'.freeze
       EC2_NAME = 'AuthorDispatcher'.freeze
