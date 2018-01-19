@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-module AwsMocker
+module AwsAutoScalingMocker
   def mock_as_instance(id, status)
     as_instance = double('as_instance')
     allow(as_instance).to receive(:instance_id) { id }
@@ -44,7 +44,9 @@ module AwsMocker
     allow(as_groups_type).to receive(:auto_scaling_groups) { as_groups }
     as_groups_type
   end
+end
 
+module AwsElasticLoadBalancerMocker
   def mock_elb_instance(id)
     elb_instance = double('elb_instance')
     allow(elb_instance).to receive(:instance_id) { id }
@@ -86,7 +88,9 @@ module AwsMocker
     allow(elb_access_points).to receive(:load_balancer_descriptions) { lb_descriptions }
     elb_access_points
   end
+end
 
+module AwsEc2Mocker
   def mock_ec2_instance_state(name)
     ec2_instance_state = double('ec2_instance_state')
     # Possible values: pending, running, shutting-down, terminated, stopping, stopped

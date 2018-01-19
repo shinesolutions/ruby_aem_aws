@@ -15,9 +15,9 @@
 module RubyAemAws
   # Mixin for checking that an instance has associated CloudWatch metrics.
   module MetricVerifier
-    # @param name the name of the metric to check for.
+    # @param _name the name of the metric to check for.
     # @return true if the instance has a metric with @name.
-    def has_metric(name)
+    def metric?(_name)
       true
     end
   end

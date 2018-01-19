@@ -25,7 +25,9 @@ RSpec.configure do |config|
     # exist to raise, protecting against incorrectly spelt names.
     mocks.verify_doubled_constant_names = true
   end
-  config.include AwsMocker
+  config.include AwsAutoScalingMocker
+  config.include AwsElasticLoadBalancerMocker
+  config.include AwsEc2Mocker
 end
 
 require_relative '../../lib/ruby_aem_aws/constants'
