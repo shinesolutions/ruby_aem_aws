@@ -14,8 +14,8 @@
 
 require_relative '../../constants'
 
-# Mixin for checking health of a component via ELB count.
 module RubyAemAws
+  # Mixin for checking health of a component via ELB 'healthy' count vs ASG desired_capacity.
   # Add this to a component to make it capable of determining its own health.
   module HealthyInstanceCountVerifier
     # Aggregate health_states considered healthy.
