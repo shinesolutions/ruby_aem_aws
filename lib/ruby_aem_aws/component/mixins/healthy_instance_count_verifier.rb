@@ -18,10 +18,20 @@ require_relative '../../constants'
 module RubyAemAws
   # Add this to a component to make it capable of determining its own health.
   module HealthyInstanceCountVerifier
+    # Aggregate health_states considered healthy.
+    # @return health_state is ready or scaling.
     def healthy?
       %i[ready scaling].include? health_state
     end
 
+    # Provides detail of the state of the instances comprising the component.
+    # @return one of:
+    # - no_asg: AutoScalingGroup could not be located (by StackPrefix and Component tags).
+    # - no_elb: ElasticLoadBalancer could not be located (by StackPrefix and aws:cloudformation:logical-id tags).
+    # - misconfigured: AutoScalingGroup.desired_capacity is less than 1.
+    # - recovering: ELB running instance count is less than AutoScalingGroup.desired_capacity.
+    # - scaling: ELB running instance count is more than AutoScalingGroup.desired_capacity.
+    # - ready: ELB running instance count is equal to AutoScalingGroup.desired_capacity.
     def health_state
       @descriptor = get_descriptor
 
