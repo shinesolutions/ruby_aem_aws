@@ -45,4 +45,8 @@ describe 'Author.healthy?' do
 
     expect(@author.healthy?).to equal true
   end
+
+  it 'verifies metric exists' do
+    expect(@author.metric?('bob')).to equal true
+  end
 end
