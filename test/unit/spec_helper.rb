@@ -28,6 +28,10 @@ RSpec.configure do |config|
   config.include AwsMocker
 end
 
+require_relative '../../lib/ruby_aem_aws/constants'
+
 TEST_STACK_PREFIX = 'test-prefix'.freeze
 TEST_REGION = 'test-region'.freeze
+
+INSTANCE_STATE_HEALTHY = RubyAemAws::Constants::INSTANCE_STATE_HEALTHY
 INSTANCE_STATE_UNHEALTHY = 'not-so-good'.freeze

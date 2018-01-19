@@ -13,14 +13,15 @@
 # limitations under the License.
 
 require 'aws-sdk'
-require_relative 'mixins/healthy_instance_state_verifier'
 require_relative 'mixins/healthy_instance_count_verifier'
+require_relative 'abstract_component'
 require_relative 'component_descriptor'
 
 module RubyAemAws
   module Component
     # Interface to the AWS instances playing and supporting the AuthorDispatcher role in a full-set AEM stack.
     class AuthorDispatcher
+      include AbstractComponent
       include HealthyInstanceCountVerifier
 
       def get_ec2_resource
@@ -70,10 +71,6 @@ module RubyAemAws
       # def healthy?
 
       # def wait_until_healthy
-
-      def to_s
-        "AuthorDispatcher(#{@descriptor.stack_prefix})"
-      end
     end
   end
 end

@@ -14,12 +14,14 @@
 
 require 'aws-sdk'
 require_relative 'mixins/healthy_instance_state_verifier'
+require_relative 'abstract_component'
 require_relative 'component_descriptor'
 
 module RubyAemAws
   module Component
     # Interface to a single AWS instance running all three AEM components as a consolidated stack.
     class AuthorPublishDispatcher
+      include AbstractComponent
       include HealthyInstanceStateVerifier
 
       def get_ec2_resource

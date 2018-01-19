@@ -14,8 +14,8 @@
 
 require_relative '../../constants'
 
-# Mixin for checking health of a component via EC2 instance state.
 module RubyAemAws
+  # Mixin for checking health of a component via EC2 instance state.
   # Add this to a component to make it capable of determining its own health.
   module HealthyInstanceStateVerifier
     # return true if there are one or more instances matching the descriptor and they are all healthy.

@@ -19,7 +19,7 @@ require_relative '../../../../lib/ruby_aem_aws/component/chaos_monkey'
 chaos_monkey = RubyAemAws::Component::ChaosMonkey.new(nil, nil)
 
 describe chaos_monkey do
-  it_behaves_like 'a health_checker'
+  it_behaves_like 'a health flagged component'
 end
 
 describe 'ChaosMonkey.healthy?' do

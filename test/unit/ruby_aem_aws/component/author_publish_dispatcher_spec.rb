@@ -19,7 +19,7 @@ require_relative '../../../../lib/ruby_aem_aws/component/author_publish_dispatch
 author_publish_dispatcher = RubyAemAws::Component::AuthorPublishDispatcher.new(nil, nil)
 
 describe author_publish_dispatcher do
-  it_behaves_like 'a health_checker'
+  it_behaves_like 'a health flagged component'
 end
 
 describe 'AuthorPublishDispatcher.healthy?' do
@@ -43,7 +43,7 @@ describe 'AuthorPublishDispatcher.healthy?' do
   end
 
   it 'verifies EC2 running instance' do
-    add_instance(@instance_1_id, RubyAemAws::Constants::INSTANCE_STATE_HEALTHY)
+    add_instance(@instance_1_id, INSTANCE_STATE_HEALTHY)
 
     expect(@author_dispatcher.healthy?).to equal true
   end
@@ -55,8 +55,8 @@ describe 'AuthorPublishDispatcher.healthy?' do
   end
 
   it 'verifies EC2 running instance (one of many)' do
-    add_instance(@instance_1_id, RubyAemAws::Constants::INSTANCE_STATE_HEALTHY)
-    add_instance(@instance_2_id, RubyAemAws::Constants::INSTANCE_STATE_HEALTHY, Name: 'bob')
+    add_instance(@instance_1_id, INSTANCE_STATE_HEALTHY)
+    add_instance(@instance_2_id, INSTANCE_STATE_HEALTHY, Name: 'bob')
     add_instance(@instance_3_id, INSTANCE_STATE_UNHEALTHY, Component: 'bob')
 
     expect(@author_dispatcher.healthy?).to equal true
@@ -64,7 +64,7 @@ describe 'AuthorPublishDispatcher.healthy?' do
 
   it 'verifies EC2 non-running instance (one of many)' do
     add_instance(@instance_1_id, INSTANCE_STATE_UNHEALTHY)
-    add_instance(@instance_2_id, RubyAemAws::Constants::INSTANCE_STATE_HEALTHY, Name: 'bob')
+    add_instance(@instance_2_id, INSTANCE_STATE_HEALTHY, Name: 'bob')
     add_instance(@instance_3_id, INSTANCE_STATE_UNHEALTHY, Component: 'bob')
 
     expect(@author_dispatcher.healthy?).to equal false

@@ -14,14 +14,29 @@
 
 require_relative '../../constants'
 
-# Mixin for checking health of a component via ELB count.
 module RubyAemAws
+  # Mixin for checking health of a component via ELB 'healthy' count vs ASG desired_capacity.
   # Add this to a component to make it capable of determining its own health.
   module HealthyInstanceCountVerifier
+    # Aggregate health_states considered healthy.
+    # @return health_state is ready or scaling.
     def healthy?
+      %i[ready scaling].include? health_state
+    end
+
+    # Provides detail of the state of the instances comprising the component.
+    # @return one of:
+    # - no_asg: AutoScalingGroup could not be located (by StackPrefix and Component tags).
+    # - no_elb: ElasticLoadBalancer could not be located (by StackPrefix and aws:cloudformation:logical-id tags).
+    # - misconfigured: AutoScalingGroup.desired_capacity is less than 1.
+    # - recovering: ELB running instance count is less than AutoScalingGroup.desired_capacity.
+    # - scaling: ELB running instance count is more than AutoScalingGroup.desired_capacity.
+    # - ready: ELB running instance count is equal to AutoScalingGroup.desired_capacity.
+    def health_state
       @descriptor = get_descriptor
 
       asg = find_auto_scaling_group(get_asg_client)
+      return :no_asg if asg.nil?
 
       # Debug:
       # unless asg.nil?
@@ -31,18 +46,23 @@ module RubyAemAws
       #   end
       # end
 
-      healthy_instance_count = 0
       elb = find_elb(get_elb_client)
+      return :no_elb if elb.nil?
 
-      unless elb.nil?
-        # puts("ELB: #{elb.load_balancer_name} (#{elb.instances.length})")
-        get_instances_state_from_elb(elb).each do |i|
-          # puts("  Instance #{i[:id]}: #{i[:state]}")
-          healthy_instance_count += 1 if i[:state] == RubyAemAws::Constants::INSTANCE_STATE_HEALTHY
-        end
+      elb_running_instances = 0
+      # puts("ELB: #{elb.load_balancer_name} (#{elb.instances.length})")
+      get_instances_state_from_elb(elb).each do |i|
+        # puts("  Instance #{i[:id]}: #{i[:state]}")
+        elb_running_instances += 1 if i[:state] == RubyAemAws::Constants::INSTANCE_STATE_HEALTHY
       end
 
-      !elb.nil? && !asg.nil? && healthy_instance_count == asg.desired_capacity
+      desired_capacity = asg.desired_capacity
+      # puts("calc health_state: #{elb_running_instances} / #{desired_capacity}")
+      return :misconfigured if desired_capacity < 1
+
+      return :recovering if elb_running_instances < desired_capacity
+      return :scaling if elb_running_instances > desired_capacity
+      :ready
     end
 
     private
@@ -76,7 +96,10 @@ module RubyAemAws
       elbs.each do |elb|
         elb_matches_stack_prefix = false
         elb_matches_logical_id = false
-        tags = elb_client.describe_tags(load_balancer_names: [elb.load_balancer_name]).tag_descriptions[0].tags
+        tag_descriptions = elb_client.describe_tags(load_balancer_names: [elb.load_balancer_name]).tag_descriptions
+        next if tag_descriptions.empty?
+
+        tags = tag_descriptions[0].tags
         tags.each do |tag|
           if tag.key == 'StackPrefix' && tag.value == @descriptor.stack_prefix
             elb_matches_stack_prefix = true

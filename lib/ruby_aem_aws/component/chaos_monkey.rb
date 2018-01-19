@@ -12,10 +12,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+require_relative 'abstract_component'
+
 module RubyAemAws
   module Component
     # Interface to the AWS instance running the ChaosMonkey component of a full-set AEM stack.
     class ChaosMonkey
+      include AbstractComponent
+
       # @param client AWS EC2 client
       # @param _stack_prefix AWS tag: StackPrefix
       # @return new RubyAemAws::FullSet::ChaosMonkey
