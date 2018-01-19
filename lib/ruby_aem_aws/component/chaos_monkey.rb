@@ -21,8 +21,7 @@ module RubyAemAws
       include AbstractComponent
 
       # @return new RubyAemAws::FullSet::ChaosMonkey
-      def initialize(_stack_prefix)
-      end
+      def initialize(_stack_prefix) end
 
       def healthy?
         raise NotYetImplementedError

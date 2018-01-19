@@ -22,8 +22,7 @@ module RubyAemAws
 
       # @param _stack_prefix AWS tag: StackPrefix
       # @return new RubyAemAws::FullSet::Publish
-      def initialize(_stack_prefix)
-      end
+      def initialize(_stack_prefix) end
 
       def healthy?
         raise NotYetImplementedError
