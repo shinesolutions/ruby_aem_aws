@@ -23,7 +23,19 @@ describe 'Author' do
   after do
   end
 
-  it 'does not have metric \'CPUUtilization\'' do
-    expect(@author.metric?(:CPUUtilization)).to eq(false)
+  it 'Primary has metric \'CPUUtilization\'' do
+    expect(@author.instance_primary.metric?(:CPUUtilization)).to eq(true)
+  end
+
+  it 'Primary does not have metric \'bob\'' do
+    expect(@author.instance_standby.metric?(:bob)).to eq(false)
+  end
+
+  it 'Standby has metric \'CPUUtilization\'' do
+    expect(@author.instance_primary.metric?(:CPUUtilization)).to eq(true)
+  end
+
+  it 'Standby does not have metric \'bob\'' do
+    expect(@author.instance_standby.metric?(:bob)).to eq(false)
   end
 end

@@ -36,6 +36,7 @@ describe 'AuthorPrimary.healthy?' do
     @mock_ec2 = mock_ec2
 
     @metric_1_name = 'A test metric'
+    @metric_2_name = 'Unmocked'
 
     @mock_cloud_watch = mock_cloud_watch
     mock_cloud_watch_metric(@mock_cloud_watch, @metric_1_name)
@@ -62,7 +63,7 @@ describe 'AuthorPrimary.healthy?' do
   it 'verifies metric does not exist' do
     add_instance(@mock_ec2, @instances, @instance_filter, @instance_1_id, INSTANCE_STATE_HEALTHY)
 
-    expect(mock_author_primary.metric?('bob')).to equal false
+    expect(mock_author_primary.metric?(@metric_2_name)).to equal false
   end
 
   private

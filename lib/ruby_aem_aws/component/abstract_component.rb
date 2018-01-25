@@ -33,8 +33,9 @@ module RubyAemAws
 
     def get_instance
       instances = ec2_resource.instances(filter_for_descriptor)
-      raise "Expected exactly one instance but got #{instances.length} for #{descriptor.stack_prefix}, #{descriptor.ec2.component}, #{descriptor.ec2.name}" if instances.length != 1
-      instances[0]
+      count = instances.count
+      raise "Expected exactly one instance but got #{count} for #{descriptor.stack_prefix}, #{descriptor.ec2.component}, #{descriptor.ec2.name}" if count != 1
+      instances.first
     end
 
     private

@@ -25,7 +25,7 @@ def init_client
   )
 end
 
-DEFAULT_STACK_PREFIX = 'sandpit-ramses001'.freeze
+DEFAULT_STACK_PREFIX = 'priya0001'.freeze
 
 def init_consolidated
   init_client.consolidated(stack_prefix: ENV['stack_prefix'] || DEFAULT_STACK_PREFIX)

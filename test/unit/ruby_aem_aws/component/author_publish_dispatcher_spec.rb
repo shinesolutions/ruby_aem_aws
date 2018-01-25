@@ -16,7 +16,7 @@ require_relative '../../spec_helper'
 require_relative 'examples/check_methods_exist'
 require_relative '../../../../lib/ruby_aem_aws/component/author_publish_dispatcher'
 
-author_publish_dispatcher = RubyAemAws::Component::AuthorPublishDispatcher.new(nil, nil)
+author_publish_dispatcher = RubyAemAws::Component::AuthorPublishDispatcher.new({ stack_prefix: nil }, nil)
 
 describe author_publish_dispatcher do
   it_behaves_like 'a health flagged component'

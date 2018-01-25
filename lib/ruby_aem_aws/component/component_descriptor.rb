@@ -14,7 +14,13 @@
 
 module RubyAemAws
   module Component
-    ComponentDescriptor = Struct.new(:stack_prefix, :ec2, :elb)
+    ComponentDescriptor = Struct.new(:stack_prefix_in, :ec2, :elb) do
+      def stack_prefix
+        # Unwrap from {:stack_prefix = value} to the value if necessary.
+        return stack_prefix_in[:stack_prefix] if stack_prefix_in.is_a? Hash
+        stack_prefix_in
+      end
+    end
     EC2Descriptor = Struct.new(:component, :name)
     ELBDescriptor = Struct.new(:id, :name)
   end
