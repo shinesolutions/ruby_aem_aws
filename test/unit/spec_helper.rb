@@ -28,6 +28,7 @@ RSpec.configure do |config|
   config.include AwsAutoScalingMocker
   config.include AwsElasticLoadBalancerMocker
   config.include AwsEc2Mocker
+  config.include AwsCloudWatchMocker
 end
 
 require_relative '../../lib/ruby_aem_aws/constants'

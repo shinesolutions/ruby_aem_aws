@@ -43,29 +43,29 @@ describe 'AuthorPublishDispatcher.healthy?' do
   end
 
   it 'verifies EC2 running instance' do
-    add_instance(@instances, @instance_1_id, INSTANCE_STATE_HEALTHY)
+    add_instance(@mock_ec2, @instances, @instance_filter, @instance_1_id, INSTANCE_STATE_HEALTHY)
 
     expect(@author_dispatcher.healthy?).to equal true
   end
 
   it 'verifies EC2 not-running instance' do
-    add_instance(@instances, @instance_1_id, INSTANCE_STATE_UNHEALTHY)
+    add_instance(@mock_ec2, @instances, @instance_filter, @instance_1_id, INSTANCE_STATE_UNHEALTHY)
 
     expect(@author_dispatcher.healthy?).to equal false
   end
 
   it 'verifies EC2 running instance (one of many)' do
-    add_instance(@instances, @instance_1_id, INSTANCE_STATE_HEALTHY)
-    add_instance(@instances, @instance_2_id, INSTANCE_STATE_HEALTHY, Name: 'bob')
-    add_instance(@instances, @instance_3_id, INSTANCE_STATE_UNHEALTHY, Component: 'bob')
+    add_instance(@mock_ec2, @instances, @instance_filter, @instance_1_id, INSTANCE_STATE_HEALTHY)
+    add_instance(@mock_ec2, @instances, @instance_filter, @instance_2_id, INSTANCE_STATE_HEALTHY, Name: 'bob')
+    add_instance(@mock_ec2, @instances, @instance_filter, @instance_3_id, INSTANCE_STATE_UNHEALTHY, Component: 'bob')
 
     expect(@author_dispatcher.healthy?).to equal true
   end
 
   it 'verifies EC2 non-running instance (one of many)' do
-    add_instance(@instances, @instance_1_id, INSTANCE_STATE_UNHEALTHY)
-    add_instance(@instances, @instance_2_id, INSTANCE_STATE_HEALTHY, Name: 'bob')
-    add_instance(@instances, @instance_3_id, INSTANCE_STATE_UNHEALTHY, Component: 'bob')
+    add_instance(@mock_ec2, @instances, @instance_filter, @instance_1_id, INSTANCE_STATE_UNHEALTHY)
+    add_instance(@mock_ec2, @instances, @instance_filter, @instance_2_id, INSTANCE_STATE_HEALTHY, Name: 'bob')
+    add_instance(@mock_ec2, @instances, @instance_filter, @instance_3_id, INSTANCE_STATE_UNHEALTHY, Component: 'bob')
 
     expect(@author_dispatcher.healthy?).to equal false
   end

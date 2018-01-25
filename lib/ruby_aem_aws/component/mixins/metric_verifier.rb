@@ -15,33 +15,20 @@
 module RubyAemAws
   # Mixin for checking that an instance has associated CloudWatch metrics.
   module MetricVerifier
-    # @param _name the name of the metric to check for.
+    # @param name the name of the metric to check for.
     # @return true if the instance has a metric with @name.
-    def metric?(_name)
-      # TODO: complete this method.
-      # instances = ec2_resource.instances(
-      #   filters: [
-      #     { name: 'tag:StackPrefix', values: [descriptor.stack_prefix] },
-      #     { name: 'tag:Component', values: [descriptor.ec2.component] },
-      #     { name: 'tag:Name', values: [descriptor.ec2.name] }
-      #   ]
-      # )
-      # raise 'Couldn\'t find Author instance' if instances.length != 1
-      # instance = instances[0]
-      # puts("Found instance: #{instance}")
-      #
-      # metrics = @cloud_watch_client.list_metrics(
-      #   namespace: 'AWS/EC2',
-      #   metric_name: name,
-      #   dimensions:
-      #     {
-      #       name: 'InstanceID',
-      #       value: instance.instance_id
-      #     }
-      # ).metrics
-      # puts("Metrics: #{metrics}")
-      # !metrics.empty?
-      true
+    def metric?(name)
+      instance = get_instance
+      metrics = @cloud_watch_client.list_metrics(
+        namespace: 'AWS/EC2',
+        metric_name: name,
+        dimensions:
+          {
+            name: 'InstanceID',
+            value: instance.instance_id
+          }
+      ).metrics
+      !metrics.empty?
     end
   end
 end

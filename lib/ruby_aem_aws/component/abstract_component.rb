@@ -12,11 +12,41 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+require_relative 'component_descriptor'
+
 module RubyAemAws
   # Add common methods to all Components.
   module AbstractComponent
+    include Component
+
     def to_s
       "#{self.class.name.split('::').last}(#{@descriptor.stack_prefix unless @descriptor.nil?})"
+    end
+
+    def get_all_instances
+      ec2_resource.instances(filter_for_descriptor)
+    end
+
+    def get_instance_by_id(instance_id)
+      ec2_resource.instance(instance_id)
+    end
+
+    def get_instance
+      instances = ec2_resource.instances(filter_for_descriptor)
+      raise "Expected exactly one instance but got #{instances.length} for #{descriptor.stack_prefix}, #{descriptor.ec2.component}, #{descriptor.ec2.name}" if instances.length != 1
+      instances[0]
+    end
+
+    private
+
+    def filter_for_descriptor
+      {
+        filters: [
+          { name: 'tag:StackPrefix', values: [descriptor.stack_prefix] },
+          { name: 'tag:Component', values: [descriptor.ec2.component] },
+          { name: 'tag:Name', values: [descriptor.ec2.name] }
+        ]
+      }
     end
   end
 end

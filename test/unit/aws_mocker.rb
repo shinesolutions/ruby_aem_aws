@@ -91,6 +91,13 @@ module AwsElasticLoadBalancerMocker
 end
 
 module AwsEc2Mocker
+  def mock_ec2
+    mock_ec2 = double('mock_ec2')
+    allow(mock_ec2).to receive(:instances).with(anything) { Hash.new {} }
+    allow(mock_ec2).to receive(:instances).with(no_args) { Hash.new {} }
+    mock_ec2
+  end
+
   def mock_ec2_instance_state(name)
     ec2_instance_state = double('ec2_instance_state')
     # Possible values: pending, running, shutting-down, terminated, stopping, stopped
@@ -98,15 +105,18 @@ module AwsEc2Mocker
     ec2_instance_state
   end
 
-  def add_instance(instances, id, state, tags = {})
+  # rubocop:disable ParameterLists
+  def add_instance(mock_ec2, instances, instance_filter, id, state, tags = {})
     # Add default tags.
     tags[:StackPrefix] = TEST_STACK_PREFIX if tags[:StackPrefix].nil?
     tags[:Component] = @instance_component if tags[:Component].nil?
     tags[:Name] = @instance_name if tags[:Name].nil?
 
     instances.push(mock_ec2_instance(id, state, tags))
-    allow(@mock_ec2).to receive(:instances) { filter_instances(instances, @instance_filter) }
+    allow(mock_ec2).to receive(:instances).with(anything) { -> { filter_instances(instances, instance_filter) }.call }
+    allow(mock_ec2).to receive(:instances).with(no_args) { -> { filter_instances(instances, instance_filter) }.call }
   end
+  # rubocop:enable ParameterLists
 
   # Intentional replication of AWS instance filter logic for use by mock EC2 Resource.
   private def filter_instances(instances, filters)
@@ -127,7 +137,7 @@ module AwsEc2Mocker
 
   private def mock_ec2_instance(id, state, tags)
     ec2_instance = double('ec2_instance')
-    allow(ec2_instance).to receive(:id) { id }
+    allow(ec2_instance).to receive(:instance_id) { id }
     allow(ec2_instance).to receive(:state) { mock_ec2_instance_state(state) }
     ec2_tags = []
     tags.each do |key, value|
@@ -143,5 +153,23 @@ module AwsEc2Mocker
     allow(ec2_tag).to receive(:key) { key }
     allow(ec2_tag).to receive(:value) { value }
     ec2_tag
+  end
+end
+
+module AwsCloudWatchMocker
+  def mock_cloud_watch
+    mock_cloud_watch = double('mock_cloud_watch')
+    mock_list_metrics_output = double('mock_list_metrics_output')
+    allow(mock_list_metrics_output).to receive(:metrics) { [] }
+    allow(mock_cloud_watch).to receive(:list_metrics) { mock_list_metrics_output }
+    mock_cloud_watch
+  end
+
+  def mock_cloud_watch_metric(mock_cloud_watch, metric_name)
+    mock_metric = double('mock_metric')
+    allow(mock_metric).to receive(:metric_name) { metric_name }
+    mock_list_metrics_output = double('mock_list_metrics_output')
+    allow(mock_list_metrics_output).to receive(:metrics) { [mock_metric] }
+    allow(mock_cloud_watch).to receive(:list_metrics).with(hash_including(metric_name: metric_name)) { mock_list_metrics_output }
   end
 end

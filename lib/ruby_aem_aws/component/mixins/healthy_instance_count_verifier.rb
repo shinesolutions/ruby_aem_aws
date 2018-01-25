@@ -117,7 +117,7 @@ module RubyAemAws
     def get_instances_state_from_elb(elb)
       stack_prefix_instances = []
       elb.instances.each do |i|
-        instance = ec2_resource.instance(i.instance_id)
+        instance = get_instance_by_id(i.instance_id)
         next if instance.nil?
         instance.tags.each do |tag|
           next if tag.key != 'StackPrefix'

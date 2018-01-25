@@ -21,15 +21,7 @@ module RubyAemAws
     # return true if there are one or more instances matching the descriptor and they are all healthy.
     def healthy?
       has_instance = false
-      instances = ec2_resource.instances(
-        filters: [
-          { name: 'tag:StackPrefix', values: [descriptor.stack_prefix] },
-          { name: 'tag:Component', values: [descriptor.ec2.component] },
-          { name: 'tag:Name', values: [descriptor.ec2.name] }
-        ]
-      )
-
-      instances.each do |i|
+      get_all_instances.each do |i|
         has_instance = true
         return false if i.state.name != Constants::INSTANCE_STATE_HEALTHY
       end

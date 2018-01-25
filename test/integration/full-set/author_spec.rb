@@ -15,19 +15,15 @@
 require_relative '../spec_helper'
 require_relative '../../../lib/ruby_aem_aws'
 
-describe 'AuthorDispatcher' do
+describe 'Author' do
   before do
-    @author_dispatcher = init_full_set.author_dispatcher
+    @author = init_full_set.author
   end
 
   after do
   end
 
-  it 'is healthy' do
-    expect(@author_dispatcher.healthy?).to eq(true)
-  end
-
-  it 'has metric \'CPUUtilization\'' do
-    expect(@author_dispatcher.metric?(:CPUUtilization)).to eq(true)
+  it 'does not have metric \'CPUUtilization\'' do
+    expect(@author.metric?(:CPUUtilization)).to eq(false)
   end
 end
