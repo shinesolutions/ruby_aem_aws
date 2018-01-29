@@ -27,12 +27,6 @@ module RubyAemAws
       metrics = @cloud_watch_client.list_metrics(
         namespace: 'AWS/EC2',
         metric_name: metric_name
-        # dimensions: [
-        #   {
-        #     name: 'InstanceId',
-        #     value: instance.instance_id
-        #   }
-        # ]
       ).metrics
 
       instances_with_metric = []
