@@ -31,12 +31,12 @@ module RubyAemAws
       ec2_resource.instance(instance_id)
     end
 
-    def get_instance
-      instances = ec2_resource.instances(filter_for_descriptor)
-      count = instances.count
-      raise "Expected exactly one instance but got #{count} for #{descriptor.stack_prefix}, #{descriptor.ec2.component}, #{descriptor.ec2.name}" if count != 1
-      instances.first
-    end
+    # def get_first_instance
+    #   instances = ec2_resource.instances(filter_for_descriptor)
+    #   count = instances.count
+    #   raise "Expected exactly one instance but got #{count} for #{descriptor.stack_prefix}, #{descriptor.ec2.component}, #{descriptor.ec2.name}" if count != 1
+    #   instances.first
+    # end
 
     private
 
@@ -45,7 +45,8 @@ module RubyAemAws
         filters: [
           { name: 'tag:StackPrefix', values: [descriptor.stack_prefix] },
           { name: 'tag:Component', values: [descriptor.ec2.component] },
-          { name: 'tag:Name', values: [descriptor.ec2.name] }
+          { name: 'tag:Name', values: [descriptor.ec2.name] },
+          { name: 'instance-state-name', values: InstanceState::ALL_ACTIVE }
         ]
       }
     end

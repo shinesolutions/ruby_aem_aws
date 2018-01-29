@@ -12,9 +12,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+require_relative 'abstract_component'
 require_relative 'mixins/healthy_instance_state_verifier'
 require_relative 'mixins/metric_verifier'
-require_relative 'abstract_component'
 
 module RubyAemAws
   module Component

@@ -165,9 +165,20 @@ module AwsCloudWatchMocker
     mock_cloud_watch
   end
 
-  def mock_cloud_watch_metric(mock_cloud_watch, metric_name)
+  def mock_cloud_watch_metric(mock_cloud_watch, metric_name, instance_ids = [])
     mock_metric = double('mock_metric')
     allow(mock_metric).to receive(:metric_name) { metric_name }
+
+    mock_dimension_filters = []
+    instance_ids.each do |instance_id|
+      mock_dimension_filter = double('mock_dimension_filter')
+      allow(mock_dimension_filter).to receive(:name) { 'InstanceId' }
+      allow(mock_dimension_filter).to receive(:value) { instance_id }
+      mock_dimension_filters.push(mock_dimension_filter)
+    end
+    allow(mock_metric).to receive(:dimensions) { mock_dimension_filters }
+    # allow(mock_metric).to receive(:dimensions) { {} } if instance_ids.empty?
+
     mock_list_metrics_output = double('mock_list_metrics_output')
     allow(mock_list_metrics_output).to receive(:metrics) { [mock_metric] }
     allow(mock_cloud_watch).to receive(:list_metrics).with(hash_including(metric_name: metric_name)) { mock_list_metrics_output }

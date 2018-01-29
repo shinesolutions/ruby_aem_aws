@@ -13,8 +13,8 @@
 # limitations under the License.
 
 require 'aws-sdk'
-require_relative 'mixins/healthy_instance_state_verifier'
 require_relative 'abstract_component'
+require_relative 'mixins/healthy_instance_state_verifier'
 require_relative 'component_descriptor'
 
 module RubyAemAws

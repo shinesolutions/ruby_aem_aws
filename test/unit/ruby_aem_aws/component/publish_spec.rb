@@ -22,7 +22,7 @@ describe publish do
   it_behaves_like 'a health flagged component'
 end
 
-describe 'Publish.healthy?' do
+describe 'Publish' do
   before do
     @instance_component = RubyAemAws::Component::Publish::EC2_COMPONENT
     @instance_name = RubyAemAws::Component::Publish::EC2_NAME
@@ -39,28 +39,28 @@ describe 'Publish.healthy?' do
     @metric_2_name = 'Unmocked'
 
     @mock_cloud_watch = mock_cloud_watch
-    mock_cloud_watch_metric(@mock_cloud_watch, @metric_1_name)
+    mock_cloud_watch_metric(@mock_cloud_watch, @metric_1_name, [@instance_1_id])
 
     @instances = []
   end
 
-  it 'verifies EC2 running instance' do
+  it '.healthy? verifies EC2 running instance' do
     add_instance(@mock_ec2, @instances, @instance_filter, @instance_1_id, INSTANCE_STATE_HEALTHY)
 
     expect(mock_publish.healthy?).to equal true
   end
 
-  it 'verifies no EC2 running instance' do
+  it '.healthy? verifies no EC2 running instance' do
     expect(mock_publish.healthy?).to equal false
   end
 
-  it 'verifies metric exists' do
+  it '.metric? verifies metric exists' do
     add_instance(@mock_ec2, @instances, @instance_filter, @instance_1_id, INSTANCE_STATE_HEALTHY)
 
     expect(mock_publish.metric?(@metric_1_name)).to equal true
   end
 
-  it 'verifies metric does not exist' do
+  it '.metric? verifies metric does not exist' do
     add_instance(@mock_ec2, @instances, @instance_filter, @instance_1_id, INSTANCE_STATE_HEALTHY)
 
     expect(mock_publish.metric?(@metric_2_name)).to equal false

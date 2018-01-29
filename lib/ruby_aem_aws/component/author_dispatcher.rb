@@ -13,8 +13,9 @@
 # limitations under the License.
 
 require 'aws-sdk'
-require_relative 'mixins/healthy_instance_count_verifier'
 require_relative 'abstract_component'
+require_relative 'mixins/healthy_instance_count_verifier'
+require_relative 'mixins/metric_verifier'
 require_relative 'component_descriptor'
 
 module RubyAemAws
@@ -24,9 +25,10 @@ module RubyAemAws
       attr_reader :descriptor, :ec2_resource, :elb_client, :asg_client
       include AbstractComponent
       include HealthyInstanceCountVerifier
+      include MetricVerifier
 
       EC2_COMPONENT = 'author-dispatcher'.freeze
-      EC2_NAME = 'AuthorDispatcher'.freeze
+      EC2_NAME = 'AEM Author Dispatcher'.freeze
       ELB_ID = 'AuthorDispatcherLoadBalancer'.freeze
       ELB_NAME = 'AEM Author Dispatcher Load Balancer'.freeze
 
