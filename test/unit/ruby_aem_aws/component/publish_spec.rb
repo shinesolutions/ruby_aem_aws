@@ -32,6 +32,7 @@ describe 'Publish' do
       { Name: @instance_name }
     ].freeze
     @instance_1_id = 'i-00525b1a281aee5b9'.freeze
+    @instance_2_id = 'i-00525b1a281aee5b7'.freeze
 
     @mock_ec2 = mock_ec2
 
@@ -64,6 +65,23 @@ describe 'Publish' do
     add_instance(@mock_ec2, @instances, @instance_filter, @instance_1_id, INSTANCE_STATE_HEALTHY)
 
     expect(mock_publish.metric?(@metric_2_name)).to equal false
+  end
+
+  it '.metric_instances returns all instances with metric' do
+    add_instance(@mock_ec2, @instances, @instance_filter, @instance_1_id, INSTANCE_STATE_HEALTHY)
+    add_instance(@mock_ec2, @instances, @instance_filter, @instance_2_id, INSTANCE_STATE_HEALTHY)
+    mock_cloud_watch_metric(@mock_cloud_watch, @metric_1_name, [@instance_1_id, @instance_2_id])
+
+    expect(mock_publish.metric_instances(@metric_1_name).length).to be == mock_publish.get_all_instances.length
+  end
+
+  it '.metric_instances returns only instances with metric' do
+    add_instance(@mock_ec2, @instances, @instance_filter, @instance_1_id, INSTANCE_STATE_HEALTHY)
+    add_instance(@mock_ec2, @instances, @instance_filter, @instance_2_id, INSTANCE_STATE_HEALTHY)
+    mock_cloud_watch_metric(@mock_cloud_watch, @metric_1_name, [@instance_1_id])
+    mock_cloud_watch_metric(@mock_cloud_watch, @metric_2_name, [@instance_2_id])
+
+    expect(mock_publish.metric_instances(@metric_1_name).length).to be < mock_publish.get_all_instances.length
   end
 
   private

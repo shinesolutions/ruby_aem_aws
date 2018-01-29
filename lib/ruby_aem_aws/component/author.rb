@@ -19,23 +19,15 @@ module RubyAemAws
   module Component
     # Interface to the AWS instances running the Author components of a full-set AEM stack.
     class Author
-      attr_reader :instance_primary, :instance_standby
+      attr_reader :author_primary, :author_standby
 
       # @param stack_prefix AWS tag: StackPrefix
       # @param ec2_resource AWS EC2 resource
       # @return new RubyAemAws::FullSet::Author
       def initialize(stack_prefix, ec2_resource, cloud_watch_client)
-        @instance_primary = Component::AuthorPrimary.new(stack_prefix, ec2_resource, cloud_watch_client)
-        @instance_standby = Component::AuthorStandby.new(stack_prefix, ec2_resource, cloud_watch_client)
+        @author_primary = Component::AuthorPrimary.new(stack_prefix, ec2_resource, cloud_watch_client)
+        @author_standby = Component::AuthorStandby.new(stack_prefix, ec2_resource, cloud_watch_client)
       end
-
-      # def get_primary_instance
-      #   @instance_primary.get_instance
-      # end
-
-      # def get_standby_instance
-      #   @instance_standby.get_instance
-      # end
 
       # def terminate_primary_instance
 
