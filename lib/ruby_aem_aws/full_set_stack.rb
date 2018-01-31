@@ -53,7 +53,7 @@ module RubyAemAws
 
     # @return new RubyAemAws::Component::Orchestrator instance
     def orchestrator
-      RubyAemAws::Component::Orchestrator.new(@stack_prefix)
+      RubyAemAws::Component::Orchestrator.new(@stack_prefix, @ec2_resource)
     end
 
     # @return new RubyAemAws::Component::Publish instance
@@ -63,7 +63,7 @@ module RubyAemAws
 
     # @return new RubyAemAws::Component::PublishDispatcher instance
     def publish_dispatcher
-      RubyAemAws::Component::PublishDispatcher.new(@stack_prefix)
+      RubyAemAws::Component::PublishDispatcher.new(@stack_prefix, @ec2_resource)
     end
   end
 end

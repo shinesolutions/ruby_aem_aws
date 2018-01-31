@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-require_relative 'abstract_component'
+require_relative 'abstract_single_component'
 require_relative 'mixins/healthy_instance_state_verifier'
 require_relative 'mixins/metric_verifier'
 
@@ -21,7 +21,7 @@ module RubyAemAws
     # Interface to the AWS instance running the Author-Primary component of a full-set AEM stack.
     class AuthorPrimary
       attr_reader :descriptor, :ec2_resource, :cloud_watch_client
-      include AbstractComponent
+      include AbstractSingleComponent
       include HealthyInstanceStateVerifier
       include MetricVerifier
 

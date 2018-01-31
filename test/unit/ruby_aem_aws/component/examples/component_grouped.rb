@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-shared_examples_for 'an instance accessor' do
+shared_examples_for 'a grouped instance accessor' do
   it 'because it responds to get_num_of_instances method' do
     is_expected.to respond_to(:get_num_of_instances)
   end
@@ -21,7 +21,7 @@ shared_examples_for 'an instance accessor' do
   end
 end
 
-shared_examples_for 'instance accessibility' do
+shared_examples_for 'grouped instance accessibility' do
   before do
     @mock_ec2 = mock_ec2_resource
   end

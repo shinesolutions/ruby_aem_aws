@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-require_relative 'abstract_component'
+require_relative 'abstract_grouped_component'
 require_relative 'mixins/healthy_instance_state_verifier'
 require_relative 'mixins/metric_verifier'
 
@@ -21,7 +21,7 @@ module RubyAemAws
     # Interface to the AWS instance running the Publish component of a full-set AEM stack.
     class Publish
       attr_reader :descriptor, :ec2_resource, :cloud_watch_client, :asg_client
-      include AbstractComponent
+      include AbstractGroupedComponent
       include HealthyInstanceStateVerifier
       include MetricVerifier
 
@@ -39,12 +39,6 @@ module RubyAemAws
         @asg_client = asg_client
         @cloud_watch_client = cloud_watch_client
       end
-
-      # def get_all_instances
-
-      # def get_random_instance
-
-      # def get_num_of_instances
 
       # def terminate_all_instances
 

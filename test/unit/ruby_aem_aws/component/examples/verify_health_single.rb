@@ -12,15 +12,20 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-require_relative 'component_descriptor'
+shared_examples 'a healthy_instance_state_verifier' do
+  it 'because it responds to .health_state method' do
+    is_expected.to respond_to(:healthy?)
+  end
+end
 
-module RubyAemAws
-  # Add common methods to all Components.
-  module AbstractComponent
-    include Component
+shared_examples_for 'health via instance state' do
+  it 'should verify EC2 running instance' do
+    add_instance(@instance_1_id, INSTANCE_STATE_HEALTHY)
 
-    def to_s
-      "#{self.class.name.split('::').last}(#{@descriptor.stack_prefix unless @descriptor.nil?})"
-    end
+    expect(mock_author_primary.healthy?).to equal true
+  end
+
+  it 'should verify no EC2 running instance' do
+    expect(mock_author_primary.healthy?).to equal false
   end
 end

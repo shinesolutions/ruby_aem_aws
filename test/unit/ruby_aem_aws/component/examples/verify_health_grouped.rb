@@ -18,18 +18,3 @@ shared_examples 'a healthy_instance_count_verifier' do
     is_expected.to respond_to(:health_state)
   end
 end
-
-shared_examples 'a healthy_instance_state_verifier' do
-  it 'because it responds to .health_state method' do
-    is_expected.to respond_to(:healthy?)
-  end
-end
-
-shared_examples 'a metric_verifier' do
-  it 'because it responds to .metric? method' do
-    is_expected.to respond_to(:metric?)
-  end
-  it 'because it responds to .metric_instances method' do
-    is_expected.to respond_to(:metric_instances)
-  end
-end

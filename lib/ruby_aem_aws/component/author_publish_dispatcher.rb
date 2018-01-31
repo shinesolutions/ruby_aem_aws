@@ -13,7 +13,7 @@
 # limitations under the License.
 
 require 'aws-sdk'
-require_relative 'abstract_component'
+require_relative 'abstract_single_component'
 require_relative 'mixins/healthy_instance_state_verifier'
 require_relative 'component_descriptor'
 
@@ -22,7 +22,7 @@ module RubyAemAws
     # Interface to a single AWS instance running all three AEM components as a consolidated stack.
     class AuthorPublishDispatcher
       attr_reader :descriptor, :ec2_resource
-      include AbstractComponent
+      include AbstractSingleComponent
       include HealthyInstanceStateVerifier
 
       EC2_COMPONENT = 'author-publish-dispatcher'.freeze
@@ -37,16 +37,6 @@ module RubyAemAws
                                               nil)
         @ec2_resource = ec2_resource
       end
-
-      # def get_all_instances
-
-      # def get_random_instance
-
-      # def get_num_of_instances
-
-      # def terminate_all_instances
-
-      # def terminate_random_instance
 
       # def wait_until_healthy
     end

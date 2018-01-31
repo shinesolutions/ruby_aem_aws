@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-require_relative 'abstract_component'
+require_relative 'abstract_single_component'
 require_relative 'mixins/healthy_instance_state_verifier'
 require_relative '../error'
 
@@ -21,12 +21,14 @@ module RubyAemAws
     # Interface to the AWS instance running the ChaosMonkey component of a full-set AEM stack.
     class ChaosMonkey
       attr_reader :descriptor, :ec2_resource
-      include AbstractComponent
+      include AbstractSingleComponent
       include HealthyInstanceStateVerifier
 
       EC2_COMPONENT = 'chaos-monkey'.freeze
       EC2_NAME = 'AEM Chaos Monkey'.freeze
 
+      # @param stack_prefix AWS tag: StackPrefix
+      # @param ec2_resource AWS EC2 resource
       # @return new RubyAemAws::FullSet::ChaosMonkey
       def initialize(stack_prefix, ec2_resource)
         @descriptor = ComponentDescriptor.new(stack_prefix,
@@ -37,12 +39,6 @@ module RubyAemAws
       def healthy?
         raise RubyAemAws::NotYetImplementedError
       end
-
-      # def get_all_instances
-
-      # def get_random_instance
-
-      # def get_num_of_instances
 
       # def terminate_all_instances
 

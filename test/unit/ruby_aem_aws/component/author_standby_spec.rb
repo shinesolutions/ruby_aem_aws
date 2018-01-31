@@ -13,16 +13,17 @@
 # limitations under the License.
 
 require_relative '../../spec_helper'
-require_relative 'examples/instance_accessor'
-require_relative 'examples/check_methods_exist'
+require_relative 'examples/component_grouped'
+require_relative 'examples/verify_health_grouped'
+require_relative 'examples/verify_metric_grouped'
 require_relative '../../../../lib/ruby_aem_aws/component/author'
 
 author_standby = RubyAemAws::Component::AuthorStandby.new(nil, nil, nil, nil, nil)
 
 describe author_standby do
-  it_behaves_like 'an instance accessor'
+  it_behaves_like 'a grouped instance accessor'
   it_behaves_like 'a healthy_instance_count_verifier'
-  it_behaves_like 'a metric_verifier'
+  it_behaves_like 'a grouped metric_verifier'
 end
 
 describe 'AuthorStandby' do
@@ -53,9 +54,8 @@ describe 'AuthorStandby' do
     mock_cloud_watch_metric(@mock_cloud_watch, @metric_1_name, [@instance_1_id])
   end
 
-  it_has_behaviour 'instance accessibility' do
+  it_has_behaviour 'grouped instance accessibility' do
     let(:component) { mock_author_standby }
-    let(:instance_count) { 0 }
   end
 
   it '.healthy? verifies EC2 running instance' do

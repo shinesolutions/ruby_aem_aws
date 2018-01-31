@@ -12,8 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-require 'aws-sdk'
-require_relative 'abstract_component'
+require_relative 'abstract_grouped_component'
 require_relative 'mixins/healthy_instance_count_verifier'
 require_relative 'mixins/metric_verifier'
 require_relative 'component_descriptor'
@@ -23,7 +22,7 @@ module RubyAemAws
     # Interface to the AWS instances playing and supporting the AuthorDispatcher role in a full-set AEM stack.
     class AuthorDispatcher
       attr_reader :descriptor, :ec2_resource, :elb_client, :asg_client
-      include AbstractComponent
+      include AbstractGroupedComponent
       include HealthyInstanceCountVerifier
       include MetricVerifier
 

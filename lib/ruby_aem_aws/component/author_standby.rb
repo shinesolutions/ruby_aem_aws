@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-require_relative 'abstract_component'
+require_relative 'abstract_grouped_component'
 require_relative 'mixins/healthy_instance_count_verifier'
 require_relative 'mixins/metric_verifier'
 
@@ -21,7 +21,7 @@ module RubyAemAws
     # Interface to the AWS instance running the Author-Standby component of a full-set AEM stack.
     class AuthorStandby
       attr_reader :descriptor, :ec2_resource, :asg_client, :elb_client, :cloud_watch_client
-      include AbstractComponent
+      include AbstractGroupedComponent
       include HealthyInstanceCountVerifier
       include MetricVerifier
 

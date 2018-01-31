@@ -13,13 +13,14 @@
 # limitations under the License.
 
 require_relative '../../spec_helper'
-require_relative 'examples/instance_accessor'
-require_relative 'examples/check_methods_exist'
+require_relative 'examples/component_grouped'
+require_relative 'examples/verify_health_grouped'
+require_relative 'examples/verify_metric_grouped'
 require_relative '../../../../lib/ruby_aem_aws/component/author_dispatcher'
 
 author_dispatcher = RubyAemAws::Component::AuthorDispatcher.new({ stack_prefix: nil }, nil, nil, nil)
 describe author_dispatcher do
-  it_behaves_like 'an instance accessor'
+  it_behaves_like 'a grouped instance accessor'
   it_behaves_like 'a healthy_instance_count_verifier'
 end
 
@@ -45,7 +46,7 @@ describe 'AuthorDispatcher.health_state and .healthy?' do
     @instance_2_id = 'i-00525b1a281aee5b7'.freeze
   end
 
-  it_has_behaviour 'instance accessibility' do
+  it_has_behaviour 'grouped instance accessibility' do
     let(:component) { mock_author_dispatcher }
   end
 

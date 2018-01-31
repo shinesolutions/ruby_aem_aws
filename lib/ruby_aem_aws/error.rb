@@ -19,4 +19,18 @@ module RubyAemAws
       super
     end
   end
+
+  # Raise this when a component unexpectedly has more than one instance.
+  class ExpectedSingleInstanceError < StandardError
+  #   def initialize(count, descriptor)
+  #     message << 'Expected exactly one instance'
+  #     message << " but got #{count}" unless count.nil?
+  #     message << "for (#{descriptor.stack_prefix}, #{descriptor.ec2.component}, #{descriptor.ec2.name})" unless descriptor.nil?
+  #     super(message)
+  #   end
+
+    def initialize(msg = 'Expected exactly one instance')
+      super
+    end
+  end
 end

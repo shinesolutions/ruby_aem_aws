@@ -13,20 +13,20 @@
 # limitations under the License.
 
 require_relative '../../spec_helper'
-require_relative 'examples/instance_accessor'
-require_relative 'examples/check_methods_exist'
+require_relative 'examples/component_grouped'
+require_relative 'examples/verify_health_grouped'
 require_relative '../../../../lib/ruby_aem_aws/component/publish_dispatcher'
 
-publish_dispatcher = RubyAemAws::Component::PublishDispatcher.new(nil)
+publish_dispatcher = RubyAemAws::Component::PublishDispatcher.new(nil, nil)
 
 describe publish_dispatcher do
-  it_behaves_like 'an instance accessor'
+  it_behaves_like 'a grouped instance accessor'
   it_behaves_like 'a healthy_instance_count_verifier'
 end
 
 describe 'PublishDispatcher.healthy?' do
   before do
-    @publish_dispatcher = RubyAemAws::Component::PublishDispatcher.new(TEST_STACK_PREFIX)
+    @publish_dispatcher = RubyAemAws::Component::PublishDispatcher.new(TEST_STACK_PREFIX, nil)
   end
 
   it 'runs healthy method' do

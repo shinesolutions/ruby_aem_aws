@@ -13,14 +13,15 @@
 # limitations under the License.
 
 require_relative '../../spec_helper'
-require_relative 'examples/instance_accessor'
-require_relative 'examples/check_methods_exist'
+require_relative 'examples/component_single'
+require_relative 'examples/verify_health_single'
+require_relative 'examples/verify_metric_grouped'
 require_relative '../../../../lib/ruby_aem_aws/component/author_publish_dispatcher'
 
 author_publish_dispatcher = RubyAemAws::Component::AuthorPublishDispatcher.new(nil, nil)
 
 describe author_publish_dispatcher do
-  it_behaves_like 'an instance accessor'
+  it_behaves_like 'a single instance accessor'
   it_behaves_like 'a healthy_instance_state_verifier'
 end
 
@@ -42,7 +43,7 @@ describe 'AuthorPublishDispatcher.healthy?' do
     @mock_ec2 = mock_ec2_resource
   end
 
-  it_has_behaviour 'instance accessibility' do
+  it_has_behaviour 'single instance accessibility' do
     let(:component) { mock_author_publish_dispatcher }
   end
 

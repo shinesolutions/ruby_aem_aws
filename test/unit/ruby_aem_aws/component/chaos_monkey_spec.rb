@@ -13,14 +13,14 @@
 # limitations under the License.
 
 require_relative '../../spec_helper'
-require_relative 'examples/instance_accessor'
-require_relative 'examples/check_methods_exist'
+require_relative 'examples/component_single'
+require_relative 'examples/verify_health_single'
 require_relative '../../../../lib/ruby_aem_aws/component/chaos_monkey'
 
 chaos_monkey = RubyAemAws::Component::ChaosMonkey.new(nil, nil)
 
 describe chaos_monkey do
-  it_behaves_like 'an instance accessor'
+  it_behaves_like 'a single instance accessor'
   it_behaves_like 'a healthy_instance_state_verifier'
 end
 
@@ -50,7 +50,7 @@ describe 'ChaosMonkey instance access' do
     @instance_1_id = 'i-00525b1a281aee5b9'.freeze
   end
 
-  it_has_behaviour 'instance accessibility' do
+  it_has_behaviour 'single instance accessibility' do
     let(:component) { mock_chaos_monkey }
   end
 
