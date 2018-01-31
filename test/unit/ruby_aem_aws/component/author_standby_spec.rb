@@ -15,6 +15,7 @@
 require_relative '../../spec_helper'
 require_relative 'examples/component_grouped'
 require_relative 'examples/verify_health_grouped'
+require_relative 'examples/verify_metric_single'
 require_relative 'examples/verify_metric_grouped'
 require_relative '../../../../lib/ruby_aem_aws/component/author'
 
@@ -58,6 +59,14 @@ describe 'AuthorStandby' do
     let(:component) { mock_author_standby }
   end
 
+  it_has_behaviour 'metrics via single verifier' do
+    let(:component) { mock_author_standby }
+  end
+
+  it_has_behaviour 'metrics via grouped verifier' do
+    let(:component) { mock_author_standby }
+  end
+
   it '.healthy? verifies EC2 running instance' do
     add_instance(@instance_1_id, INSTANCE_STATE_HEALTHY)
 
@@ -66,19 +75,6 @@ describe 'AuthorStandby' do
 
   it '.healthy? verifies no EC2 running instance' do
     expect(mock_author_standby.healthy?).to equal false
-  end
-
-  it '.metric? verifies metric exists' do
-    add_instance(@instance_1_id, INSTANCE_STATE_HEALTHY)
-    mock_cloud_watch_metric(@mock_cloud_watch, @metric_1_name, [@instance_1_id])
-
-    expect(mock_author_standby.metric?(@metric_1_name)).to equal true
-  end
-
-  it '.metric? verifies metric does not exist' do
-    add_instance(@instance_1_id, INSTANCE_STATE_HEALTHY)
-
-    expect(mock_author_standby.metric?(@metric_2_name)).to equal false
   end
 
   it '.metric_instances returns all instances with metric' do

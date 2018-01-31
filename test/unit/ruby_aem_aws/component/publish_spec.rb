@@ -15,6 +15,7 @@
 require_relative '../../spec_helper'
 require_relative 'examples/component_grouped'
 require_relative 'examples/verify_health_single'
+require_relative 'examples/verify_metric_single'
 require_relative 'examples/verify_metric_grouped'
 require_relative '../../../../lib/ruby_aem_aws/component/publish'
 
@@ -56,6 +57,14 @@ describe 'Publish' do
     let(:component) { mock_publish }
   end
 
+  it_has_behaviour 'metrics via single verifier' do
+    let(:component) { mock_publish }
+  end
+
+  it_has_behaviour 'metrics via grouped verifier' do
+    let(:component) { mock_publish }
+  end
+
   it '.healthy? verifies EC2 running instance' do
     add_instance(@instance_1_id, INSTANCE_STATE_HEALTHY)
 
@@ -64,18 +73,6 @@ describe 'Publish' do
 
   it '.healthy? verifies no EC2 running instance' do
     expect(mock_publish.healthy?).to equal false
-  end
-
-  it '.metric? verifies metric exists' do
-    add_instance(@instance_1_id, INSTANCE_STATE_HEALTHY)
-
-    expect(mock_publish.metric?(@metric_1_name)).to equal true
-  end
-
-  it '.metric? verifies metric does not exist' do
-    add_instance(@instance_1_id, INSTANCE_STATE_HEALTHY)
-
-    expect(mock_publish.metric?(@metric_2_name)).to equal false
   end
 
   it '.metric_instances returns all instances with metric' do

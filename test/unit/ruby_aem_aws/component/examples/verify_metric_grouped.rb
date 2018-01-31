@@ -22,18 +22,15 @@ shared_examples 'a grouped metric_verifier' do
 end
 
 shared_examples 'metrics via grouped verifier' do
-  it '.metric? verifies metric exists' do
-    add_instance(@instance_1_id, INSTANCE_STATE_HEALTHY)
-    mock_cloud_watch_metric(@mock_cloud_watch, @metric_1_name, [@instance_1_id])
+  before do
+    @mock_ec2 = mock_ec2_resource
+    @mock_cloud_watch = mock_cloud_watch
 
-    expect(mock_author_primary.metric?(@metric_1_name)).to equal true
-  end
+    @instance_1_id = 'i-00525b1a281aee5b9'.freeze
+    @instance_2_id = 'i-00525b1a281aee5b7'.freeze
 
-  it '.metric? verifies metric does not exist' do
-    add_instance(@instance_1_id, INSTANCE_STATE_HEALTHY)
-    mock_cloud_watch_metric(@mock_cloud_watch, @metric_1_name, [@instance_1_id])
-
-    expect(mock_author_primary.metric?(@metric_2_name)).to equal false
+    @metric_1_name = 'A test metric'
+    @metric_2_name = 'Unmocked'
   end
 
   it '.metric_instances returns all instances with metric' do
@@ -41,7 +38,7 @@ shared_examples 'metrics via grouped verifier' do
     add_instance(@instance_2_id, INSTANCE_STATE_HEALTHY)
     mock_cloud_watch_metric(@mock_cloud_watch, @metric_1_name, [@instance_1_id, @instance_2_id])
 
-    expect(mock_author_primary.metric_instances(@metric_1_name).length).to be == mock_author_primary.get_all_instances.length
+    expect(component.metric_instances(@metric_1_name).length).to be == component.get_all_instances.length
   end
 
   it '.metric_instances returns only instances with metric' do
@@ -50,7 +47,7 @@ shared_examples 'metrics via grouped verifier' do
     mock_cloud_watch_metric(@mock_cloud_watch, @metric_1_name, [@instance_1_id])
     mock_cloud_watch_metric(@mock_cloud_watch, @metric_2_name, [@instance_2_id])
 
-    expect(mock_author_primary.metric_instances(@metric_1_name).length).to be < mock_author_primary.get_all_instances.length
+    expect(component.metric_instances(@metric_1_name).length).to be < component.get_all_instances.length
   end
 
   private def add_instance(id, state, tags = {})
