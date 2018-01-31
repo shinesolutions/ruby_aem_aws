@@ -20,7 +20,7 @@ module RubyAemAws
   module Component
     # Interface to the AWS instance running the Publish component of a full-set AEM stack.
     class Publish
-      attr_reader :descriptor, :ec2_resource, :cloud_watch_client
+      attr_reader :descriptor, :ec2_resource, :cloud_watch_client, :asg_client
       include AbstractComponent
       include HealthyInstanceStateVerifier
       include MetricVerifier
@@ -31,11 +31,12 @@ module RubyAemAws
       # @param stack_prefix AWS tag: StackPrefix
       # @param ec2_resource AWS EC2 resource
       # @return new RubyAemAws::FullSet::AuthorPrimary
-      def initialize(stack_prefix, ec2_resource, cloud_watch_client)
+      def initialize(stack_prefix, ec2_resource, asg_client, cloud_watch_client)
         @descriptor = ComponentDescriptor.new(stack_prefix,
                                               EC2Descriptor.new(EC2_COMPONENT, EC2_NAME),
                                               nil)
         @ec2_resource = ec2_resource
+        @asg_client = asg_client
         @cloud_watch_client = cloud_watch_client
       end
 

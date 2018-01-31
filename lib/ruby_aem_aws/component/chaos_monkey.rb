@@ -13,12 +13,14 @@
 # limitations under the License.
 
 require_relative 'abstract_component'
+require_relative 'mixins/healthy_instance_state_verifier'
 
 module RubyAemAws
   module Component
     # Interface to the AWS instance running the ChaosMonkey component of a full-set AEM stack.
     class ChaosMonkey
       include AbstractComponent
+      include HealthyInstanceStateVerifier
 
       # @return new RubyAemAws::FullSet::ChaosMonkey
       def initialize(_stack_prefix) end

@@ -24,9 +24,9 @@ module RubyAemAws
       # @param stack_prefix AWS tag: StackPrefix
       # @param ec2_resource AWS EC2 resource
       # @return new RubyAemAws::FullSet::Author
-      def initialize(stack_prefix, ec2_resource, cloud_watch_client)
+      def initialize(stack_prefix, ec2_resource, asg_client, elb_client, cloud_watch_client)
         @author_primary = Component::AuthorPrimary.new(stack_prefix, ec2_resource, cloud_watch_client)
-        @author_standby = Component::AuthorStandby.new(stack_prefix, ec2_resource, cloud_watch_client)
+        @author_standby = Component::AuthorStandby.new(stack_prefix, ec2_resource, asg_client, elb_client, cloud_watch_client)
       end
 
       # def terminate_primary_instance

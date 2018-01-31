@@ -28,9 +28,11 @@ module RubyAemAws
         namespace: 'AWS/EC2',
         metric_name: metric_name
       ).metrics
+      # puts("All metrics: #{metrics}")
 
       instances_with_metric = []
       instances = get_all_instances
+      # puts("All instances: #{instances}")
       instances.each do |instance|
         instance_id = instance.instance_id
         instances_with_metric.push(instance_id) if instance_in_metrics(metrics, instance_id)

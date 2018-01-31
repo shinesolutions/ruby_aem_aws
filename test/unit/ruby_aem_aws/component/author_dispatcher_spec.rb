@@ -18,44 +18,29 @@ require_relative '../../../../lib/ruby_aem_aws/component/author_dispatcher'
 
 author_dispatcher = RubyAemAws::Component::AuthorDispatcher.new({ stack_prefix: nil }, nil, nil, nil)
 describe author_dispatcher do
-  it_behaves_like 'a health flagged component'
-  it_behaves_like 'a health state-aware component'
+  it_behaves_like 'a healthy_instance_count_verifier'
 end
 
 describe 'AuthorDispatcher.health_state and .healthy?' do
   before do
+    # These will be used as default tag values when mocking ec2 instances.
     @ec2_component = RubyAemAws::Component::AuthorDispatcher::EC2_COMPONENT
-    @elb_id = RubyAemAws::Component::AuthorDispatcher::ELB_ID
-    @elb_name = RubyAemAws::Component::AuthorDispatcher::ELB_NAME
-    @asg_name = 'asg-test'.freeze
+    @ec2_name = RubyAemAws::Component::AuthorDispatcher::EC2_NAME
+    @instance_filter = [
+      { StackPrefix: TEST_STACK_PREFIX },
+      { Component: @ec2_component },
+      { Name: @ec2_name }
+    ].freeze
+
+    @mock_ec2 = mock_ec2_resource
+    @mock_elb = mock_elb_client(RubyAemAws::Component::AuthorDispatcher::ELB_ID,
+                                RubyAemAws::Component::AuthorDispatcher::ELB_NAME)
+    mock_asg = mock_asg(@ec2_component)
+    @mock_as = mock_asg.first
+    @asg = mock_asg.second
+
     @instance_1_id = 'i-00525b1a281aee5b9'.freeze
     @instance_2_id = 'i-00525b1a281aee5b7'.freeze
-
-    @mock_ec2 = double('mock_ec2')
-    allow(@mock_ec2).to receive(:instance) { raise 'Instance not mocked' }
-
-    @mock_elb = double('mock_elb')
-    @mock_as = double('mock_as')
-
-    @asg = mock_as_group(@asg_name,
-                         1,
-                         [],
-                         mock_as_tag('StackPrefix', TEST_STACK_PREFIX),
-                         mock_as_tag('Component', @ec2_component))
-    allow(@mock_as).to receive(:describe_auto_scaling_groups) { mock_as_groups_type(@asg) }
-
-    allow(@mock_elb).to receive(:describe_tags) {
-      mock_elb_describe_tags_output(
-        mock_elb_tag_description(@elb_name,
-                                 mock_elb_tag('StackPrefix', TEST_STACK_PREFIX),
-                                 mock_elb_tag('aws:cloudformation:logical-id', @elb_id))
-      )
-    }
-    allow(@mock_elb).to receive(:describe_load_balancers) {
-      mock_elb_access_points(mock_lb_description(@elb_name, []))
-    }
-
-    @instances = Hash.new {}
 
     @author_dispatcher = RubyAemAws::Component::AuthorDispatcher.new(TEST_STACK_PREFIX, @mock_ec2, @mock_elb, @mock_as)
   end
@@ -140,24 +125,11 @@ describe 'AuthorDispatcher.health_state and .healthy?' do
     expect(@author_dispatcher.healthy?).to equal false
   end
 
-  private
-
-  def add_instance(id, state, tags = {})
-    tags[:StackPrefix] = TEST_STACK_PREFIX if tags[:StackPrefix].nil?
-
+  private def add_instance(id, state, tags = {})
+    @instances = Hash.new {} if @instances.nil?
     @instances[id] = mock_ec2_instance(id, state, tags)
-    allow(@mock_ec2).to receive(:instance).with(id) { @instances[id] }
-
-    asg_instances = []
-    elb_instances = []
-    @instances.each do |instance_id, instance|
-      asg_instances.push(mock_as_instance(instance_id, instance.state))
-      elb_instances.push(mock_elb_instance(instance_id))
-    end
-    allow(@asg).to receive(:instances) { asg_instances }
-
-    allow(@mock_elb).to receive(:describe_load_balancers) {
-      mock_elb_access_points(mock_lb_description(@elb_name, elb_instances))
-    }
+    add_ec2_instance(@mock_ec2, @instances, @instance_filter)
+    add_elb_instances(@mock_elb, @instances) if @mock_elb
+    add_asg_instances(@asg, @instances) if @asg
   end
 end

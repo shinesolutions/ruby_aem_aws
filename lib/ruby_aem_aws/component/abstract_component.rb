@@ -38,6 +38,14 @@ module RubyAemAws
     #   instances.first
     # end
 
+    def get_num_of_instances
+      get_all_instances.entries.length
+    end
+
+    def get_random_instance
+      get_all_instances.entries.sample
+    end
+
     private
 
     def filter_for_descriptor

@@ -46,17 +46,9 @@ module RubyAemAws
         @asg_client = asg_client
       end
 
-      # def get_all_instances
-
-      # def get_random_instance
-
-      # def get_num_of_instances
-
       # def terminate_all_instances
 
       # def terminate_random_instance
-
-      # def healthy?
 
       # def wait_until_healthy
     end

@@ -19,7 +19,7 @@ require_relative '../../../../lib/ruby_aem_aws/component/publish_dispatcher'
 publish_dispatcher = RubyAemAws::Component::PublishDispatcher.new(nil)
 
 describe publish_dispatcher do
-  it_behaves_like 'a health flagged component'
+  it_behaves_like 'a healthy_instance_count_verifier'
 end
 
 describe 'PublishDispatcher.healthy?' do

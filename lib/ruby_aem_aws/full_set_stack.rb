@@ -43,7 +43,7 @@ module RubyAemAws
 
     # @return new RubyAemAws::Component::Author instance
     def author
-      RubyAemAws::Component::Author.new(@stack_prefix, @ec2_resource, @cloud_watch_client)
+      RubyAemAws::Component::Author.new(@stack_prefix, @ec2_resource, @auto_scaling_client, @elb_client, @cloud_watch_client)
     end
 
     # @return new RubyAemAws::Component::ChaosMonkey instance
@@ -58,7 +58,7 @@ module RubyAemAws
 
     # @return new RubyAemAws::Component::Publish instance
     def publish
-      RubyAemAws::Component::Publish.new(@stack_prefix, @ec2_resource, @cloud_watch_client)
+      RubyAemAws::Component::Publish.new(@stack_prefix, @ec2_resource, @auto_scaling_client, @cloud_watch_client)
     end
 
     # @return new RubyAemAws::Component::PublishDispatcher instance

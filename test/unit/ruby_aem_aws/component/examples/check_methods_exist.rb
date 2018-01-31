@@ -12,14 +12,24 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-shared_examples 'a health flagged component' do
-  it 'because it contains .healthy? method' do
+shared_examples 'a healthy_instance_count_verifier' do
+  it 'because it responds to .healthy? method' do
+    is_expected.to respond_to(:healthy?)
+    is_expected.to respond_to(:health_state)
+  end
+end
+
+shared_examples 'a healthy_instance_state_verifier' do
+  it 'because it responds to .health_state method' do
     is_expected.to respond_to(:healthy?)
   end
 end
 
-shared_examples 'a health state-aware component' do
-  it 'because it contains .health_state method' do
-    is_expected.to respond_to(:health_state)
+shared_examples 'a metric_verifier' do
+  it 'because it responds to .metric? method' do
+    is_expected.to respond_to(:metric?)
+  end
+  it 'because it responds to .metric_instances method' do
+    is_expected.to respond_to(:metric_instances)
   end
 end

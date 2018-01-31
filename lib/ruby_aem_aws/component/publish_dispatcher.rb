@@ -13,12 +13,14 @@
 # limitations under the License.
 
 require_relative 'abstract_component'
+require_relative 'mixins/healthy_instance_count_verifier'
 
 module RubyAemAws
   module Component
     # Interface to the AWS instance running the PublishDispatcher component of a full-set AEM stack.
     class PublishDispatcher
       include AbstractComponent
+      include HealthyInstanceCountVerifier
 
       # @param _stack_prefix AWS tag: StackPrefix
       # @return new RubyAemAws::PublishDispatcher

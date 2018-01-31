@@ -12,7 +12,29 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+require 'tuples'
+
 module AwsAutoScalingMocker
+  def add_asg_instances(mock_asg, instances)
+    asg_instances = []
+    instances.each do |id, instance|
+      asg_instances.push(mock_as_instance(id, instance.state))
+    end
+    allow(mock_asg).to receive(:instances) { asg_instances }
+  end
+
+  def mock_asg(ec2_component)
+    mock_as_client = double('mock_asg')
+    auto_scaling_group_name = 'asg-test'.freeze
+    mock_as_group = mock_as_group(auto_scaling_group_name,
+                                  1,
+                                  [],
+                                  mock_as_tag('StackPrefix', TEST_STACK_PREFIX),
+                                  mock_as_tag('Component', ec2_component))
+    allow(mock_as_client).to receive(:describe_auto_scaling_groups) { mock_as_groups_type(mock_as_group) }
+    Pair(mock_as_client, mock_as_group)
+  end
+
   def mock_as_instance(id, status)
     as_instance = double('as_instance')
     allow(as_instance).to receive(:instance_id) { id }
@@ -47,6 +69,33 @@ module AwsAutoScalingMocker
 end
 
 module AwsElasticLoadBalancerMocker
+  def add_elb_instances(mock_elb, instances)
+    elb_instances = []
+    instances.each_key do |instance_id|
+      elb_instances.push(mock_elb_instance(instance_id))
+    end
+    allow(mock_elb).to receive(:describe_load_balancers) {
+      mock_elb_access_points(mock_lb_description(mock_elb.load_balancer_name, elb_instances))
+    }
+  end
+
+  def mock_elb_client(load_balancer_id, load_balancer_name)
+    mock_elb = double('mock_elb')
+    # Store the load_balancer_name in a non-doubled method for convenience in testing
+    allow(mock_elb).to receive(:load_balancer_name) { load_balancer_name }
+    allow(mock_elb).to receive(:describe_tags) {
+      mock_elb_describe_tags_output(
+        mock_elb_tag_description(load_balancer_name,
+                                 mock_elb_tag('StackPrefix', TEST_STACK_PREFIX),
+                                 mock_elb_tag('aws:cloudformation:logical-id', load_balancer_id))
+      )
+    }
+    allow(mock_elb).to receive(:describe_load_balancers) {
+      mock_elb_access_points(mock_lb_description(load_balancer_name, []))
+    }
+    mock_elb
+  end
+
   def mock_elb_instance(id)
     elb_instance = double('elb_instance')
     allow(elb_instance).to receive(:instance_id) { id }
@@ -91,7 +140,15 @@ module AwsElasticLoadBalancerMocker
 end
 
 module AwsEc2Mocker
-  def mock_ec2
+  def add_ec2_instance(mock_ec2, instances, instance_filter)
+    instances.each do |id, instance|
+      allow(mock_ec2).to receive(:instance).with(id) { instance }
+    end
+    allow(mock_ec2).to receive(:instances).with(anything) { -> { filter_instances(instances.values, instance_filter) }.call }
+    allow(mock_ec2).to receive(:instances).with(no_args) { -> { filter_instances(instances.values, instance_filter) }.call }
+  end
+
+  def mock_ec2_resource
     mock_ec2 = double('mock_ec2')
     allow(mock_ec2).to receive(:instances).with(anything) { Hash.new {} }
     allow(mock_ec2).to receive(:instances).with(no_args) { Hash.new {} }
@@ -105,18 +162,22 @@ module AwsEc2Mocker
     ec2_instance_state
   end
 
-  # rubocop:disable ParameterLists
-  def add_instance(mock_ec2, instances, instance_filter, id, state, tags = {})
+  def mock_ec2_instance(id, state, tags)
     # Add default tags.
     tags[:StackPrefix] = TEST_STACK_PREFIX if tags[:StackPrefix].nil?
-    tags[:Component] = @instance_component if tags[:Component].nil?
-    tags[:Name] = @instance_name if tags[:Name].nil?
+    tags[:Component] = @ec2_component if tags[:Component].nil? && defined?(@ec2_component)
+    tags[:Name] = @ec2_name if tags[:Name].nil? && defined?(@ec2_name)
 
-    instances.push(mock_ec2_instance(id, state, tags))
-    allow(mock_ec2).to receive(:instances).with(anything) { -> { filter_instances(instances, instance_filter) }.call }
-    allow(mock_ec2).to receive(:instances).with(no_args) { -> { filter_instances(instances, instance_filter) }.call }
+    ec2_instance = double('ec2_instance')
+    allow(ec2_instance).to receive(:instance_id) { id }
+    allow(ec2_instance).to receive(:state) { mock_ec2_instance_state(state) }
+    ec2_tags = []
+    tags.each do |key, value|
+      ec2_tags.push(ec2_tag(id, key.to_s, value))
+    end
+    allow(ec2_instance).to receive(:tags) { ec2_tags }
+    ec2_instance
   end
-  # rubocop:enable ParameterLists
 
   # Intentional replication of AWS instance filter logic for use by mock EC2 Resource.
   private def filter_instances(instances, filters)
@@ -132,19 +193,8 @@ module AwsEc2Mocker
         found_tag.value == value
       }
     end
+    # filtered.values if filtered.is_a? Hash.class
     filtered
-  end
-
-  private def mock_ec2_instance(id, state, tags)
-    ec2_instance = double('ec2_instance')
-    allow(ec2_instance).to receive(:instance_id) { id }
-    allow(ec2_instance).to receive(:state) { mock_ec2_instance_state(state) }
-    ec2_tags = []
-    tags.each do |key, value|
-      ec2_tags.push(ec2_tag(id, key.to_s, value))
-    end
-    allow(ec2_instance).to receive(:tags) { ec2_tags }
-    ec2_instance
   end
 
   private def ec2_tag(resource_id, key, value)
