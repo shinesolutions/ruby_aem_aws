@@ -21,6 +21,7 @@ shared_examples 'a grouped metric_verifier' do
   end
 end
 
+# rubocop:disable BlockLength
 shared_examples 'metrics via grouped verifier' do
   before do
     @mock_ec2 = mock_ec2_resource
@@ -28,7 +29,6 @@ shared_examples 'metrics via grouped verifier' do
 
     @instance_1_id = 'i-00525b1a281aee5b9'.freeze
     @instance_2_id = 'i-00525b1a281aee5b7'.freeze
-
     @metric_1_name = 'A test metric'
     @metric_2_name = 'Unmocked'
   end
@@ -53,6 +53,7 @@ shared_examples 'metrics via grouped verifier' do
   private def add_instance(id, state, tags = {})
     @instances = Hash.new {} if @instances.nil?
     @instances[id] = mock_ec2_instance(id, state, tags)
-    add_ec2_instance(@mock_ec2, @instances, @instance_filter)
+    add_ec2_instance(@mock_ec2, @instances)
   end
 end
+# rubocop:enable BlockLength
