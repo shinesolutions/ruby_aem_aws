@@ -13,12 +13,14 @@
 # limitations under the License.
 
 require_relative '../../spec_helper'
+require_relative 'examples/instance_accessor'
 require_relative 'examples/check_methods_exist'
 require_relative '../../../../lib/ruby_aem_aws/component/orchestrator'
 
 orchestrator = RubyAemAws::Component::Orchestrator.new(nil)
 
 describe orchestrator do
+  it_behaves_like 'an instance accessor'
   it_behaves_like 'a healthy_instance_state_verifier'
 end
 

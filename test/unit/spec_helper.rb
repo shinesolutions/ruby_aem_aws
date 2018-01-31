@@ -25,6 +25,10 @@ RSpec.configure do |config|
     # exist to raise, protecting against incorrectly spelt names.
     mocks.verify_doubled_constant_names = true
   end
+
+  # Improve test output
+  config.alias_it_should_behave_like_to :it_has_behaviour, 'has behaviour:'
+
   config.include AwsAutoScalingMocker
   config.include AwsElasticLoadBalancerMocker
   config.include AwsEc2Mocker

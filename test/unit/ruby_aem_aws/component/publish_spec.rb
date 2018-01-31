@@ -13,12 +13,14 @@
 # limitations under the License.
 
 require_relative '../../spec_helper'
+require_relative 'examples/instance_accessor'
 require_relative 'examples/check_methods_exist'
 require_relative '../../../../lib/ruby_aem_aws/component/publish'
 
 publish = RubyAemAws::Component::Publish.new(nil, nil, nil, nil)
 
 describe publish do
+  it_behaves_like 'an instance accessor'
   it_behaves_like 'a healthy_instance_state_verifier'
   it_behaves_like 'a metric_verifier'
 end
@@ -47,6 +49,11 @@ describe 'Publish' do
 
     @mock_cloud_watch = mock_cloud_watch
     mock_cloud_watch_metric(@mock_cloud_watch, @metric_1_name, [@instance_1_id])
+  end
+
+  it_has_behaviour 'instance accessibility' do
+    let(:component) { mock_publish }
+    let(:instance_count) { 0 }
   end
 
   it '.healthy? verifies EC2 running instance' do

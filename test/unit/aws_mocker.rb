@@ -140,7 +140,7 @@ module AwsElasticLoadBalancerMocker
 end
 
 module AwsEc2Mocker
-  def add_ec2_instance(mock_ec2, instances, instance_filter)
+  def add_ec2_instance(mock_ec2, instances, instance_filter = [])
     instances.each do |id, instance|
       allow(mock_ec2).to receive(:instance).with(id) { instance }
     end

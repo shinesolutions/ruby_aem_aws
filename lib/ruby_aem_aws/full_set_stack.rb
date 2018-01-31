@@ -48,7 +48,7 @@ module RubyAemAws
 
     # @return new RubyAemAws::Component::ChaosMonkey instance
     def chaos_monkey
-      RubyAemAws::Component::ChaosMonkey.new(@stack_prefix)
+      RubyAemAws::Component::ChaosMonkey.new(@stack_prefix, @ec2_resource)
     end
 
     # @return new RubyAemAws::Component::Orchestrator instance

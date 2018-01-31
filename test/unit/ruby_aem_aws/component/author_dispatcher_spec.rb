@@ -13,11 +13,13 @@
 # limitations under the License.
 
 require_relative '../../spec_helper'
+require_relative 'examples/instance_accessor'
 require_relative 'examples/check_methods_exist'
 require_relative '../../../../lib/ruby_aem_aws/component/author_dispatcher'
 
 author_dispatcher = RubyAemAws::Component::AuthorDispatcher.new({ stack_prefix: nil }, nil, nil, nil)
 describe author_dispatcher do
+  it_behaves_like 'an instance accessor'
   it_behaves_like 'a healthy_instance_count_verifier'
 end
 
@@ -41,24 +43,26 @@ describe 'AuthorDispatcher.health_state and .healthy?' do
 
     @instance_1_id = 'i-00525b1a281aee5b9'.freeze
     @instance_2_id = 'i-00525b1a281aee5b7'.freeze
+  end
 
-    @author_dispatcher = RubyAemAws::Component::AuthorDispatcher.new(TEST_STACK_PREFIX, @mock_ec2, @mock_elb, @mock_as)
+  it_has_behaviour 'instance accessibility' do
+    let(:component) { mock_author_dispatcher }
   end
 
   it 'verifies ELB running instances (1) against ASG desired capacity (1)' do
     allow(@asg).to receive(:desired_capacity) { 1 }
     add_instance(@instance_1_id, INSTANCE_STATE_HEALTHY)
 
-    expect(@author_dispatcher.health_state).to equal :ready
-    expect(@author_dispatcher.healthy?).to equal true
+    expect(mock_author_dispatcher.health_state).to equal :ready
+    expect(mock_author_dispatcher.healthy?).to equal true
   end
 
   it 'verifies ELB running instances (1) against ASG desired capacity (2)' do
     allow(@asg).to receive(:desired_capacity) { 2 }
     add_instance(@instance_1_id, INSTANCE_STATE_HEALTHY)
 
-    expect(@author_dispatcher.health_state).to equal :recovering
-    expect(@author_dispatcher.healthy?).to equal false
+    expect(mock_author_dispatcher.health_state).to equal :recovering
+    expect(mock_author_dispatcher.healthy?).to equal false
   end
 
   it 'verifies ELB running instances (1/2) against ASG desired capacity (2)' do
@@ -66,8 +70,8 @@ describe 'AuthorDispatcher.health_state and .healthy?' do
     add_instance(@instance_1_id, INSTANCE_STATE_HEALTHY)
     add_instance(@instance_2_id, INSTANCE_STATE_UNHEALTHY)
 
-    expect(@author_dispatcher.health_state).to equal :recovering
-    expect(@author_dispatcher.healthy?).to equal false
+    expect(mock_author_dispatcher.health_state).to equal :recovering
+    expect(mock_author_dispatcher.healthy?).to equal false
   end
 
   it 'verifies ELB running instances (2) against ASG desired capacity (1)' do
@@ -75,8 +79,8 @@ describe 'AuthorDispatcher.health_state and .healthy?' do
     add_instance(@instance_2_id, INSTANCE_STATE_HEALTHY)
     allow(@asg).to receive(:desired_capacity) { 1 }
 
-    expect(@author_dispatcher.health_state).to equal :scaling
-    expect(@author_dispatcher.healthy?).to equal true
+    expect(mock_author_dispatcher.health_state).to equal :scaling
+    expect(mock_author_dispatcher.healthy?).to equal true
   end
 
   it 'verifies ELB running instances (1/2) against ASG desired capacity (1)' do
@@ -84,45 +88,49 @@ describe 'AuthorDispatcher.health_state and .healthy?' do
     add_instance(@instance_2_id, INSTANCE_STATE_UNHEALTHY)
     allow(@asg).to receive(:desired_capacity) { 1 }
 
-    expect(@author_dispatcher.health_state).to equal :ready
-    expect(@author_dispatcher.healthy?).to equal true
+    expect(mock_author_dispatcher.health_state).to equal :ready
+    expect(mock_author_dispatcher.healthy?).to equal true
   end
 
   it 'verifies ELB instances (0) against ASG desired capacity (0)' do
     allow(@asg).to receive(:desired_capacity) { 0 }
 
-    expect(@author_dispatcher.health_state).to equal :misconfigured
-    expect(@author_dispatcher.healthy?).to equal false
+    expect(mock_author_dispatcher.health_state).to equal :misconfigured
+    expect(mock_author_dispatcher.healthy?).to equal false
   end
 
   it 'verifies ELB running instances (1) against ASG desired capacity (0)' do
     add_instance(@instance_1_id, INSTANCE_STATE_HEALTHY)
     allow(@asg).to receive(:desired_capacity) { 0 }
 
-    expect(@author_dispatcher.health_state).to equal :misconfigured
-    expect(@author_dispatcher.healthy?).to equal false
+    expect(mock_author_dispatcher.health_state).to equal :misconfigured
+    expect(mock_author_dispatcher.healthy?).to equal false
   end
 
   it 'verifies ELB non-running instances (1) against ASG desired capacity (0)' do
     add_instance(@instance_1_id, INSTANCE_STATE_UNHEALTHY)
     allow(@asg).to receive(:desired_capacity) { 0 }
 
-    expect(@author_dispatcher.health_state).to equal :misconfigured
-    expect(@author_dispatcher.healthy?).to equal false
+    expect(mock_author_dispatcher.health_state).to equal :misconfigured
+    expect(mock_author_dispatcher.healthy?).to equal false
   end
 
   it 'verifies ELB does not exist' do
     allow(@mock_elb).to receive(:describe_tags) { mock_elb_describe_tags_output(mock_elb_tag_description(@elb_name)) }
 
-    expect(@author_dispatcher.health_state).to equal :no_elb
-    expect(@author_dispatcher.healthy?).to equal false
+    expect(mock_author_dispatcher.health_state).to equal :no_elb
+    expect(mock_author_dispatcher.healthy?).to equal false
   end
 
   it 'verifies ASG does not exist' do
     allow(@asg).to receive(:tags) { [] }
 
-    expect(@author_dispatcher.health_state).to equal :no_asg
-    expect(@author_dispatcher.healthy?).to equal false
+    expect(mock_author_dispatcher.health_state).to equal :no_asg
+    expect(mock_author_dispatcher.healthy?).to equal false
+  end
+
+  private def mock_author_dispatcher
+    RubyAemAws::Component::AuthorDispatcher.new(TEST_STACK_PREFIX, @mock_ec2, @mock_elb, @mock_as)
   end
 
   private def add_instance(id, state, tags = {})

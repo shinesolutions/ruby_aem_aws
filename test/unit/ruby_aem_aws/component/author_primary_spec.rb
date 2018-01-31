@@ -19,6 +19,7 @@ require_relative '../../../../lib/ruby_aem_aws/component/author'
 author_primary = RubyAemAws::Component::AuthorPrimary.new(nil, nil, nil)
 
 describe author_primary do
+  it_behaves_like 'an instance accessor'
   it_behaves_like 'a healthy_instance_state_verifier'
   it_behaves_like 'a metric_verifier'
 end

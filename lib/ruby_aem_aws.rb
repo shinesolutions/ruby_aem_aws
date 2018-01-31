@@ -71,11 +71,4 @@ module RubyAemAws
       }
     end
   end
-
-  # Raise this when a method is not yet implemented.
-  class NotYetImplementedError < StandardError
-    def initialize(msg = 'Not yet implemented')
-      super
-    end
-  end
 end

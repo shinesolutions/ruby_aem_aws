@@ -13,12 +13,14 @@
 # limitations under the License.
 
 require_relative '../../spec_helper'
+require_relative 'examples/instance_accessor'
 require_relative 'examples/check_methods_exist'
 require_relative '../../../../lib/ruby_aem_aws/component/publish_dispatcher'
 
 publish_dispatcher = RubyAemAws::Component::PublishDispatcher.new(nil)
 
 describe publish_dispatcher do
+  it_behaves_like 'an instance accessor'
   it_behaves_like 'a healthy_instance_count_verifier'
 end
 

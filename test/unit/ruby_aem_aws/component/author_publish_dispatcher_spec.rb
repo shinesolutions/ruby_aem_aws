@@ -13,12 +13,14 @@
 # limitations under the License.
 
 require_relative '../../spec_helper'
+require_relative 'examples/instance_accessor'
 require_relative 'examples/check_methods_exist'
 require_relative '../../../../lib/ruby_aem_aws/component/author_publish_dispatcher'
 
-author_publish_dispatcher = RubyAemAws::Component::AuthorPublishDispatcher.new({ stack_prefix: nil }, nil)
+author_publish_dispatcher = RubyAemAws::Component::AuthorPublishDispatcher.new(nil, nil)
 
 describe author_publish_dispatcher do
+  it_behaves_like 'an instance accessor'
   it_behaves_like 'a healthy_instance_state_verifier'
 end
 
@@ -38,20 +40,22 @@ describe 'AuthorPublishDispatcher.healthy?' do
     @instance_3_id = 'i-00525b1a281aee5b5'.freeze
 
     @mock_ec2 = mock_ec2_resource
+  end
 
-    @author_dispatcher = RubyAemAws::Component::AuthorPublishDispatcher.new(TEST_STACK_PREFIX, @mock_ec2)
+  it_has_behaviour 'instance accessibility' do
+    let(:component) { mock_author_publish_dispatcher }
   end
 
   it 'verifies EC2 running instance' do
     add_instance(@instance_1_id, INSTANCE_STATE_HEALTHY)
 
-    expect(@author_dispatcher.healthy?).to equal true
+    expect(mock_author_publish_dispatcher.healthy?).to equal true
   end
 
   it 'verifies EC2 not-running instance' do
     add_instance(@instance_1_id, INSTANCE_STATE_UNHEALTHY)
 
-    expect(@author_dispatcher.healthy?).to equal false
+    expect(mock_author_publish_dispatcher.healthy?).to equal false
   end
 
   it 'verifies EC2 running instance (one of many)' do
@@ -59,7 +63,7 @@ describe 'AuthorPublishDispatcher.healthy?' do
     add_instance(@instance_2_id, INSTANCE_STATE_HEALTHY, Name: 'bob')
     add_instance(@instance_3_id, INSTANCE_STATE_UNHEALTHY, Component: 'bob')
 
-    expect(@author_dispatcher.healthy?).to equal true
+    expect(mock_author_publish_dispatcher.healthy?).to equal true
   end
 
   it 'verifies EC2 non-running instance (one of many)' do
@@ -67,10 +71,14 @@ describe 'AuthorPublishDispatcher.healthy?' do
     add_instance(@instance_2_id, INSTANCE_STATE_HEALTHY, Name: 'bob')
     add_instance(@instance_3_id, INSTANCE_STATE_UNHEALTHY, Component: 'bob')
 
-    expect(@author_dispatcher.healthy?).to equal false
+    expect(mock_author_publish_dispatcher.healthy?).to equal false
   end
 
-  private def add_instance(id, state, tags = {})
+  private def mock_author_publish_dispatcher
+    RubyAemAws::Component::AuthorPublishDispatcher.new(TEST_STACK_PREFIX, @mock_ec2)
+  end
+
+  private def add_instance(id, state = INSTANCE_STATE_HEALTHY, tags = {})
     @instances = Hash.new {} if @instances.nil?
     @instances[id] = mock_ec2_instance(id, state, tags)
     add_ec2_instance(@mock_ec2, @instances, @instance_filter)
