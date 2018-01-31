@@ -15,18 +15,20 @@
 require_relative '../../spec_helper'
 require_relative 'examples/component_single'
 require_relative 'examples/verify_health_single'
+require_relative 'examples/verify_metric_single'
 require_relative '../../../../lib/ruby_aem_aws/component/orchestrator'
 
-orchestrator = RubyAemAws::Component::Orchestrator.new(nil, nil)
+orchestrator = RubyAemAws::Component::Orchestrator.new(nil, nil, nil)
 
 describe orchestrator do
   it_behaves_like 'a single instance accessor'
   it_behaves_like 'a healthy_instance_state_verifier'
+  it_behaves_like 'a single metric_verifier'
 end
 
 describe 'Orchestrator.healthy?' do
   before do
-    @orchestrator = RubyAemAws::Component::Orchestrator.new(TEST_STACK_PREFIX, nil)
+    @orchestrator = RubyAemAws::Component::Orchestrator.new(TEST_STACK_PREFIX, nil, nil)
   end
 
   it 'runs healthy method' do
@@ -46,6 +48,7 @@ describe 'Orchestrator instance access' do
     ].freeze
 
     @mock_ec2 = mock_ec2_resource
+    @mock_cloud_watch = mock_cloud_watch
 
     @instance_1_id = 'i-00525b1a281aee5b9'.freeze
   end
@@ -54,8 +57,12 @@ describe 'Orchestrator instance access' do
     let(:component) { mock_orchestrator }
   end
 
+  it_has_behaviour 'metrics via single verifier' do
+    let(:component) { mock_orchestrator }
+  end
+
   private def mock_orchestrator
-    RubyAemAws::Component::Orchestrator.new(TEST_STACK_PREFIX, @mock_ec2)
+    RubyAemAws::Component::Orchestrator.new(TEST_STACK_PREFIX, @mock_ec2, @mock_cloud_watch)
   end
 
   private def add_instance(id, state, tags = {})

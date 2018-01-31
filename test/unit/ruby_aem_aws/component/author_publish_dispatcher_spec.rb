@@ -15,17 +15,18 @@
 require_relative '../../spec_helper'
 require_relative 'examples/component_single'
 require_relative 'examples/verify_health_single'
-require_relative 'examples/verify_metric_grouped'
+require_relative 'examples/verify_metric_single'
 require_relative '../../../../lib/ruby_aem_aws/component/author_publish_dispatcher'
 
-author_publish_dispatcher = RubyAemAws::Component::AuthorPublishDispatcher.new(nil, nil)
+author_publish_dispatcher = RubyAemAws::Component::AuthorPublishDispatcher.new(nil, nil, nil)
 
 describe author_publish_dispatcher do
   it_behaves_like 'a single instance accessor'
   it_behaves_like 'a healthy_instance_state_verifier'
+  it_behaves_like 'a single metric_verifier'
 end
 
-describe 'AuthorPublishDispatcher.healthy?' do
+describe 'AuthorPublishDispatcher' do
   before do
     # These will be used as default tag values when mocking ec2 instances.
     @ec2_component = RubyAemAws::Component::AuthorPublishDispatcher::EC2_COMPONENT
@@ -41,9 +42,14 @@ describe 'AuthorPublishDispatcher.healthy?' do
     @instance_3_id = 'i-00525b1a281aee5b5'.freeze
 
     @mock_ec2 = mock_ec2_resource
+    @mock_cloud_watch = mock_cloud_watch
   end
 
   it_has_behaviour 'single instance accessibility' do
+    let(:component) { mock_author_publish_dispatcher }
+  end
+
+  it_has_behaviour 'metrics via single verifier' do
     let(:component) { mock_author_publish_dispatcher }
   end
 
@@ -76,7 +82,7 @@ describe 'AuthorPublishDispatcher.healthy?' do
   end
 
   private def mock_author_publish_dispatcher
-    RubyAemAws::Component::AuthorPublishDispatcher.new(TEST_STACK_PREFIX, @mock_ec2)
+    RubyAemAws::Component::AuthorPublishDispatcher.new(TEST_STACK_PREFIX, @mock_ec2, @mock_cloud_watch)
   end
 
   private def add_instance(id, state = INSTANCE_STATE_HEALTHY, tags = {})

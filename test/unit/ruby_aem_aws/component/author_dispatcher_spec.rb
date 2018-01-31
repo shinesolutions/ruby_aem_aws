@@ -15,16 +15,18 @@
 require_relative '../../spec_helper'
 require_relative 'examples/component_grouped'
 require_relative 'examples/verify_health_grouped'
+require_relative 'examples/verify_metric_single'
 require_relative 'examples/verify_metric_grouped'
 require_relative '../../../../lib/ruby_aem_aws/component/author_dispatcher'
 
-author_dispatcher = RubyAemAws::Component::AuthorDispatcher.new({ stack_prefix: nil }, nil, nil, nil)
+author_dispatcher = RubyAemAws::Component::AuthorDispatcher.new({ stack_prefix: nil }, nil, nil, nil, nil)
 describe author_dispatcher do
   it_behaves_like 'a grouped instance accessor'
   it_behaves_like 'a healthy_instance_count_verifier'
+  it_behaves_like 'a grouped metric_verifier'
 end
 
-describe 'AuthorDispatcher.health_state and .healthy?' do
+describe 'AuthorDispatcher' do
   before do
     # These will be used as default tag values when mocking ec2 instances.
     @ec2_component = RubyAemAws::Component::AuthorDispatcher::EC2_COMPONENT
@@ -41,12 +43,21 @@ describe 'AuthorDispatcher.health_state and .healthy?' do
     mock_asg = mock_asg(@ec2_component)
     @mock_as = mock_asg.first
     @asg = mock_asg.second
+    @mock_cloud_watch = mock_cloud_watch
 
     @instance_1_id = 'i-00525b1a281aee5b9'.freeze
     @instance_2_id = 'i-00525b1a281aee5b7'.freeze
   end
 
   it_has_behaviour 'grouped instance accessibility' do
+    let(:component) { mock_author_dispatcher }
+  end
+
+  it_has_behaviour 'metrics via single verifier' do
+    let(:component) { mock_author_dispatcher }
+  end
+
+  it_has_behaviour 'metrics via grouped verifier' do
     let(:component) { mock_author_dispatcher }
   end
 
@@ -131,7 +142,7 @@ describe 'AuthorDispatcher.health_state and .healthy?' do
   end
 
   private def mock_author_dispatcher
-    RubyAemAws::Component::AuthorDispatcher.new(TEST_STACK_PREFIX, @mock_ec2, @mock_elb, @mock_as)
+    RubyAemAws::Component::AuthorDispatcher.new(TEST_STACK_PREFIX, @mock_ec2, @mock_elb, @mock_as, @mock_cloud_watch)
   end
 
   private def add_instance(id, state, tags = {})

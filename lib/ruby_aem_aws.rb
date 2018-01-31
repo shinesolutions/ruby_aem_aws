@@ -47,7 +47,7 @@ module RubyAemAws
     # @param stack_prefix AWS tag: StackPrefix
     # @return new RubyAemAws::ConsolidatedStack instance
     def consolidated(stack_prefix)
-      RubyAemAws::ConsolidatedStack.new(stack_prefix, @ec2_resource)
+      RubyAemAws::ConsolidatedStack.new(stack_prefix, @ec2_resource, @cloud_watch_client)
     end
 
     # Create a full set instance.

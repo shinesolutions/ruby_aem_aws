@@ -15,18 +15,22 @@
 require_relative '../../spec_helper'
 require_relative 'examples/component_grouped'
 require_relative 'examples/verify_health_grouped'
+require_relative 'examples/verify_metric_single'
+require_relative 'examples/verify_metric_grouped'
 require_relative '../../../../lib/ruby_aem_aws/component/publish_dispatcher'
 
-publish_dispatcher = RubyAemAws::Component::PublishDispatcher.new(nil, nil)
+publish_dispatcher = RubyAemAws::Component::PublishDispatcher.new(nil, nil, nil)
 
 describe publish_dispatcher do
   it_behaves_like 'a grouped instance accessor'
   it_behaves_like 'a healthy_instance_count_verifier'
+  it_behaves_like 'a single metric_verifier'
+  it_behaves_like 'a grouped metric_verifier'
 end
 
 describe 'PublishDispatcher.healthy?' do
   before do
-    @publish_dispatcher = RubyAemAws::Component::PublishDispatcher.new(TEST_STACK_PREFIX, nil)
+    @publish_dispatcher = RubyAemAws::Component::PublishDispatcher.new(TEST_STACK_PREFIX, nil, nil)
   end
 
   it 'runs healthy method' do

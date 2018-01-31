@@ -21,7 +21,7 @@ module RubyAemAws
   module Component
     # Interface to the AWS instances playing and supporting the AuthorDispatcher role in a full-set AEM stack.
     class AuthorDispatcher
-      attr_reader :descriptor, :ec2_resource, :elb_client, :asg_client
+      attr_reader :descriptor, :ec2_resource, :elb_client, :asg_client, :cloud_watch_client
       include AbstractGroupedComponent
       include HealthyInstanceCountVerifier
       include MetricVerifier
@@ -35,14 +35,16 @@ module RubyAemAws
       # @param ec2_resource AWS EC2 resource
       # @param elb_client AWS ElasticLoadBalancer client
       # @param asg_client AWS AutoScalingGroup client
+      # @param cloud_watch_client AWS CloudWatch client
       # @return new RubyAemAws::FullSet::AuthorDispatcher
-      def initialize(stack_prefix, ec2_resource, elb_client, asg_client)
+      def initialize(stack_prefix, ec2_resource, elb_client, asg_client, cloud_watch_client)
         @descriptor = ComponentDescriptor.new(stack_prefix,
                                               EC2Descriptor.new(EC2_COMPONENT, EC2_NAME),
                                               ELBDescriptor.new(ELB_ID, ELB_NAME))
         @ec2_resource = ec2_resource
         @elb_client = elb_client
         @asg_client = asg_client
+        @cloud_watch_client = cloud_watch_client
       end
 
       # def terminate_all_instances

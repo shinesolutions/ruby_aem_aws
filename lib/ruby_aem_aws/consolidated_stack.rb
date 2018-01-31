@@ -19,15 +19,17 @@ module RubyAemAws
   class ConsolidatedStack
     # @param stack_prefix AWS tag: StackPrefix
     # @param ec2_resource AWS EC2 client
+    # @param cloud_watch_client AWS CloudWatch client
     # @return new RubyAemAws::ConsolidatedStack instance
-    def initialize(stack_prefix, ec2_resource)
+    def initialize(stack_prefix, ec2_resource, cloud_watch_client)
       @stack_prefix = stack_prefix
       @ec2_resource = ec2_resource
+      @cloud_watch_client = cloud_watch_client
     end
 
     # @return new RubyAemAws::Component::AuthorPublishDispatcher instance
     def author_publish_dispatcher
-      RubyAemAws::Component::AuthorPublishDispatcher.new(@stack_prefix, @ec2_resource)
+      RubyAemAws::Component::AuthorPublishDispatcher.new(@stack_prefix, @ec2_resource, @cloud_watch_client)
     end
   end
 end
