@@ -14,7 +14,7 @@
 
 require 'aws-sdk'
 require_relative 'abstract_single_component'
-require_relative 'mixins/healthy_instance_state_verifier'
+require_relative 'mixins/healthy_state_verifier'
 require_relative 'mixins/metric_verifier'
 require_relative 'component_descriptor'
 
@@ -24,7 +24,7 @@ module RubyAemAws
     class AuthorPublishDispatcher
       attr_reader :descriptor, :ec2_resource, :cloud_watch_client
       include AbstractSingleComponent
-      include HealthyInstanceStateVerifier
+      include HealthyStateVerifier
       include MetricVerifier
 
       EC2_COMPONENT = 'author-publish-dispatcher'.freeze
@@ -36,13 +36,10 @@ module RubyAemAws
       # @return new RubyAemAws::Consolidated::AuthorPublishDispatcher instance
       def initialize(stack_prefix, ec2_resource, cloud_watch_client)
         @descriptor = ComponentDescriptor.new(stack_prefix,
-                                              EC2Descriptor.new(EC2_COMPONENT, EC2_NAME),
-                                              nil)
+                                              EC2Descriptor.new(EC2_COMPONENT, EC2_NAME))
         @ec2_resource = ec2_resource
         @cloud_watch_client = cloud_watch_client
       end
-
-      # def wait_until_healthy
     end
   end
 end

@@ -22,72 +22,41 @@ author_publish_dispatcher = RubyAemAws::Component::AuthorPublishDispatcher.new(n
 
 describe author_publish_dispatcher do
   it_behaves_like 'a single instance accessor'
-  it_behaves_like 'a healthy_instance_state_verifier'
+  it_behaves_like 'a health by state verifier'
   it_behaves_like 'a single metric_verifier'
 end
 
 describe 'AuthorPublishDispatcher' do
-  before do
-    # These will be used as default tag values when mocking ec2 instances.
-    @ec2_component = RubyAemAws::Component::AuthorPublishDispatcher::EC2_COMPONENT
-    @ec2_name = RubyAemAws::Component::AuthorPublishDispatcher::EC2_NAME
-    @instance_filter = [
-      { StackPrefix: TEST_STACK_PREFIX },
-      { Component: @ec2_component },
-      { Name: @ec2_name }
-    ].freeze
-
-    @instance_1_id = 'i-00525b1a281aee5b9'.freeze
-    @instance_2_id = 'i-00525b1a281aee5b7'.freeze
-    @instance_3_id = 'i-00525b1a281aee5b5'.freeze
-
-    @mock_ec2 = mock_ec2_resource
-    @mock_cloud_watch = mock_cloud_watch
+  before :each do
+    @environment = environment_creator
   end
 
   it_has_behaviour 'single instance accessibility' do
-    let(:component) { mock_author_publish_dispatcher }
+    let(:environment) { @environment }
+    let(:create_component) { ->(env) { component_creator(env) } }
+  end
+
+  it_has_behaviour 'health via single verifier' do
+    let(:environment) { @environment }
+    let(:create_component) { ->(env) { component_creator(env) } }
   end
 
   it_has_behaviour 'metrics via single verifier' do
-    let(:component) { mock_author_publish_dispatcher }
+    let(:environment) { @environment }
+    let(:create_component) { ->(env) { component_creator(env) } }
   end
 
-  it 'verifies EC2 running instance' do
-    add_instance(@instance_1_id, INSTANCE_STATE_HEALTHY)
-
-    expect(mock_author_publish_dispatcher.healthy?).to equal true
+  private def component_creator(environment)
+    RubyAemAws::Component::AuthorPublishDispatcher.new(TEST_STACK_PREFIX,
+                                                       environment.ec2_resource,
+                                                       environment.cloud_watch_client)
   end
 
-  it 'verifies EC2 not-running instance' do
-    add_instance(@instance_1_id, INSTANCE_STATE_UNHEALTHY)
-
-    expect(mock_author_publish_dispatcher.healthy?).to equal false
-  end
-
-  it 'verifies EC2 running instance (one of many)' do
-    add_instance(@instance_1_id, INSTANCE_STATE_HEALTHY)
-    add_instance(@instance_2_id, INSTANCE_STATE_HEALTHY, Name: 'bob')
-    add_instance(@instance_3_id, INSTANCE_STATE_UNHEALTHY, Component: 'bob')
-
-    expect(mock_author_publish_dispatcher.healthy?).to equal true
-  end
-
-  it 'verifies EC2 non-running instance (one of many)' do
-    add_instance(@instance_1_id, INSTANCE_STATE_UNHEALTHY)
-    add_instance(@instance_2_id, INSTANCE_STATE_HEALTHY, Name: 'bob')
-    add_instance(@instance_3_id, INSTANCE_STATE_UNHEALTHY, Component: 'bob')
-
-    expect(mock_author_publish_dispatcher.healthy?).to equal false
-  end
-
-  private def mock_author_publish_dispatcher
-    RubyAemAws::Component::AuthorPublishDispatcher.new(TEST_STACK_PREFIX, @mock_ec2, @mock_cloud_watch)
-  end
-
-  private def add_instance(id, state = INSTANCE_STATE_HEALTHY, tags = {})
-    @instances = Hash.new {} if @instances.nil?
-    @instances[id] = mock_ec2_instance(id, state, tags)
-    add_ec2_instance(@mock_ec2, @instances, @instance_filter)
+  private def environment_creator
+    Aws::AemEnvironment.new(mock_ec2_resource(RubyAemAws::Component::AuthorDispatcher::EC2_COMPONENT,
+                                              RubyAemAws::Component::AuthorDispatcher::EC2_NAME),
+                            nil,
+                            nil,
+                            mock_cloud_watch)
   end
 end

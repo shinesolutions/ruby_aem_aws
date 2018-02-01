@@ -12,7 +12,18 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-require 'tuples'
+module AwsMocker
+  def add_instance(env, id, state, tags = {})
+    @instances = Hash.new {} if @instances.nil?
+
+    ec2_resource = env.ec2_resource
+    @instances[id] = mock_ec2_instance(ec2_resource, id, state, tags)
+    add_ec2_instance(ec2_resource, @instances, ec2_resource.instance_filter)
+
+    add_elb_instances(env.elb_client, @instances) if env.elb_client
+    add_asg_instances(env.asg_client, @instances) if env.asg_client
+  end
+end
 
 module AwsAutoScalingMocker
   def add_asg_instances(mock_asg, instances)
@@ -23,7 +34,7 @@ module AwsAutoScalingMocker
     allow(mock_asg).to receive(:instances) { asg_instances }
   end
 
-  def mock_asg(ec2_component)
+  def mock_asg_client(ec2_component)
     mock_as_client = double('mock_asg')
     auto_scaling_group_name = 'asg-test'.freeze
     mock_as_group = mock_as_group(auto_scaling_group_name,
@@ -32,7 +43,9 @@ module AwsAutoScalingMocker
                                   mock_as_tag('StackPrefix', TEST_STACK_PREFIX),
                                   mock_as_tag('Component', ec2_component))
     allow(mock_as_client).to receive(:describe_auto_scaling_groups) { mock_as_groups_type(mock_as_group) }
-    Pair(mock_as_client, mock_as_group)
+    # For test convenience:
+    allow(mock_as_client).to receive(:as_group) { mock_as_group }
+    mock_as_client
   end
 
   def mock_as_instance(id, status)
@@ -81,8 +94,10 @@ module AwsElasticLoadBalancerMocker
 
   def mock_elb_client(load_balancer_id, load_balancer_name)
     mock_elb = double('mock_elb')
+
     # Store the load_balancer_name in a non-doubled method for convenience in testing
     allow(mock_elb).to receive(:load_balancer_name) { load_balancer_name }
+
     allow(mock_elb).to receive(:describe_tags) {
       mock_elb_describe_tags_output(
         mock_elb_tag_description(load_balancer_name,
@@ -148,8 +163,20 @@ module AwsEc2Mocker
     allow(mock_ec2).to receive(:instances).with(no_args) { -> { filter_instances(instances.values, instance_filter) }.call }
   end
 
-  def mock_ec2_resource
+  def mock_ec2_resource(ec2_component, ec2_name)
     mock_ec2 = double('mock_ec2')
+
+    # Store non-doubled methods for convenience in testing
+    allow(mock_ec2).to receive(:ec2_component) { ec2_component }
+    allow(mock_ec2).to receive(:ec2_name) { ec2_name }
+    allow(mock_ec2).to receive(:instance_filter) {
+      [
+        { StackPrefix: TEST_STACK_PREFIX },
+        { Component: ec2_component },
+        { Name: ec2_name }
+      ].freeze
+    }
+
     allow(mock_ec2).to receive(:instances).with(anything) { Hash.new {} }
     allow(mock_ec2).to receive(:instances).with(no_args) { Hash.new {} }
     mock_ec2
@@ -162,11 +189,11 @@ module AwsEc2Mocker
     ec2_instance_state
   end
 
-  def mock_ec2_instance(id, state, tags)
+  def mock_ec2_instance(ec2_resource, id, state, tags)
     # Add default tags.
     tags[:StackPrefix] = TEST_STACK_PREFIX if tags[:StackPrefix].nil?
-    tags[:Component] = @ec2_component if tags[:Component].nil? && defined?(@ec2_component)
-    tags[:Name] = @ec2_name if tags[:Name].nil? && defined?(@ec2_name)
+    tags[:Component] = ec2_resource.ec2_component if tags[:Component].nil?
+    tags[:Name] = ec2_resource.ec2_name if tags[:Name].nil?
 
     ec2_instance = double('ec2_instance')
     allow(ec2_instance).to receive(:instance_id) { id }
@@ -176,6 +203,7 @@ module AwsEc2Mocker
       ec2_tags.push(ec2_tag(id, key.to_s, value))
     end
     allow(ec2_instance).to receive(:tags) { ec2_tags }
+    allow(ec2_instance).to receive(:inspect) { "mock_ec2_instance [#{ec2_instance.tags}]" }
     ec2_instance
   end
 
@@ -193,7 +221,6 @@ module AwsEc2Mocker
         found_tag.value == value
       }
     end
-    # filtered.values if filtered.is_a? Hash.class
     filtered
   end
 
@@ -202,6 +229,8 @@ module AwsEc2Mocker
     allow(ec2_tag).to receive(:resource_id) { resource_id }
     allow(ec2_tag).to receive(:key) { key }
     allow(ec2_tag).to receive(:value) { value }
+
+    allow(ec2_tag).to receive(:inspect) { "mock_tag [#{resource_id}, #{key}, #{value}]" }
     ec2_tag
   end
 end

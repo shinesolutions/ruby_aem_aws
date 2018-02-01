@@ -14,96 +14,56 @@
 
 require_relative '../../spec_helper'
 require_relative 'examples/component_grouped'
-require_relative 'examples/verify_health_grouped'
+require_relative 'examples/verify_health_single'
 require_relative 'examples/verify_metric_single'
 require_relative 'examples/verify_metric_grouped'
 require_relative '../../../../lib/ruby_aem_aws/component/author'
 
-author_standby = RubyAemAws::Component::AuthorStandby.new(nil, nil, nil, nil, nil)
+author_standby = RubyAemAws::Component::AuthorStandby.new(nil, nil, nil)
 
 describe author_standby do
   it_behaves_like 'a grouped instance accessor'
-  it_behaves_like 'a healthy_instance_count_verifier'
+  it_behaves_like 'a health by state verifier'
   it_behaves_like 'a grouped metric_verifier'
 end
 
 describe 'AuthorStandby' do
-  before do
-    # These will be used as default tag values when mocking ec2 instances.
-    @ec2_component = RubyAemAws::Component::AuthorStandby::EC2_COMPONENT
-    @ec2_name = RubyAemAws::Component::AuthorStandby::EC2_NAME
-    @instance_filter = [
-      { StackPrefix: TEST_STACK_PREFIX },
-      { Component: @ec2_component },
-      { Name: @ec2_name }
-    ].freeze
-
-    @mock_ec2 = mock_ec2_resource
-    @mock_elb = mock_elb_client(RubyAemAws::Component::AuthorStandby::ELB_ID,
-                                RubyAemAws::Component::AuthorStandby::ELB_NAME)
-    mock_asg = mock_asg(@ec2_component)
-    @mock_as = mock_asg.first
-    @asg = mock_asg.second
-
-    @instance_1_id = 'i-00525b1a281aee5b9'.freeze
-    @instance_2_id = 'i-00525b1a281aee5b7'.freeze
-
-    @metric_1_name = 'A test metric'
-    @metric_2_name = 'Unmocked'
-
-    @mock_cloud_watch = mock_cloud_watch
-    mock_cloud_watch_metric(@mock_cloud_watch, @metric_1_name, [@instance_1_id])
+  before :each do
+    @environment = environment_creator
   end
 
   it_has_behaviour 'grouped instance accessibility' do
-    let(:component) { mock_author_standby }
+    let(:environment) { @environment }
+    let(:create_component) { ->(env) { component_creator(env) } }
+  end
+
+  it_has_behaviour 'health via single verifier' do
+    let(:environment) { @environment }
+    let(:create_component) { ->(env) { component_creator(env) } }
   end
 
   it_has_behaviour 'metrics via single verifier' do
-    let(:component) { mock_author_standby }
+    let(:environment) { @environment }
+    let(:create_component) { ->(env) { component_creator(env) } }
   end
 
   it_has_behaviour 'metrics via grouped verifier' do
-    let(:component) { mock_author_standby }
+    let(:environment) { @environment }
+    let(:create_component) { ->(env) { component_creator(env) } }
   end
 
-  it '.healthy? verifies EC2 running instance' do
-    add_instance(@instance_1_id, INSTANCE_STATE_HEALTHY)
-
-    expect(mock_author_standby.healthy?).to equal true
-  end
-
-  it '.healthy? verifies no EC2 running instance' do
-    expect(mock_author_standby.healthy?).to equal false
-  end
-
-  it '.metric_instances returns all instances with metric' do
-    add_instance(@instance_1_id, INSTANCE_STATE_HEALTHY)
-    add_instance(@instance_2_id, INSTANCE_STATE_HEALTHY)
-    mock_cloud_watch_metric(@mock_cloud_watch, @metric_1_name, [@instance_1_id, @instance_2_id])
-
-    expect(mock_author_standby.metric_instances(@metric_1_name).length).to be == mock_author_standby.get_all_instances.length
-  end
-
-  it '.metric_instances returns only instances with metric' do
-    add_instance(@instance_1_id, INSTANCE_STATE_HEALTHY)
-    add_instance(@instance_2_id, INSTANCE_STATE_HEALTHY)
-    mock_cloud_watch_metric(@mock_cloud_watch, @metric_1_name, [@instance_1_id])
-    mock_cloud_watch_metric(@mock_cloud_watch, @metric_2_name, [@instance_2_id])
-
-    expect(mock_author_standby.metric_instances(@metric_1_name).length).to be < mock_author_standby.get_all_instances.length
-  end
-
-  private def mock_author_standby
-    author = RubyAemAws::Component::Author.new(TEST_STACK_PREFIX, @mock_ec2, @mock_as, @mock_elb, @mock_cloud_watch)
+  private def component_creator(environment)
+    author = RubyAemAws::Component::Author.new(TEST_STACK_PREFIX,
+                                               environment.ec2_resource,
+                                               environment.cloud_watch_client)
     author.author_standby
   end
 
-  private def add_instance(id, state, tags = {})
-    @instances = Hash.new {} if @instances.nil?
-    @instances[id] = mock_ec2_instance(id, state, tags)
-    add_ec2_instance(@mock_ec2, @instances, @instance_filter)
-    add_elb_instances(@mock_elb, @instances) if @mock_elb
-    add_asg_instances(@asg, @instances) if @asg
+  private def environment_creator
+    Aws::AemEnvironment.new(mock_ec2_resource(RubyAemAws::Component::AuthorStandby::EC2_COMPONENT,
+                                              RubyAemAws::Component::AuthorStandby::EC2_NAME),
+                            nil,
+                            nil,
+                            mock_cloud_watch)
   end
 end

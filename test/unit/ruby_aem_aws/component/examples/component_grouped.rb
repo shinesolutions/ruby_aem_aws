@@ -23,27 +23,22 @@ end
 
 shared_examples_for 'grouped instance accessibility' do
   before do
-    @mock_ec2 = mock_ec2_resource
+    @instance_1_id = 'i-00525b1a281aee5b0'
+    @instance_1_id = 'i-00525b1a281aee5b1'
   end
 
   it 'should count instances' do
-    @instance_count = 2
-    add_instance('i-00525b1a281aee5b0', INSTANCE_STATE_HEALTHY, {})
-    add_instance('i-00525b1a281aee5b1', INSTANCE_STATE_UNHEALTHY, {})
+    add_instance(environment, @instance_1_id, INSTANCE_STATE_HEALTHY, {})
+    add_instance(environment, @instance_2_id, INSTANCE_STATE_UNHEALTHY, {})
 
-    expect(component.get_num_of_instances).to eq(@instance_count)
+    component = create_component.call(environment)
+    expect(component.get_num_of_instances).to eq(2)
   end
 
   it 'should get random instance' do
-    @instance_count = 1
-    add_instance('i-00525b1a281aee5b0', INSTANCE_STATE_HEALTHY, {})
+    add_instance(environment, @instance_1_id, INSTANCE_STATE_HEALTHY, {})
 
+    component = create_component.call(environment)
     expect(component.get_random_instance).to eq(component.get_all_instances[0])
-  end
-
-  private def add_instance(id, state, tags = {})
-    @instances = Hash.new {} if @instances.nil?
-    @instances[id] = mock_ec2_instance(id, state, tags)
-    add_ec2_instance(@mock_ec2, @instances)
   end
 end

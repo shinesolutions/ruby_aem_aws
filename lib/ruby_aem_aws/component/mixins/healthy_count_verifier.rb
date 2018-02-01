@@ -17,7 +17,7 @@ require_relative '../../constants'
 module RubyAemAws
   # Mixin for checking health of a component via ELB 'healthy' count vs ASG desired_capacity.
   # Add this to a component to make it capable of determining its own health.
-  module HealthyInstanceCountVerifier
+  module HealthyCountVerifier
     # Aggregate health_states considered healthy.
     # @return health_state is ready or scaling.
     def healthy?
@@ -38,7 +38,7 @@ module RubyAemAws
 
       # Debug:
       # unless asg.nil?
-      #   puts("ASG: #{asg.auto_scaling_group_name} (#{asg.desired_capacity})")
+      #   puts("ASG: #{asg} #{asg.auto_scaling_group_name} (#{asg.desired_capacity})")
       #   asg.instances.each do |i|
       #     puts("  Instance #{i.instance_id}: #{i.health_status}")
       #   end
@@ -61,6 +61,10 @@ module RubyAemAws
       return :recovering if elb_running_instances < desired_capacity
       return :scaling if elb_running_instances > desired_capacity
       :ready
+    end
+
+    def wait_until_healthy
+      raise NotYetImplementedError
     end
 
     private

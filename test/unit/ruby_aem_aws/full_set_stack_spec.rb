@@ -19,8 +19,8 @@ describe 'FullSetStack' do
   before do
     @full_set_stack = RubyAemAws::FullSetStack.new(TEST_STACK_PREFIX,
                                                    double('mock_ec2'),
-                                                   double('mock_elb'),
                                                    double('mock_asg'),
+                                                   double('mock_elb'),
                                                    double('mock_cloud_watch'))
   end
 

@@ -43,17 +43,17 @@ module RubyAemAws
 
     # @return new RubyAemAws::Component::Author instance
     def author
-      RubyAemAws::Component::Author.new(@stack_prefix, @ec2_resource, @auto_scaling_client, @elb_client, @cloud_watch_client)
+      RubyAemAws::Component::Author.new(@stack_prefix, @ec2_resource, @cloud_watch_client)
     end
 
     # @return new RubyAemAws::Component::ChaosMonkey instance
     def chaos_monkey
-      RubyAemAws::Component::ChaosMonkey.new(@stack_prefix, @ec2_resource, @cloud_watch_client)
+      RubyAemAws::Component::ChaosMonkey.new(@stack_prefix, @ec2_resource, @asg_client, @cloud_watch_client)
     end
 
     # @return new RubyAemAws::Component::Orchestrator instance
     def orchestrator
-      RubyAemAws::Component::Orchestrator.new(@stack_prefix, @ec2_resource, @cloud_watch_client)
+      RubyAemAws::Component::Orchestrator.new(@stack_prefix, @ec2_resource, @asg_client, @cloud_watch_client)
     end
 
     # @return new RubyAemAws::Component::Publish instance
@@ -63,7 +63,7 @@ module RubyAemAws
 
     # @return new RubyAemAws::Component::PublishDispatcher instance
     def publish_dispatcher
-      RubyAemAws::Component::PublishDispatcher.new(@stack_prefix, @ec2_resource, @cloud_watch_client)
+      RubyAemAws::Component::PublishDispatcher.new(@stack_prefix, @ec2_resource, @asg_client, @elb_client, @cloud_watch_client)
     end
   end
 end

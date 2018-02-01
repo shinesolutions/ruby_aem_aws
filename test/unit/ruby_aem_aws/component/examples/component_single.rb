@@ -23,17 +23,16 @@ end
 
 shared_examples_for 'single instance accessibility' do
   before do
-    @mock_ec2 = mock_ec2_resource
-
     @metric_1_id = 'i-00525b1a281aee5b0'
     @metric_2_id = 'i-00525b1a281aee5b1'
   end
 
   it 'should fail when multiple instances' do
     # @instance_count = 2
-    add_instance(@metric_1_id, INSTANCE_STATE_HEALTHY, {})
-    add_instance(@metric_2_id, INSTANCE_STATE_UNHEALTHY, {})
+    add_instance(environment, @metric_1_id, INSTANCE_STATE_HEALTHY, {})
+    add_instance(environment, @metric_2_id, INSTANCE_STATE_UNHEALTHY, {})
 
+    component = create_component.call(environment)
     # expect { component.get_instance }.to raise_error(ExpectedSingleInstanceError)
     expect { component.get_instance }.to raise_error(/Expected exactly one instance/)
   end
@@ -41,14 +40,9 @@ shared_examples_for 'single instance accessibility' do
   it 'should get single instance' do
     # @instance_count = 1
     instance_id = @metric_1_id
-    add_instance(instance_id, INSTANCE_STATE_HEALTHY, {})
+    add_instance(environment, instance_id, INSTANCE_STATE_HEALTHY, {})
 
+    component = create_component.call(environment)
     expect(component.get_instance.instance_id).to eq(instance_id)
-  end
-
-  private def add_instance(id, state, tags = {})
-    @instances = Hash.new {} if @instances.nil?
-    @instances[id] = mock_ec2_instance(id, state, tags)
-    add_ec2_instance(@mock_ec2, @instances)
   end
 end

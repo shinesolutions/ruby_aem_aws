@@ -13,7 +13,7 @@
 # limitations under the License.
 
 require_relative 'abstract_grouped_component'
-require_relative 'mixins/healthy_instance_count_verifier'
+require_relative 'mixins/healthy_count_verifier'
 require_relative 'mixins/metric_verifier'
 require_relative 'component_descriptor'
 
@@ -21,9 +21,9 @@ module RubyAemAws
   module Component
     # Interface to the AWS instances playing and supporting the AuthorDispatcher role in a full-set AEM stack.
     class AuthorDispatcher
-      attr_reader :descriptor, :ec2_resource, :elb_client, :asg_client, :cloud_watch_client
+      attr_reader :descriptor, :ec2_resource, :asg_client, :elb_client, :cloud_watch_client
       include AbstractGroupedComponent
-      include HealthyInstanceCountVerifier
+      include HealthyCountVerifier
       include MetricVerifier
 
       EC2_COMPONENT = 'author-dispatcher'.freeze
@@ -33,11 +33,11 @@ module RubyAemAws
 
       # @param stack_prefix AWS tag: StackPrefix
       # @param ec2_resource AWS EC2 resource
-      # @param elb_client AWS ElasticLoadBalancer client
       # @param asg_client AWS AutoScalingGroup client
+      # @param elb_client AWS ElasticLoadBalancer client
       # @param cloud_watch_client AWS CloudWatch client
       # @return new RubyAemAws::FullSet::AuthorDispatcher
-      def initialize(stack_prefix, ec2_resource, elb_client, asg_client, cloud_watch_client)
+      def initialize(stack_prefix, ec2_resource, asg_client, elb_client, cloud_watch_client)
         @descriptor = ComponentDescriptor.new(stack_prefix,
                                               EC2Descriptor.new(EC2_COMPONENT, EC2_NAME),
                                               ELBDescriptor.new(ELB_ID, ELB_NAME))
@@ -50,8 +50,6 @@ module RubyAemAws
       # def terminate_all_instances
 
       # def terminate_random_instance
-
-      # def wait_until_healthy
     end
   end
 end

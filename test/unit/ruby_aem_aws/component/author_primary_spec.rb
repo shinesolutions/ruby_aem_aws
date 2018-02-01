@@ -22,41 +22,42 @@ author_primary = RubyAemAws::Component::AuthorPrimary.new(nil, nil, nil)
 
 describe author_primary do
   it_behaves_like 'a single instance accessor'
-  it_behaves_like 'a healthy_instance_state_verifier'
+  it_behaves_like 'a health by state verifier'
   it_behaves_like 'a single metric_verifier'
 end
 
 describe 'AuthorPrimary' do
-  before do
-    # These will be used as default tag values when mocking ec2 instances.
-    @ec2_component = RubyAemAws::Component::AuthorPrimary::EC2_COMPONENT
-    @ec2_name = RubyAemAws::Component::AuthorPrimary::EC2_NAME
-    @instance_filter = [
-      { StackPrefix: TEST_STACK_PREFIX },
-      { Component: @ec2_component },
-      { Name: @ec2_name }
-    ].freeze
-
-    @mock_ec2 = mock_ec2_resource
-    @mock_cloud_watch = mock_cloud_watch
+  before :each do
+    @environment = environment_creator
   end
 
   it_has_behaviour 'single instance accessibility' do
-    let(:component) { mock_author_primary }
+    let(:environment) { @environment }
+    let(:create_component) { ->(env) { component_creator(env) } }
+  end
+
+  it_has_behaviour 'health via single verifier' do
+    let(:environment) { @environment }
+    let(:create_component) { ->(env) { component_creator(env) } }
   end
 
   it_has_behaviour 'metrics via single verifier' do
-    let(:component) { mock_author_primary }
+    let(:environment) { @environment }
+    let(:create_component) { ->(env) { component_creator(env) } }
   end
 
-  private def mock_author_primary
-    author = RubyAemAws::Component::Author.new(TEST_STACK_PREFIX, @mock_ec2, nil, nil, @mock_cloud_watch)
+  private def component_creator(environment)
+    author = RubyAemAws::Component::Author.new(TEST_STACK_PREFIX,
+                                               environment.ec2_resource,
+                                               environment.cloud_watch_client)
     author.author_primary
   end
 
-  private def add_instance(id, state, tags = {})
-    @instances = Hash.new {} if @instances.nil?
-    @instances[id] = mock_ec2_instance(id, state, tags)
-    add_ec2_instance(@mock_ec2, @instances, @instance_filter)
+  private def environment_creator
+    Aws::AemEnvironment.new(mock_ec2_resource(RubyAemAws::Component::AuthorPrimary::EC2_COMPONENT,
+                                              RubyAemAws::Component::AuthorPrimary::EC2_NAME),
+                            nil,
+                            nil,
+                            mock_cloud_watch)
   end
 end

@@ -19,21 +19,54 @@ require_relative 'examples/verify_metric_single'
 require_relative 'examples/verify_metric_grouped'
 require_relative '../../../../lib/ruby_aem_aws/component/publish_dispatcher'
 
-publish_dispatcher = RubyAemAws::Component::PublishDispatcher.new(nil, nil, nil)
+publish_dispatcher = RubyAemAws::Component::PublishDispatcher.new(nil, nil, nil, nil,nil)
 
 describe publish_dispatcher do
   it_behaves_like 'a grouped instance accessor'
-  it_behaves_like 'a healthy_instance_count_verifier'
+  it_behaves_like 'a health by count verifier'
   it_behaves_like 'a single metric_verifier'
   it_behaves_like 'a grouped metric_verifier'
 end
 
 describe 'PublishDispatcher.healthy?' do
-  before do
-    @publish_dispatcher = RubyAemAws::Component::PublishDispatcher.new(TEST_STACK_PREFIX, nil, nil)
+  before :each do
+    @environment = environment_creator
   end
 
-  it 'runs healthy method' do
-    expect { @publish_dispatcher.healthy? }.to raise_error(RubyAemAws::NotYetImplementedError)
+  it_has_behaviour 'grouped instance accessibility' do
+    let(:environment) { @environment }
+    let(:create_component) { ->(env) { component_creator(env) } }
+  end
+
+  it_has_behaviour 'health via grouped verifier' do
+    let(:environment) { @environment }
+    let(:create_component) { ->(env) { component_creator(env) } }
+  end
+
+  it_has_behaviour 'metrics via single verifier' do
+    let(:environment) { @environment }
+    let(:create_component) { ->(env) { component_creator(env) } }
+  end
+
+  it_has_behaviour 'metrics via grouped verifier' do
+    let(:environment) { @environment }
+    let(:create_component) { ->(env) { component_creator(env) } }
+  end
+
+  private def component_creator(environment)
+    RubyAemAws::Component::PublishDispatcher.new(TEST_STACK_PREFIX,
+                                                 environment.ec2_resource,
+                                                 environment.asg_client,
+                                                 environment.elb_client,
+                                                 environment.cloud_watch_client)
+  end
+
+  private def environment_creator
+    Aws::AemEnvironment.new(mock_ec2_resource(RubyAemAws::Component::PublishDispatcher::EC2_COMPONENT,
+                                              RubyAemAws::Component::PublishDispatcher::EC2_NAME),
+                            mock_asg_client(RubyAemAws::Component::PublishDispatcher::EC2_COMPONENT),
+                            mock_elb_client(RubyAemAws::Component::PublishDispatcher::ELB_ID,
+                                            RubyAemAws::Component::PublishDispatcher::ELB_NAME),
+                            mock_cloud_watch)
   end
 end
