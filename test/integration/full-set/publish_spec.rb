@@ -20,9 +20,6 @@ describe 'Publish' do
     @publish = init_full_set.publish
   end
 
-  after do
-  end
-
   # TODO: publish is part of an ASG, so should handle more than one instance with same prefix,component,name.
 
   it 'has metric \'CPUUtilization\'' do

@@ -26,7 +26,7 @@ module RubyAemAws
       count = instances.count
       # raise RubyAemAws::ExpectedSingleInstanceError.new(count, descriptor) if count > 1
       raise RubyAemAws::ExpectedSingleInstanceError if count > 1
-      return nil if instances.empty?
+      return nil if instances.count.zero?
       instances.first
     end
 

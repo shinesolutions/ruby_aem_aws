@@ -31,6 +31,7 @@ module RubyAemAws
 
       instances_with_metric = []
       get_all_instances.each do |instance|
+        next if instance.nil?
         instance_id = instance.instance_id
         instances_with_metric.push(instance_id) if instance_in_metrics(metrics, instance_id)
       end

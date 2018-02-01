@@ -20,22 +20,27 @@ describe 'Author' do
     @author = init_full_set.author
   end
 
-  after do
+  it 'Primary is healthy' do
+    expect(@author.author_primary.healthy?).to eq(true)
   end
 
   it 'Primary has metric \'CPUUtilization\'' do
-    expect(@author.instance_primary.metric?(:CPUUtilization)).to eq(true)
+    expect(@author.author_primary.metric?(:CPUUtilization)).to eq(true)
   end
 
   it 'Primary does not have metric \'bob\'' do
-    expect(@author.instance_standby.metric?(:bob)).to eq(false)
+    expect(@author.author_primary.metric?(:bob)).to eq(false)
+  end
+
+  it 'Standby is healthy' do
+    expect(@author.author_standby.healthy?).to eq(true)
   end
 
   it 'Standby has metric \'CPUUtilization\'' do
-    expect(@author.instance_primary.metric?(:CPUUtilization)).to eq(true)
+    expect(@author.author_standby.metric?(:CPUUtilization)).to eq(true)
   end
 
   it 'Standby does not have metric \'bob\'' do
-    expect(@author.instance_standby.metric?(:bob)).to eq(false)
+    expect(@author.author_standby.metric?(:bob)).to eq(false)
   end
 end

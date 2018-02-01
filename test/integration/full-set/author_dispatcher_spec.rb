@@ -20,9 +20,6 @@ describe 'AuthorDispatcher' do
     @author_dispatcher = init_full_set.author_dispatcher
   end
 
-  after do
-  end
-
   it 'is healthy' do
     expect(@author_dispatcher.healthy?).to eq(true)
   end
