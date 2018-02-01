@@ -229,7 +229,6 @@ module AwsEc2Mocker
     allow(ec2_tag).to receive(:resource_id) { resource_id }
     allow(ec2_tag).to receive(:key) { key }
     allow(ec2_tag).to receive(:value) { value }
-
     allow(ec2_tag).to receive(:inspect) { "mock_tag [#{resource_id}, #{key}, #{value}]" }
     ec2_tag
   end

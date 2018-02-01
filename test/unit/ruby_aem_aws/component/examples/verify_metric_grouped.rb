@@ -21,7 +21,6 @@ shared_examples 'a grouped metric_verifier' do
   end
 end
 
-# rubocop:disable BlockLength
 shared_examples 'metrics via grouped verifier' do
   before do
     @instance_1_id = 'i-00525b1a281aee5b9'.freeze
@@ -49,4 +48,3 @@ shared_examples 'metrics via grouped verifier' do
     expect(component.metric_instances(@metric_1_name).length).to be < component.get_all_instances.length
   end
 end
-# rubocop:enable BlockLength

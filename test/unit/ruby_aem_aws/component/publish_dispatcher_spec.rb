@@ -19,7 +19,7 @@ require_relative 'examples/verify_metric_single'
 require_relative 'examples/verify_metric_grouped'
 require_relative '../../../../lib/ruby_aem_aws/component/publish_dispatcher'
 
-publish_dispatcher = RubyAemAws::Component::PublishDispatcher.new(nil, nil, nil, nil,nil)
+publish_dispatcher = RubyAemAws::Component::PublishDispatcher.new(nil, nil, nil, nil, nil)
 
 describe publish_dispatcher do
   it_behaves_like 'a grouped instance accessor'
