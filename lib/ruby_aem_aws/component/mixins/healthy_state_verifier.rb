@@ -23,7 +23,6 @@ module RubyAemAws
       has_instance = false
       get_all_instances.each do |i|
         next if i.nil?
-        puts("Instance state: #{i.state.name}")
         has_instance = true
         return false if i.state.name != Constants::INSTANCE_STATE_HEALTHY
       end
