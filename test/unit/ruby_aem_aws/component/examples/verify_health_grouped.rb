@@ -27,6 +27,18 @@ shared_examples 'health via grouped verifier' do
     @instance_2_id = 'i-00525b1a281aee5b7'.freeze
   end
 
+  it 'should verify EC2 running instance' do
+    add_instance(environment, @instance_1_id, INSTANCE_STATE_HEALTHY)
+
+    component = create_component.call(environment)
+    expect(component.healthy?).to equal true
+  end
+
+  it 'should verify no EC2 running instance' do
+    component = create_component.call(environment)
+    expect(component.healthy?).to equal false
+  end
+
   it 'verifies ELB running instances (1) against ASG desired capacity (1)' do
     allow(environment.asg_client.as_group).to receive(:desired_capacity) { 1 }
 

@@ -29,6 +29,22 @@ shared_examples 'metrics via grouped verifier' do
     @metric_2_name = 'Unmocked'.freeze
   end
 
+  it '.metric? verifies metric exists' do
+    add_instance(environment, @instance_1_id, INSTANCE_STATE_HEALTHY)
+    mock_cloud_watch_metric(environment.cloud_watch_client, @metric_1_name, [@instance_1_id])
+
+    component = create_component.call(environment)
+    expect(component.metric?(@metric_1_name)).to equal true
+  end
+
+  it '.metric? verifies metric does not exist' do
+    add_instance(environment, @instance_1_id, INSTANCE_STATE_HEALTHY)
+    mock_cloud_watch_metric(environment.cloud_watch_client, @metric_1_name, [@instance_1_id])
+
+    component = create_component.call(environment)
+    expect(component.metric?(@metric_2_name)).to equal false
+  end
+
   it '.metric_instances returns all instances with metric' do
     add_instance(environment, @instance_1_id, INSTANCE_STATE_HEALTHY)
     add_instance(environment, @instance_2_id, INSTANCE_STATE_HEALTHY)

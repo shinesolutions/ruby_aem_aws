@@ -15,7 +15,6 @@
 require_relative 'abstract_single_component'
 require_relative 'mixins/healthy_state_verifier'
 require_relative 'mixins/metric_verifier'
-require_relative '../error'
 
 module RubyAemAws
   module Component

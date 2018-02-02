@@ -14,6 +14,7 @@
 
 require_relative '../../spec_helper'
 require_relative 'examples/component_single'
+require_relative 'examples/describe_single'
 require_relative 'examples/verify_health_single'
 require_relative 'examples/verify_metric_single'
 require_relative '../../../../lib/ruby_aem_aws/component/author_publish_dispatcher'
@@ -22,6 +23,7 @@ author_publish_dispatcher = RubyAemAws::Component::AuthorPublishDispatcher.new(n
 
 describe author_publish_dispatcher do
   it_behaves_like 'a single instance accessor'
+  it_behaves_like 'a single instance describer'
   it_behaves_like 'a health by state verifier'
   it_behaves_like 'a single metric_verifier'
 end
@@ -32,6 +34,11 @@ describe 'AuthorPublishDispatcher' do
   end
 
   it_has_behaviour 'single instance accessibility' do
+    let(:environment) { @environment }
+    let(:create_component) { ->(env) { component_creator(env) } }
+  end
+
+  it_has_behaviour 'single instance description' do
     let(:environment) { @environment }
     let(:create_component) { ->(env) { component_creator(env) } }
   end

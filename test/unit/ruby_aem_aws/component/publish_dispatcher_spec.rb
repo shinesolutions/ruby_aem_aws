@@ -14,8 +14,8 @@
 
 require_relative '../../spec_helper'
 require_relative 'examples/component_grouped'
+require_relative 'examples/describe_grouped'
 require_relative 'examples/verify_health_grouped'
-require_relative 'examples/verify_metric_single'
 require_relative 'examples/verify_metric_grouped'
 require_relative '../../../../lib/ruby_aem_aws/component/publish_dispatcher'
 
@@ -23,8 +23,8 @@ publish_dispatcher = RubyAemAws::Component::PublishDispatcher.new(nil, nil, nil,
 
 describe publish_dispatcher do
   it_behaves_like 'a grouped instance accessor'
+  it_behaves_like 'a grouped instance describer'
   it_behaves_like 'a health by count verifier'
-  it_behaves_like 'a single metric_verifier'
   it_behaves_like 'a grouped metric_verifier'
 end
 
@@ -38,12 +38,12 @@ describe 'PublishDispatcher.healthy?' do
     let(:create_component) { ->(env) { component_creator(env) } }
   end
 
-  it_has_behaviour 'health via grouped verifier' do
+  it_has_behaviour 'grouped instance description' do
     let(:environment) { @environment }
     let(:create_component) { ->(env) { component_creator(env) } }
   end
 
-  it_has_behaviour 'metrics via single verifier' do
+  it_has_behaviour 'health via grouped verifier' do
     let(:environment) { @environment }
     let(:create_component) { ->(env) { component_creator(env) } }
   end

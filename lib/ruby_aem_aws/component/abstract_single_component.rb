@@ -13,7 +13,6 @@
 # limitations under the License.
 
 require 'aws-sdk'
-require_relative '../error'
 require_relative 'abstract_component'
 
 module RubyAemAws

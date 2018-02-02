@@ -13,11 +13,19 @@
 # limitations under the License.
 
 require_relative 'component_descriptor'
+require_relative 'mixins/instance_describer'
+require_relative '../error'
 
 module RubyAemAws
   # Add common methods to all Components.
   module AbstractComponent
     include Component
+    include InstanceDescriber
+
+    def get_all_instances
+      # Overridden by subclasses, required by InstanceDescriber.
+      raise NotYetImplementedError
+    end
 
     def to_s
       "#{self.class.name.split('::').last}(#{@descriptor.stack_prefix unless @descriptor.nil?})"
