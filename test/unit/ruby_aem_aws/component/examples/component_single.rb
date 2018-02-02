@@ -33,7 +33,7 @@ shared_examples_for 'single instance accessibility' do
     add_instance(environment, @instance_2_id, INSTANCE_STATE_HEALTHY, {})
 
     component = create_component.call(environment)
-    # TODO checked exceptions seem not to work well, so using string regex instead.
+    # TODO: checked exceptions seem not to work well, so using string regex instead.
     # expect { component.get_instance }.to raise_error(ExpectedSingleInstanceError)
     expect { component.get_instance }.to raise_error(/Expected exactly one instance/)
   end
