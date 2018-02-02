@@ -23,8 +23,8 @@ end
 
 shared_examples_for 'grouped instance accessibility' do
   before do
-    @instance_1_id = 'i-00525b1a281aee5b0'
-    @instance_1_id = 'i-00525b1a281aee5b1'
+    @instance_1_id = 'i-00525b1a281aee5b0'.freeze
+    @instance_1_id = 'i-00525b1a281aee5b1'.freeze
   end
 
   it 'should count instances' do

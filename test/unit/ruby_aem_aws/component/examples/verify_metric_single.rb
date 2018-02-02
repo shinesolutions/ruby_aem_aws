@@ -25,8 +25,8 @@ shared_examples 'metrics via single verifier' do
   before do
     @instance_1_id = 'i-00525b1a281aee5b9'.freeze
 
-    @metric_1_name = 'A test metric'
-    @metric_2_name = 'Unmocked'
+    @metric_1_name = 'A test metric'.freeze
+    @metric_2_name = 'Unmocked'.freeze
   end
 
   it '.metric? verifies metric exists' do

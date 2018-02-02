@@ -25,8 +25,8 @@ shared_examples 'metrics via grouped verifier' do
   before do
     @instance_1_id = 'i-00525b1a281aee5b9'.freeze
     @instance_2_id = 'i-00525b1a281aee5b7'.freeze
-    @metric_1_name = 'A test metric'
-    @metric_2_name = 'Unmocked'
+    @metric_1_name = 'A test metric'.freeze
+    @metric_2_name = 'Unmocked'.freeze
   end
 
   it '.metric_instances returns all instances with metric' do
