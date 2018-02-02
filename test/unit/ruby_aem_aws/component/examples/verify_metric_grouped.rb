@@ -32,7 +32,7 @@ shared_examples 'metrics via grouped verifier' do
 
   it '.metric? verifies metric exists' do
     add_instance(environment, @instance_1_id, INSTANCE_STATE_HEALTHY)
-    mock_cloud_watch_metric(environment.cloud_watch_client, @metric_1_name, [@instance_1_id])
+    add_metric(environment, @metric_1_name, [@instance_1_id])
 
     component = create_component.call(environment)
     expect(component.metric?(@metric_1_name)).to equal true
@@ -40,7 +40,7 @@ shared_examples 'metrics via grouped verifier' do
 
   it '.metric? verifies metric does not exist' do
     add_instance(environment, @instance_1_id, INSTANCE_STATE_HEALTHY)
-    mock_cloud_watch_metric(environment.cloud_watch_client, @metric_1_name, [@instance_1_id])
+    add_metric(environment, @metric_1_name, [@instance_1_id])
 
     component = create_component.call(environment)
     expect(component.metric?(@metric_2_name)).to equal false
@@ -49,20 +49,22 @@ shared_examples 'metrics via grouped verifier' do
   it '.metric_instances returns all instances with metric' do
     add_instance(environment, @instance_1_id, INSTANCE_STATE_HEALTHY)
     add_instance(environment, @instance_2_id, INSTANCE_STATE_HEALTHY)
-    mock_cloud_watch_metric(environment.cloud_watch_client, @metric_1_name, [@instance_1_id, @instance_2_id])
+    add_metric(environment, @metric_1_name, [@instance_1_id, @instance_2_id])
 
     component = create_component.call(environment)
-    expect(component.metric_instances(@metric_1_name).length).to be == component.get_all_instances.length
+    metric_instances = component.metric_instances(@metric_1_name)
+    expect(metric_instances.length).to eq 2
   end
 
   it '.metric_instances returns only instances with metric' do
     add_instance(environment, @instance_1_id, INSTANCE_STATE_HEALTHY)
     add_instance(environment, @instance_2_id, INSTANCE_STATE_HEALTHY)
-    mock_cloud_watch_metric(environment.cloud_watch_client, @metric_1_name, [@instance_1_id])
-    mock_cloud_watch_metric(environment.cloud_watch_client, @metric_2_name, [@instance_2_id])
+    add_metric(environment, @metric_1_name, [@instance_1_id])
+    add_metric(environment, @metric_2_name, [@instance_2_id])
 
     component = create_component.call(environment)
-    expect(component.metric_instances(@metric_1_name).length).to be < component.get_all_instances.length
+    metric_instances = component.metric_instances(@metric_1_name)
+    expect(metric_instances.length).to eq 1
   end
 end
 # rubocop: enable BlockLength

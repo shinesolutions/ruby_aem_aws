@@ -23,6 +23,13 @@ module AwsMocker
     add_elb_instances(env.elb_client, @instances) if env.elb_client
     add_asg_instances(env.asg_client, @instances) if env.asg_client
   end
+
+  def add_metric(env, metric_name, instance_ids)
+    @metrics = Hash.new {} if @metrics.nil?
+
+    @metrics[metric_name] = mock_cloud_watch_metric(@metrics, metric_name, instance_ids)
+    add_metrics(env.cloud_watch_client, @metrics, metric_name, instance_ids)
+  end
 end
 
 module AwsAutoScalingMocker
@@ -243,22 +250,38 @@ module AwsCloudWatchMocker
     mock_cloud_watch
   end
 
-  def mock_cloud_watch_metric(mock_cloud_watch, metric_name, instance_ids = [])
-    mock_metric = double('mock_metric')
-    allow(mock_metric).to receive(:metric_name) { metric_name }
-
-    mock_dimension_filters = []
+  def mock_cloud_watch_metric(metrics, metric_name, instance_ids = [])
+    mock_metrics = []
     instance_ids.each do |instance_id|
+      mock_metric = double('mock_metric')
+      allow(mock_metric).to receive(:metric_name) { metric_name }
+
       mock_dimension_filter = double('mock_dimension_filter')
       allow(mock_dimension_filter).to receive(:name) { 'InstanceId' }
       allow(mock_dimension_filter).to receive(:value) { instance_id }
-      mock_dimension_filters.push(mock_dimension_filter)
-    end
-    allow(mock_metric).to receive(:dimensions) { mock_dimension_filters }
-    # allow(mock_metric).to receive(:dimensions) { {} } if instance_ids.empty?
+      allow(mock_metric).to receive(:dimensions) { [mock_dimension_filter] }
 
-    mock_list_metrics_output = double('mock_list_metrics_output')
-    allow(mock_list_metrics_output).to receive(:metrics) { [mock_metric] }
-    allow(mock_cloud_watch).to receive(:list_metrics).with(hash_including(metric_name: metric_name)) { mock_list_metrics_output }
+      mock_metrics.push(mock_metric)
+    end
+
+    metrics[metric_name] = mock_metrics
+  end
+
+  def add_metrics(mock_cloud_watch, metrics, metric_name, instance_ids)
+    instance_ids.each do |instance_id|
+      mock_list_metrics_output = double('mock_list_metrics_output')
+      allow(mock_list_metrics_output).to receive(:metrics) { filter_by_instance(metrics[metric_name], instance_id) }
+      allow(mock_cloud_watch).to receive(:list_metrics).with(
+        hash_including(metric_name: metric_name,
+                       dimensions: [hash_including(value: instance_id)])
+      ) { mock_list_metrics_output }
+    end
+  end
+
+  # Intentional replication of AWS metric filter logic for use by mock CloudWatch Client.
+  private def filter_by_instance(mock_metrics, instance_id)
+    mock_metrics.select { |mock_metric|
+      instance_id == mock_metric.dimensions[0].value
+    }
   end
 end

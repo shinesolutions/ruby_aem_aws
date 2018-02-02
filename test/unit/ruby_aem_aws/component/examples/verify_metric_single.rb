@@ -31,7 +31,7 @@ shared_examples 'metrics via single verifier' do
 
   it '.metric? verifies metric exists' do
     add_instance(environment, @instance_1_id, INSTANCE_STATE_HEALTHY)
-    mock_cloud_watch_metric(environment.cloud_watch_client, @metric_1_name, [@instance_1_id])
+    add_metric(environment, @metric_1_name, [@instance_1_id])
 
     component = create_component.call(environment)
     expect(component.metric?(@metric_1_name)).to equal true
@@ -39,7 +39,7 @@ shared_examples 'metrics via single verifier' do
 
   it '.metric? verifies metric does not exist' do
     add_instance(environment, @instance_1_id, INSTANCE_STATE_HEALTHY)
-    mock_cloud_watch_metric(environment.cloud_watch_client, @metric_1_name, [@instance_1_id])
+    add_metric(environment, @metric_1_name, [@instance_1_id])
 
     component = create_component.call(environment)
     expect(component.metric?(@metric_2_name)).to equal false
