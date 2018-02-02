@@ -22,27 +22,15 @@ module RubyAemAws
     include AbstractComponent
 
     def get_instance
-      instances = ec2_resource.instances(filter_for_descriptor)
+      instances = ec2_resource.instances(filter_for_descriptor).select { |instance| InstanceState::ALL_ACTIVE.include?(instance.state.name) }
       count = instances.count
-      # raise RubyAemAws::ExpectedSingleInstanceError.new(count, descriptor) if count > 1
       raise RubyAemAws::ExpectedSingleInstanceError if count > 1
-      return nil if instances.count.zero?
+      return nil if count.zero?
       instances.first
     end
 
     def get_all_instances
       [get_instance]
-    end
-
-    private def filter_for_descriptor
-      {
-        filters: [
-          { name: 'tag:StackPrefix', values: [descriptor.stack_prefix] },
-          { name: 'tag:Component', values: [descriptor.ec2.component] },
-          { name: 'tag:Name', values: [descriptor.ec2.name] },
-          { name: 'instance-state-name', values: InstanceState::ALL_ACTIVE }
-        ]
-      }
     end
   end
 end

@@ -35,16 +35,5 @@ module RubyAemAws
     def get_random_instance
       get_all_instances.entries.sample
     end
-
-    private def filter_for_descriptor
-      {
-        filters: [
-          { name: 'tag:StackPrefix', values: [descriptor.stack_prefix] },
-          { name: 'tag:Component', values: [descriptor.ec2.component] },
-          { name: 'tag:Name', values: [descriptor.ec2.name] },
-          { name: 'instance-state-name', values: InstanceState::ALL_ACTIVE }
-        ]
-      }
-    end
   end
 end
