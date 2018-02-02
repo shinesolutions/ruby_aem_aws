@@ -27,6 +27,7 @@ module RubyAemAws
       instances_with_metric = []
       instances = get_all_instances
       instances.each do |instance|
+        next if instance.nil?
         instance_id = instance.instance_id
         metrics = @cloud_watch_client.list_metrics(namespace: 'AWS/EC2',
                                                    metric_name: metric_name,
