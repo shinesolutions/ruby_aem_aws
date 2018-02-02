@@ -31,10 +31,10 @@ test-integration: install
 test-integration-connection: install
 	rspec test/integration/ruby_aem_aws_spec.rb
 
-test-integration-consolidated: install test-integration-connection
+test-integration-consolidated: install
 	rspec test/integration/consolidated
 
-test-integration-full-set: install test-integration-connection
+test-integration-full-set: install
 	rspec test/integration/full-set
 
 doc:
