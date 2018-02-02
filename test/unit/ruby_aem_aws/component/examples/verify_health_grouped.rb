@@ -130,6 +130,7 @@ shared_examples 'health via grouped verifier' do
 
   it 'should discover wait_until_healthy is not yet implemented' do
     component = create_component.call(environment)
+    # TODO checked exceptions seem not to work well, so using string regex instead.
     # expect(component.wait_until_healthy).to raise_error(NotYetImplementedError)
     expect { component.wait_until_healthy }.to raise_error(/Not yet implemented/)
   end
