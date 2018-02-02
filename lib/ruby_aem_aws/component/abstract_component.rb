@@ -22,11 +22,6 @@ module RubyAemAws
     include Component
     include InstanceDescriber
 
-    def get_all_instances
-      # Overridden by subclasses, required by InstanceDescriber.
-      raise NotYetImplementedError
-    end
-
     def to_s
       "#{self.class.name.split('::').last}(#{@descriptor.stack_prefix unless @descriptor.nil?})"
     end
