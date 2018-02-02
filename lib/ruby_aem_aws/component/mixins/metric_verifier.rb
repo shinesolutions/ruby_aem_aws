@@ -24,29 +24,19 @@ module RubyAemAws
     # @param metric_name the name of the metric to check for.
     # @return an array of instance_ids that have a metric with @metric_name.
     def metric_instances(metric_name)
-      metrics = @cloud_watch_client.list_metrics(
-        namespace: 'AWS/EC2',
-        metric_name: metric_name
-      ).metrics
-
       instances_with_metric = []
-      get_all_instances.each do |instance|
-        next if instance.nil?
+      instances = get_all_instances
+      instances.each do |instance|
         instance_id = instance.instance_id
-        instances_with_metric.push(instance_id) if instance_in_metrics(metrics, instance_id)
+        metrics = @cloud_watch_client.list_metrics(namespace: 'AWS/EC2',
+                                                   metric_name: metric_name,
+                                                   dimensions: [
+                                                     name: 'InstanceId',
+                                                     value: instance_id
+                                                   ]).metrics
+        instances_with_metric.push(instance_id) unless metrics.empty?
       end
       instances_with_metric
-    end
-
-    private
-
-    def instance_in_metrics(metrics, instance_id)
-      metrics.each do |metric|
-        metric.dimensions.each do |dimension|
-          return true if dimension.name == 'InstanceId' && dimension.value == instance_id
-        end
-      end
-      false
     end
   end
 end

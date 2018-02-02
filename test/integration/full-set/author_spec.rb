@@ -13,34 +13,34 @@
 # limitations under the License.
 
 require_relative '../spec_helper'
+require_relative '../examples/verify_health'
+require_relative '../examples/verify_metric'
 require_relative '../../../lib/ruby_aem_aws'
 
-describe 'Author' do
+describe 'Author Primary' do
   before do
-    @author = init_full_set.author
+    @component = init_full_set.author.author_primary
   end
 
-  it 'Primary is healthy' do
-    expect(@author.author_primary.healthy?).to eq(true)
+  it_has_behaviour 'health verifier' do
+    let(:component) { @component }
   end
 
-  it 'Primary has metric \'CPUUtilization\'' do
-    expect(@author.author_primary.metric?(:CPUUtilization)).to eq(true)
+  it_has_behaviour 'metric verifier' do
+    let(:component) { @component }
+  end
+end
+
+describe 'Author Standby' do
+  before do
+    @component = init_full_set.author.author_standby
   end
 
-  it 'Primary does not have metric \'bob\'' do
-    expect(@author.author_primary.metric?(:bob)).to eq(false)
+  it_has_behaviour 'health verifier' do
+    let(:component) { @component }
   end
 
-  it 'Standby is healthy' do
-    expect(@author.author_standby.healthy?).to eq(true)
-  end
-
-  it 'Standby has metric \'CPUUtilization\'' do
-    expect(@author.author_standby.metric?(:CPUUtilization)).to eq(true)
-  end
-
-  it 'Standby does not have metric \'bob\'' do
-    expect(@author.author_standby.metric?(:bob)).to eq(false)
+  it_has_behaviour 'metric verifier' do
+    let(:component) { @component }
   end
 end

@@ -13,18 +13,20 @@
 # limitations under the License.
 
 require_relative '../spec_helper'
+require_relative '../examples/verify_health'
+require_relative '../examples/verify_metric'
 require_relative '../../../lib/ruby_aem_aws'
 
 describe 'AuthorDispatcher' do
-  before do
-    @author_dispatcher = init_full_set.author_dispatcher
+  before :each do
+    @component = init_full_set.author_dispatcher
   end
 
-  it 'is healthy' do
-    expect(@author_dispatcher.healthy?).to eq(true)
+  it_has_behaviour 'health verifier' do
+    let(:component) { @component }
   end
 
-  it 'has metric \'CPUUtilization\'' do
-    expect(@author_dispatcher.metric?(:CPUUtilization)).to eq(true)
+  it_has_behaviour 'metric verifier' do
+    let(:component) { @component }
   end
 end

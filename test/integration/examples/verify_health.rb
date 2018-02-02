@@ -12,21 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-require_relative '../spec_helper'
-require_relative '../examples/verify_health'
-require_relative '../examples/verify_metric'
-require_relative '../../../lib/ruby_aem_aws'
-
-describe 'Author Publish Dispatcher' do
-  before do
-    @component = init_consolidated.author_publish_dispatcher
-  end
-
-  it_has_behaviour 'health verifier' do
-    let(:component) { @component }
-  end
-
-  it_has_behaviour 'metric verifier' do
-    let(:component) { @component }
+shared_examples_for 'health verifier' do
+  it 'should be healthy' do
+    expect(component.healthy?).to equal true
   end
 end
