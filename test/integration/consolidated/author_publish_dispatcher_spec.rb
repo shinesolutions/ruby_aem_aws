@@ -20,10 +20,15 @@ describe 'AuthorPublishDispatcher' do
     @author_publish_dispatcher = init_consolidated.author_publish_dispatcher
   end
 
-  after do
-  end
-
   it 'is healthy' do
     expect(@author_publish_dispatcher.healthy?).to eq(true)
+  end
+
+  it 'has metric \'CPUUtilization\'' do
+    expect(@author_publish_dispatcher.metric?(:CPUUtilization)).to eq(true)
+  end
+
+  it 'does not have metric \'bob\'' do
+    expect(@author_publish_dispatcher.metric?(:bob)).to eq(false)
   end
 end
