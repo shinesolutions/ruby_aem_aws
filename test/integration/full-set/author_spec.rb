@@ -17,9 +17,23 @@ require_relative '../examples/verify_health'
 require_relative '../examples/verify_metric'
 require_relative '../../../lib/ruby_aem_aws'
 
-describe 'Author Publish Dispatcher' do
+describe 'Author Primary' do
   before do
-    @component = init_consolidated.author_publish_dispatcher
+    @component = init_full_set.author.author_primary
+  end
+
+  it_has_behaviour 'health verifier' do
+    let(:component) { @component }
+  end
+
+  it_has_behaviour 'metric verifier' do
+    let(:component) { @component }
+  end
+end
+
+describe 'Author Standby' do
+  before do
+    @component = init_full_set.author.author_standby
   end
 
   it_has_behaviour 'health verifier' do

@@ -13,23 +13,58 @@
 # limitations under the License.
 
 require_relative '../../spec_helper'
-require_relative 'examples/health_checker'
+require_relative 'examples/component_single'
+require_relative 'examples/describe_single'
+require_relative 'examples/verify_health_single'
+require_relative 'examples/verify_metric_single'
 require_relative '../../../../lib/ruby_aem_aws/component/chaos_monkey'
 
-chaos_monkey = RubyAemAws::Component::ChaosMonkey.new(nil, nil)
+chaos_monkey = RubyAemAws::Component::ChaosMonkey.new(nil, nil, nil, nil)
 
 describe chaos_monkey do
-  it_behaves_like 'a health flagged component'
+  it_behaves_like 'a single instance accessor'
+  it_behaves_like 'a single instance describer'
+  it_behaves_like 'a health by state verifier'
+  it_behaves_like 'a single metric_verifier'
 end
 
-describe 'ChaosMonkey.healthy?' do
-  before do
-    @mock_ec2 = double('mock_ec2')
-
-    @chaos_monkey = RubyAemAws::Component::ChaosMonkey.new(@mock_ec2, TEST_STACK_PREFIX)
+describe 'ChaosMonkey' do
+  before :each do
+    @environment = environment_creator
   end
 
-  it 'runs healthy method' do
-    expect { @chaos_monkey.healthy? }.to raise_error(RubyAemAws::NotYetImplementedError)
+  it_has_behaviour 'single instance accessibility' do
+    let(:environment) { @environment }
+    let(:create_component) { ->(env) { component_creator(env) } }
+  end
+
+  it_has_behaviour 'single instance description' do
+    let(:environment) { @environment }
+    let(:create_component) { ->(env) { component_creator(env) } }
+  end
+
+  it_has_behaviour 'health via single verifier' do
+    let(:environment) { @environment }
+    let(:create_component) { ->(env) { component_creator(env) } }
+  end
+
+  it_has_behaviour 'metrics via single verifier' do
+    let(:environment) { @environment }
+    let(:create_component) { ->(env) { component_creator(env) } }
+  end
+
+  private def component_creator(environment)
+    RubyAemAws::Component::ChaosMonkey.new(TEST_STACK_PREFIX,
+                                           environment.ec2_resource,
+                                           environment.asg_client,
+                                           environment.cloud_watch_client)
+  end
+
+  private def environment_creator
+    Aws::AemEnvironment.new(mock_ec2_resource(RubyAemAws::Component::ChaosMonkey::EC2_COMPONENT,
+                                              RubyAemAws::Component::ChaosMonkey::EC2_NAME),
+                            mock_asg_client(RubyAemAws::Component::ChaosMonkey::EC2_COMPONENT),
+                            nil,
+                            mock_cloud_watch)
   end
 end

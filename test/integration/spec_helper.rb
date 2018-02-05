@@ -15,22 +15,31 @@
 require 'simplecov'
 SimpleCov.start
 
+RSpec.configure do |config|
+  # Improve test output
+  config.alias_it_should_behave_like_to :it_has_behaviour, 'has behaviour:'
+end
+
 require_relative '../../lib/ruby_aem_aws'
 
 DEFAULT_REGION = 'ap-southeast-2'.freeze
 
 def init_client
-  RubyAemAws::AemAws.new(
-    region: ENV['aws_region'] || DEFAULT_REGION
-  )
+  region = { region: ENV['AWS_REGION'] || DEFAULT_REGION }
+  # puts("Initialising AWS client with region: #{region}")
+  RubyAemAws::AemAws.new(region)
 end
 
-DEFAULT_STACK_PREFIX = 'sandpit-ramses001'.freeze
+DEFAULT_STACK_PREFIX = 'sandpit'.freeze
 
 def init_consolidated
-  init_client.consolidated(stack_prefix: ENV['stack_prefix'] || DEFAULT_STACK_PREFIX)
+  stack_prefix = { stack_prefix: ENV['STACK_PREFIX'] || DEFAULT_STACK_PREFIX }
+  # puts("Initialising consolidated stack with prefix: #{stack_prefix}")
+  init_client.consolidated(stack_prefix)
 end
 
 def init_full_set
-  init_client.full_set(stack_prefix: ENV['stack_prefix'] || DEFAULT_STACK_PREFIX)
+  stack_prefix = { stack_prefix: ENV['STACK_PREFIX'] || DEFAULT_STACK_PREFIX }
+  # puts("Initialising consolidated stack with prefix: #{stack_prefix}")
+  init_client.full_set(stack_prefix)
 end

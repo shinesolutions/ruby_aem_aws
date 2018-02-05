@@ -12,16 +12,21 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-module RubyAemAws
-  module Component
-    ComponentDescriptor = Struct.new(:stack_prefix_in, :ec2, :elb) do
-      def stack_prefix
-        # Unwrap from {:stack_prefix = value} to the value if necessary.
-        return stack_prefix_in[:stack_prefix] if stack_prefix_in.is_a? Hash
-        stack_prefix_in
-      end
-    end
-    EC2Descriptor = Struct.new(:component, :name)
-    ELBDescriptor = Struct.new(:id, :name)
+require_relative '../spec_helper'
+require_relative '../examples/verify_health'
+require_relative '../examples/verify_metric'
+require_relative '../../../lib/ruby_aem_aws'
+
+describe 'Author Standby' do
+  before do
+    @component = init_full_set.publish
+  end
+
+  it_has_behaviour 'health verifier' do
+    let(:component) { @component }
+  end
+
+  it_has_behaviour 'metric verifier' do
+    let(:component) { @component }
   end
 end

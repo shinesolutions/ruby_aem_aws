@@ -12,16 +12,16 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-module RubyAemAws
-  module Component
-    ComponentDescriptor = Struct.new(:stack_prefix_in, :ec2, :elb) do
-      def stack_prefix
-        # Unwrap from {:stack_prefix = value} to the value if necessary.
-        return stack_prefix_in[:stack_prefix] if stack_prefix_in.is_a? Hash
-        stack_prefix_in
-      end
+module Aws
+  # Stores AEM clients for convenience.
+  class AemEnvironment
+    attr_reader :ec2_resource, :asg_client, :elb_client, :cloud_watch_client
+
+    def initialize(ec2_resource, asg_client, elb_client, cloud_watch_client)
+      @ec2_resource = ec2_resource
+      @asg_client = asg_client
+      @elb_client = elb_client
+      @cloud_watch_client = cloud_watch_client
     end
-    EC2Descriptor = Struct.new(:component, :name)
-    ELBDescriptor = Struct.new(:id, :name)
   end
 end

@@ -17,8 +17,9 @@ require_relative '../../../lib/ruby_aem_aws/consolidated_stack'
 
 describe 'ConsolidatedStack' do
   before do
-    @mock_ec2 = double('mock_ec2')
-    @consolidated_stack = RubyAemAws::ConsolidatedStack.new(@mock_ec2, TEST_STACK_PREFIX)
+    @consolidated_stack = RubyAemAws::ConsolidatedStack.new(TEST_STACK_PREFIX,
+                                                            double('mock_ec2'),
+                                                            double('mock_cloud_watch'))
   end
 
   it 'should create author_publish_dispatcher' do

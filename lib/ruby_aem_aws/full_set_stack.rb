@@ -22,46 +22,48 @@ require_relative 'component/publish'
 module RubyAemAws
   # Factory for the full-set AEM stack component interfaces.
   class FullSetStack
+    # @param stack_prefix AWS tag: StackPrefix
     # @param ec2_resource AWS EC2 resource
     # @param elb_client AWS ELB client
-    # @param autoscaling_client AWS AutoScaling client
-    # @param stack_prefix AWS tag: StackPrefix
+    # @param auto_scaling_client AWS AutoScaling client
+    # @param cloud_watch_client AWS CloudWatch client
     # @return new RubyAemAws::FullSetStack instance
-    def initialize(ec2_resource, elb_client, autoscaling_client, stack_prefix)
+    def initialize(stack_prefix, ec2_resource, elb_client, auto_scaling_client, cloud_watch_client)
+      @stack_prefix = stack_prefix
       @ec2_resource = ec2_resource
       @elb_client = elb_client
-      @auto_scaling_client = autoscaling_client
-      @stack_prefix = stack_prefix
+      @auto_scaling_client = auto_scaling_client
+      @cloud_watch_client = cloud_watch_client
     end
 
     # @return new RubyAemAws::Component::AuthorDispatcher instance
     def author_dispatcher
-      RubyAemAws::Component::AuthorDispatcher.new(@ec2_resource, @elb_client, @auto_scaling_client, @stack_prefix)
+      RubyAemAws::Component::AuthorDispatcher.new(@stack_prefix, @ec2_resource, @auto_scaling_client, @elb_client, @cloud_watch_client)
     end
 
     # @return new RubyAemAws::Component::Author instance
     def author
-      RubyAemAws::Component::Author.new(@ec2_resource, @stack_prefix)
+      RubyAemAws::Component::Author.new(@stack_prefix, @ec2_resource, @cloud_watch_client)
     end
 
     # @return new RubyAemAws::Component::ChaosMonkey instance
     def chaos_monkey
-      RubyAemAws::Component::ChaosMonkey.new(@ec2_resource, @stack_prefix)
+      RubyAemAws::Component::ChaosMonkey.new(@stack_prefix, @ec2_resource, @auto_scaling_client, @cloud_watch_client)
     end
 
     # @return new RubyAemAws::Component::Orchestrator instance
     def orchestrator
-      RubyAemAws::Component::Orchestrator.new(@ec2_resource, @stack_prefix)
+      RubyAemAws::Component::Orchestrator.new(@stack_prefix, @ec2_resource, @auto_scaling_client, @cloud_watch_client)
     end
 
     # @return new RubyAemAws::Component::Publish instance
     def publish
-      RubyAemAws::Component::Publish.new(@ec2_resource, @stack_prefix)
+      RubyAemAws::Component::Publish.new(@stack_prefix, @ec2_resource, @auto_scaling_client, @cloud_watch_client)
     end
 
     # @return new RubyAemAws::Component::PublishDispatcher instance
     def publish_dispatcher
-      RubyAemAws::Component::PublishDispatcher.new(@ec2_resource, @stack_prefix)
+      RubyAemAws::Component::PublishDispatcher.new(@stack_prefix, @ec2_resource, @auto_scaling_client, @elb_client, @cloud_watch_client)
     end
   end
 end

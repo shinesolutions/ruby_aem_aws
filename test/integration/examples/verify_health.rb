@@ -12,24 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-require_relative '../../spec_helper'
-require_relative 'examples/health_checker'
-require_relative '../../../../lib/ruby_aem_aws/component/author'
-
-author = RubyAemAws::Component::Author.new(nil, nil)
-
-describe author do
-  it_behaves_like 'a health flagged component'
-end
-
-describe 'Author.healthy?' do
-  before do
-    @mock_ec2 = double('mock_ec2')
-
-    @author = RubyAemAws::Component::Author.new(@mock_ec2, TEST_STACK_PREFIX)
-  end
-
-  it 'runs healthy method' do
-    expect { @author.healthy? }.to raise_error(RubyAemAws::NotYetImplementedError)
+shared_examples_for 'health verifier' do
+  it 'should be healthy' do
+    expect(component.healthy?).to equal true
   end
 end

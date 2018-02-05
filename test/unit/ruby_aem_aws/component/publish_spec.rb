@@ -13,23 +13,58 @@
 # limitations under the License.
 
 require_relative '../../spec_helper'
-require_relative 'examples/health_checker'
+require_relative 'examples/component_grouped'
+require_relative 'examples/describe_grouped'
+require_relative 'examples/verify_health_single'
+require_relative 'examples/verify_metric_grouped'
 require_relative '../../../../lib/ruby_aem_aws/component/publish'
 
-publish = RubyAemAws::Component::Publish.new(nil, nil)
+publish = RubyAemAws::Component::Publish.new(nil, nil, nil, nil)
 
 describe publish do
-  it_behaves_like 'a health flagged component'
+  it_behaves_like 'a grouped instance accessor'
+  it_behaves_like 'a grouped instance describer'
+  it_behaves_like 'a health by state verifier'
+  it_behaves_like 'a grouped metric_verifier'
 end
 
-describe 'Publish.healthy?' do
-  before do
-    @mock_ec2 = double('mock_ec2')
-
-    @publish = RubyAemAws::Component::Publish.new(@mock_ec2, TEST_STACK_PREFIX)
+describe 'Publish' do
+  before :each do
+    @environment = environment_creator
   end
 
-  it 'runs healthy method' do
-    expect { @publish.healthy? }.to raise_error(RubyAemAws::NotYetImplementedError)
+  it_has_behaviour 'grouped instance accessibility' do
+    let(:environment) { @environment }
+    let(:create_component) { ->(env) { component_creator(env) } }
+  end
+
+  it_has_behaviour 'grouped instance description' do
+    let(:environment) { @environment }
+    let(:create_component) { ->(env) { component_creator(env) } }
+  end
+
+  it_has_behaviour 'health via single verifier' do
+    let(:environment) { @environment }
+    let(:create_component) { ->(env) { component_creator(env) } }
+  end
+
+  it_has_behaviour 'metrics via grouped verifier' do
+    let(:environment) { @environment }
+    let(:create_component) { ->(env) { component_creator(env) } }
+  end
+
+  private def component_creator(environment)
+    RubyAemAws::Component::Publish.new(TEST_STACK_PREFIX,
+                                       environment.ec2_resource,
+                                       environment.asg_client,
+                                       environment.cloud_watch_client)
+  end
+
+  private def environment_creator
+    Aws::AemEnvironment.new(mock_ec2_resource(RubyAemAws::Component::Publish::EC2_COMPONENT,
+                                              RubyAemAws::Component::Publish::EC2_NAME),
+                            mock_asg_client(RubyAemAws::Component::Publish::EC2_COMPONENT),
+                            nil,
+                            mock_cloud_watch)
   end
 end

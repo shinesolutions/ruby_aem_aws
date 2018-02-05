@@ -17,7 +17,11 @@ require_relative '../../../lib/ruby_aem_aws/consolidated_stack'
 
 describe 'FullSetStack' do
   before do
-    @full_set_stack = RubyAemAws::FullSetStack.new(double('mock_ec2'), double('mock_elb'), double('mock_asg'), TEST_STACK_PREFIX)
+    @full_set_stack = RubyAemAws::FullSetStack.new(TEST_STACK_PREFIX,
+                                                   double('mock_ec2'),
+                                                   double('mock_asg'),
+                                                   double('mock_elb'),
+                                                   double('mock_cloud_watch'))
   end
 
   it 'should create author_dispatcher' do

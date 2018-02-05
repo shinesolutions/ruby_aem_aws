@@ -12,11 +12,28 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+require_relative 'component_descriptor'
+require_relative 'mixins/instance_describer'
+require_relative '../error'
+
 module RubyAemAws
   # Add common methods to all Components.
   module AbstractComponent
+    include Component
+    include InstanceDescriber
+
     def to_s
       "#{self.class.name.split('::').last}(#{@descriptor.stack_prefix unless @descriptor.nil?})"
+    end
+
+    private def filter_for_descriptor
+      {
+        filters: [
+          { name: 'tag:StackPrefix', values: [@descriptor.stack_prefix] },
+          { name: 'tag:Component', values: [@descriptor.ec2.component] },
+          { name: 'tag:Name', values: [@descriptor.ec2.name] }
+        ]
+      }
     end
   end
 end

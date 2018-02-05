@@ -17,18 +17,18 @@ require_relative 'examples/component_single'
 require_relative 'examples/describe_single'
 require_relative 'examples/verify_health_single'
 require_relative 'examples/verify_metric_single'
-require_relative '../../../../lib/ruby_aem_aws/component/author_publish_dispatcher'
+require_relative '../../../../lib/ruby_aem_aws/component/author'
 
-author_publish_dispatcher = RubyAemAws::Component::AuthorPublishDispatcher.new(nil, nil, nil)
+author_primary = RubyAemAws::Component::AuthorPrimary.new(nil, nil, nil)
 
-describe author_publish_dispatcher do
+describe author_primary do
   it_behaves_like 'a single instance accessor'
   it_behaves_like 'a single instance describer'
   it_behaves_like 'a health by state verifier'
   it_behaves_like 'a single metric_verifier'
 end
 
-describe 'AuthorPublishDispatcher' do
+describe 'AuthorPrimary' do
   before :each do
     @environment = environment_creator
   end
@@ -54,14 +54,15 @@ describe 'AuthorPublishDispatcher' do
   end
 
   private def component_creator(environment)
-    RubyAemAws::Component::AuthorPublishDispatcher.new(TEST_STACK_PREFIX,
-                                                       environment.ec2_resource,
-                                                       environment.cloud_watch_client)
+    author = RubyAemAws::Component::Author.new(TEST_STACK_PREFIX,
+                                               environment.ec2_resource,
+                                               environment.cloud_watch_client)
+    author.author_primary
   end
 
   private def environment_creator
-    Aws::AemEnvironment.new(mock_ec2_resource(RubyAemAws::Component::AuthorDispatcher::EC2_COMPONENT,
-                                              RubyAemAws::Component::AuthorDispatcher::EC2_NAME),
+    Aws::AemEnvironment.new(mock_ec2_resource(RubyAemAws::Component::AuthorPrimary::EC2_COMPONENT,
+                                              RubyAemAws::Component::AuthorPrimary::EC2_NAME),
                             nil,
                             nil,
                             mock_cloud_watch)

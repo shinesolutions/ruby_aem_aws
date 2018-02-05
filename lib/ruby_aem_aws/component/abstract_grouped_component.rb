@@ -12,16 +12,28 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+require 'aws-sdk'
+require_relative 'abstract_component'
+
 module RubyAemAws
-  module Component
-    ComponentDescriptor = Struct.new(:stack_prefix_in, :ec2, :elb) do
-      def stack_prefix
-        # Unwrap from {:stack_prefix = value} to the value if necessary.
-        return stack_prefix_in[:stack_prefix] if stack_prefix_in.is_a? Hash
-        stack_prefix_in
-      end
+  # Add common methods to all Components.
+  module AbstractGroupedComponent
+    include AbstractComponent
+
+    def get_all_instances
+      ec2_resource.instances(filter_for_descriptor)
     end
-    EC2Descriptor = Struct.new(:component, :name)
-    ELBDescriptor = Struct.new(:id, :name)
+
+    def get_instance_by_id(instance_id)
+      ec2_resource.instance(instance_id)
+    end
+
+    def get_num_of_instances
+      get_all_instances.entries.length
+    end
+
+    def get_random_instance
+      get_all_instances.entries.sample
+    end
   end
 end

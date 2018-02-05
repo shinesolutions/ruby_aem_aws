@@ -13,32 +13,31 @@
 # limitations under the License.
 
 require_relative '../../spec_helper'
-require_relative 'examples/component_single'
-require_relative 'examples/describe_single'
-require_relative 'examples/verify_health_single'
-require_relative 'examples/verify_metric_single'
-require_relative '../../../../lib/ruby_aem_aws/component/author_publish_dispatcher'
+require_relative 'examples/component_grouped'
+require_relative 'examples/describe_grouped'
+require_relative 'examples/verify_metric_grouped'
+require_relative '../../../../lib/ruby_aem_aws/component/author'
 
-author_publish_dispatcher = RubyAemAws::Component::AuthorPublishDispatcher.new(nil, nil, nil)
+author_standby = RubyAemAws::Component::AuthorStandby.new(nil, nil, nil)
 
-describe author_publish_dispatcher do
-  it_behaves_like 'a single instance accessor'
-  it_behaves_like 'a single instance describer'
+describe author_standby do
+  it_behaves_like 'a grouped instance accessor'
+  it_behaves_like 'a grouped instance describer'
   it_behaves_like 'a health by state verifier'
-  it_behaves_like 'a single metric_verifier'
+  it_behaves_like 'a grouped metric_verifier'
 end
 
-describe 'AuthorPublishDispatcher' do
+describe 'AuthorStandby' do
   before :each do
     @environment = environment_creator
   end
 
-  it_has_behaviour 'single instance accessibility' do
+  it_has_behaviour 'grouped instance accessibility' do
     let(:environment) { @environment }
     let(:create_component) { ->(env) { component_creator(env) } }
   end
 
-  it_has_behaviour 'single instance description' do
+  it_has_behaviour 'grouped instance description' do
     let(:environment) { @environment }
     let(:create_component) { ->(env) { component_creator(env) } }
   end
@@ -48,20 +47,21 @@ describe 'AuthorPublishDispatcher' do
     let(:create_component) { ->(env) { component_creator(env) } }
   end
 
-  it_has_behaviour 'metrics via single verifier' do
+  it_has_behaviour 'metrics via grouped verifier' do
     let(:environment) { @environment }
     let(:create_component) { ->(env) { component_creator(env) } }
   end
 
   private def component_creator(environment)
-    RubyAemAws::Component::AuthorPublishDispatcher.new(TEST_STACK_PREFIX,
-                                                       environment.ec2_resource,
-                                                       environment.cloud_watch_client)
+    author = RubyAemAws::Component::Author.new(TEST_STACK_PREFIX,
+                                               environment.ec2_resource,
+                                               environment.cloud_watch_client)
+    author.author_standby
   end
 
   private def environment_creator
-    Aws::AemEnvironment.new(mock_ec2_resource(RubyAemAws::Component::AuthorDispatcher::EC2_COMPONENT,
-                                              RubyAemAws::Component::AuthorDispatcher::EC2_NAME),
+    Aws::AemEnvironment.new(mock_ec2_resource(RubyAemAws::Component::AuthorStandby::EC2_COMPONENT,
+                                              RubyAemAws::Component::AuthorStandby::EC2_NAME),
                             nil,
                             nil,
                             mock_cloud_watch)

@@ -13,8 +13,20 @@
 # limitations under the License.
 
 module RubyAemAws
+  class InstanceState
+    PENDING = 'pending'.freeze
+    RUNNING = 'running'.freeze
+    SHUTTING_DOWN = 'shutting_down'.freeze
+    TERMINATED = 'terminated'.freeze
+    STOPPING = 'stopping'.freeze
+    STOPPED = 'stopped'.freeze
+
+    ALL_ACTIVE = [PENDING, RUNNING, SHUTTING_DOWN, STOPPING, STOPPED].freeze
+  end
+
   class Constants
     REGION_DEFAULT = 'ap-southeast-2'.freeze
-    INSTANCE_STATE_HEALTHY = 'running'.freeze
+
+    INSTANCE_STATE_HEALTHY = RubyAemAws::InstanceState::RUNNING.freeze
   end
 end

@@ -12,34 +12,33 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-require_relative 'abstract_component'
+require_relative 'author_primary'
+require_relative 'author_standby'
 
 module RubyAemAws
   module Component
-    # Interface to the AWS instance running the Author component of a full-set AEM stack.
+    # Interface to the AWS instances running the Author components of a full-set AEM stack.
     class Author
-      include AbstractComponent
+      attr_reader :author_primary, :author_standby
 
-      # @param client AWS EC2 client
-      # @param _stack_prefix AWS tag: StackPrefix
+      # ELB_ID = 'AuthorLoadBalancer'.freeze
+      # ELB_NAME = 'AEM Author Load Balancer'.freeze
+
+      # @param stack_prefix AWS tag: StackPrefix
+      # @param ec2_resource AWS EC2 resource
       # @return new RubyAemAws::FullSet::Author
-      def initialize(client, _stack_prefix)
-        @client = client
+      def initialize(stack_prefix, ec2_resource, cloud_watch_client)
+        @author_primary = Component::AuthorPrimary.new(stack_prefix, ec2_resource, cloud_watch_client)
+        @author_standby = Component::AuthorStandby.new(stack_prefix, ec2_resource, cloud_watch_client)
       end
-
-      def healthy?
-        raise NotYetImplementedError
-      end
-
-      # def get_primary_instance
-
-      # def get_standby_instance
 
       # def terminate_primary_instance
 
       # def terminate_standby_instance
 
       # def wait_until_healthy
+      #   - wait until both primary and standby are healthy
+      # end
     end
   end
 end

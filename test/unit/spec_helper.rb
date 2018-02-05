@@ -16,6 +16,7 @@ require 'simplecov'
 SimpleCov.start
 
 require_relative 'aws_mocker'
+require_relative 'aem_environment'
 
 RSpec.configure do |config|
   config.mock_with :rspec do |mocks|
@@ -25,7 +26,15 @@ RSpec.configure do |config|
     # exist to raise, protecting against incorrectly spelt names.
     mocks.verify_doubled_constant_names = true
   end
+
+  # Improve test output
+  config.alias_it_should_behave_like_to :it_has_behaviour, 'has behaviour:'
+
   config.include AwsMocker
+  config.include AwsAutoScalingMocker
+  config.include AwsElasticLoadBalancerMocker
+  config.include AwsEc2Mocker
+  config.include AwsCloudWatchMocker
 end
 
 require_relative '../../lib/ruby_aem_aws/constants'

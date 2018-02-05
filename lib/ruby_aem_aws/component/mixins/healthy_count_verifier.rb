@@ -17,7 +17,7 @@ require_relative '../../constants'
 module RubyAemAws
   # Mixin for checking health of a component via ELB 'healthy' count vs ASG desired_capacity.
   # Add this to a component to make it capable of determining its own health.
-  module HealthyInstanceCountVerifier
+  module HealthyCountVerifier
     # Aggregate health_states considered healthy.
     # @return health_state is ready or scaling.
     def healthy?
@@ -33,20 +33,18 @@ module RubyAemAws
     # - scaling: ELB running instance count is more than AutoScalingGroup.desired_capacity.
     # - ready: ELB running instance count is equal to AutoScalingGroup.desired_capacity.
     def health_state
-      @descriptor = get_descriptor
-
-      asg = find_auto_scaling_group(get_asg_client)
+      asg = find_auto_scaling_group(asg_client)
       return :no_asg if asg.nil?
 
       # Debug:
       # unless asg.nil?
-      #   puts("ASG: #{asg.auto_scaling_group_name} (#{asg.desired_capacity})")
+      #   puts("ASG: #{asg} #{asg.auto_scaling_group_name} (#{asg.desired_capacity})")
       #   asg.instances.each do |i|
       #     puts("  Instance #{i.instance_id}: #{i.health_status}")
       #   end
       # end
 
-      elb = find_elb(get_elb_client)
+      elb = find_elb(elb_client)
       return :no_elb if elb.nil?
 
       elb_running_instances = 0
@@ -65,6 +63,10 @@ module RubyAemAws
       :ready
     end
 
+    def wait_until_healthy
+      raise NotYetImplementedError
+    end
+
     private
 
     # @return AutoScalingGroup by StackPrefix and Component tags.
@@ -75,12 +77,12 @@ module RubyAemAws
         asg_matches_component = false
         tags = autoscaling_group.tags
         tags.each do |tag|
-          if tag.key == 'StackPrefix' && tag.value == @descriptor.stack_prefix
+          if tag.key == 'StackPrefix' && tag.value == descriptor.stack_prefix
             asg_matches_stack_prefix = true
             break if asg_matches_component
             next
           end
-          if tag.key == 'Component' && tag.value == @descriptor.ec2.component
+          if tag.key == 'Component' && tag.value == descriptor.ec2.component
             asg_matches_component = true
             break if asg_matches_stack_prefix
           end
@@ -101,12 +103,12 @@ module RubyAemAws
 
         tags = tag_descriptions[0].tags
         tags.each do |tag|
-          if tag.key == 'StackPrefix' && tag.value == @descriptor.stack_prefix
+          if tag.key == 'StackPrefix' && tag.value == descriptor.stack_prefix
             elb_matches_stack_prefix = true
             break if elb_matches_logical_id
             next
           end
-          if tag.key == 'aws:cloudformation:logical-id' && tag.value == @descriptor.elb.id
+          if tag.key == 'aws:cloudformation:logical-id' && tag.value == descriptor.elb.id
             elb_matches_logical_id = true
             break if elb_matches_stack_prefix
           end
@@ -119,11 +121,11 @@ module RubyAemAws
     def get_instances_state_from_elb(elb)
       stack_prefix_instances = []
       elb.instances.each do |i|
-        instance = get_ec2_resource.instance(i.instance_id)
+        instance = get_instance_by_id(i.instance_id)
         next if instance.nil?
         instance.tags.each do |tag|
           next if tag.key != 'StackPrefix'
-          break if tag.value != @descriptor.stack_prefix
+          break if tag.value != descriptor.stack_prefix
           stack_prefix_instances.push(id: i.instance_id, state: instance.state.name)
         end
       end

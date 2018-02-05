@@ -13,15 +13,21 @@
 # limitations under the License.
 
 module RubyAemAws
-  module Component
-    ComponentDescriptor = Struct.new(:stack_prefix_in, :ec2, :elb) do
-      def stack_prefix
-        # Unwrap from {:stack_prefix = value} to the value if necessary.
-        return stack_prefix_in[:stack_prefix] if stack_prefix_in.is_a? Hash
-        stack_prefix_in
+  # Mixin for describing component EC2 instance state.
+  # Add this to a component to make it capable of describing its instances.
+  module InstanceDescriber
+    # @return a string containing instance descriptions.
+    def describe_instances
+      descriptions = []
+      get_all_instances.each do |i|
+        next if i.nil?
+        descriptions.push(describe_instance(i))
       end
+      descriptions.join(', ')
     end
-    EC2Descriptor = Struct.new(:component, :name)
-    ELBDescriptor = Struct.new(:id, :name)
+
+    def describe_instance(instance)
+      "#{instance.instance_id} (#{instance.state.name})"
+    end
   end
 end

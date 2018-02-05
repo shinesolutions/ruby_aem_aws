@@ -18,33 +18,27 @@ require_relative 'mixins/metric_verifier'
 
 module RubyAemAws
   module Component
-    # Interface to the AWS instance running the Publish component of a full-set AEM stack.
-    class Publish
-      attr_reader :descriptor, :ec2_resource, :cloud_watch_client, :asg_client
+    # Interface to the AWS instance running the Author-Standby component of a full-set AEM stack.
+    class AuthorStandby
+      attr_reader :descriptor, :ec2_resource, :cloud_watch_client
       include AbstractGroupedComponent
-      # Can't verify state by count as there's no ELB.
+      # Can't verify state by count as there's no ASG.
       include HealthyStateVerifier
       include MetricVerifier
 
-      EC2_COMPONENT = 'publish'.freeze
-      EC2_NAME = 'AEM Publish'.freeze
+      EC2_COMPONENT = 'author-standby'.freeze
+      EC2_NAME = 'AEM Author - Standby'.freeze
 
       # @param stack_prefix AWS tag: StackPrefix
       # @param ec2_resource AWS EC2 resource
-      # @param asg_client AWS AutoScalingGroup client
       # @param cloud_watch_client AWS CloudWatch client
-      # @return new RubyAemAws::FullSet::AuthorPrimary
-      def initialize(stack_prefix, ec2_resource, asg_client, cloud_watch_client)
+      # @return new RubyAemAws::FullSet::AuthorStandby
+      def initialize(stack_prefix, ec2_resource, cloud_watch_client)
         @descriptor = ComponentDescriptor.new(stack_prefix,
                                               EC2Descriptor.new(EC2_COMPONENT, EC2_NAME))
         @ec2_resource = ec2_resource
-        @asg_client = asg_client
         @cloud_watch_client = cloud_watch_client
       end
-
-      # def terminate_all_instances
-
-      # def terminate_random_instance
     end
   end
 end
