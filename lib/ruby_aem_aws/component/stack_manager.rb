@@ -28,7 +28,7 @@ module RubyAemAws
 
 				with_retries(@retry_opts) do
 					state = query("#{@stack_prefix}-AemStackManagerTable", 'state', 'command_id', @cmd_id, 'EQ', 'state', 'Pending', 'NE').items[0]['state']
-					puts state
+					puts "Task execution: #{state}"
 				end
 			end
 		end
