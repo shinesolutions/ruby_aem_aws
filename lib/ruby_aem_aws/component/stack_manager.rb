@@ -17,7 +17,7 @@ module RubyAemAws
 			end
 			# @param task AWS SSM run_cmd
 			# @param details SNS Message details
-	    # @return Command state
+			# @return Command state
 			def check(task, details)
 				sns_message = "{ \"default\": \"{ 'task': '#{task}', 'stack_prefix': '#{@stack_prefix}', 'details': { #{details} }}\"}"
 				message_id = publish(@topicarn, sns_message)
