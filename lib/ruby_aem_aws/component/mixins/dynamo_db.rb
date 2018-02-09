@@ -4,10 +4,10 @@ module RubyAemAws
   # AWS Interface to contact DynamoDB
   module DynamoDB
     def initialize(table_name, key_condition, key_operator)
-	   @table_name = table_name
-     @key_condition = key_condition
-     @key_operator = key_operator
-	 end
+      @table_name = table_name
+      @key_condition = key_condition
+      @key_operator = key_operator
+    end
 
     # @param attributes_to_get the name of the attribute to get
     # @param attribute_filter the name of the attribute to scan for
@@ -23,7 +23,7 @@ module RubyAemAws
                       attribute_value_list: [attribute_value],
                       comparison_operator: attribute_operator
                     }
-                } }
+                  } }
       client.scan(db_scan)
     end
 
