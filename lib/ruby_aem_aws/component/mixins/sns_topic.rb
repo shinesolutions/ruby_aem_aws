@@ -1,5 +1,3 @@
-require 'aws-sdk-sns'
-
 module RubyAemAws
   # AWS Interface publish to SNS-Topic
   module SNSTopic
