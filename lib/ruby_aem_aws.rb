@@ -14,6 +14,7 @@
 
 require_relative 'ruby_aem_aws/consolidated_stack'
 require_relative 'ruby_aem_aws/full_set_stack'
+require_relative 'ruby_aem_aws/stack_manager'
 
 module RubyAemAws
   # AemAws class represents the AWS stack for AEM.
@@ -32,6 +33,8 @@ module RubyAemAws
       # The V2 API only supports Application ELBs, and we currently use Classic.
       # @elb_client = Aws::ElasticLoadBalancingV2::Client.new(region: conf[:region])
       @cloud_watch_client = aws[:CloudWatchClient]
+      @dynamodb_client = aws[:DynamoDBClient]
+      @s3_client = aws[:S3Client]
     end
 
     def test_connection
@@ -57,6 +60,10 @@ module RubyAemAws
     def full_set(stack_prefix)
       RubyAemAws::FullSetStack.new(stack_prefix, @ec2_resource, @elb_client, @auto_scaling_client, @cloud_watch_client)
     end
+
+    def stack_manager(stack_prefix, topicarn)
+      RubyAemAws::StackManager.new(stack_prefix, topicarn, @ec2_client, @dynamodb_client, @s3_client)
+    end
   end
 
   # Encapsulate AWS class creation for mocking.
@@ -67,7 +74,9 @@ module RubyAemAws
         Ec2Resource: Aws::EC2::Resource.new(region: region),
         ElbClient: Aws::ElasticLoadBalancing::Client.new(region: region),
         AutoScalingClient: Aws::AutoScaling::Client.new(region: region),
-        CloudWatchClient: Aws::CloudWatch::Client.new(region: region)
+        CloudWatchClient: Aws::CloudWatch::Client.new(region: region),
+        DynamoDBClient: Aws::DynamoDB::Client.new(region: region),
+        S3Client: Aws::S3::Client.new
       }
     end
   end
