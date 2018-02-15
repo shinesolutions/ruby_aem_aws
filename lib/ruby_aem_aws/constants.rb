@@ -26,7 +26,9 @@ module RubyAemAws
 
   class Constants
     REGION_DEFAULT = 'ap-southeast-2'.freeze
-
+    ACCESS_KEY_ID = ENV['AWS_ACCESS_KEY_ID'] || ENV['aws_access_key_id']
+    SECRET_ACCESS_KEY = ENV['AWS_SECRET_ACCESS_KEY'] || ENV['aws_scret_access_key']
+    PROFILE = ENV['AWS_PROFILE']
     INSTANCE_STATE_HEALTHY = RubyAemAws::InstanceState::RUNNING.freeze
   end
 end

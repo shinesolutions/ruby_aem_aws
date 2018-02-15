@@ -24,7 +24,16 @@ module RubyAemAws
     # @return new RubyAemAws::AemAws instance
     def initialize(conf = {})
       conf[:region] ||= Constants::REGION_DEFAULT
+      conf[:aws_access_key_id] ||= Constants::ACCESS_KEY_ID
+      conf[:aws_scret_access_key] ||= Constants::SECRET_ACCESS_KEY
+      conf[:aws_profile] ||= Constants::PROFILE
 
+      Aws.config.update(region: conf[:region])
+
+      credentials = Aws::Credentials.new(conf[:aws_access_key_id], conf[:aws_scret_access_key]) unless conf[:aws_access_key_id].nil?
+      credentials = Aws::SharedCredentials.new(profile_name: conf[:aws_profile]) unless conf[:aws_profile].nil?
+      raise RubyAemAws::ArgumentError unless defined? credentials
+      Aws.config.update(credentials: credentials)
       aws = AwsCreator.create_aws
       @ec2_client = aws[:Ec2Client]
       @ec2_resource = aws[:Ec2Resource]
@@ -68,15 +77,15 @@ module RubyAemAws
 
   # Encapsulate AWS class creation for mocking.
   class AwsCreator
-    def self.create_aws(region = Constants::REGION_DEFAULT)
+    def self.create_aws
       {
-        Ec2Client: Aws::EC2::Client.new(region: region),
-        Ec2Resource: Aws::EC2::Resource.new(region: region),
-        ElbClient: Aws::ElasticLoadBalancing::Client.new(region: region),
-        AutoScalingClient: Aws::AutoScaling::Client.new(region: region),
-        CloudWatchClient: Aws::CloudWatch::Client.new(region: region),
-        DynamoDBClient: Aws::DynamoDB::Client.new(region: region),
-        S3Client: Aws::S3::Client.new(region: region)
+        Ec2Client: Aws::EC2::Client.new,
+        Ec2Resource: Aws::EC2::Resource.new,
+        ElbClient: Aws::ElasticLoadBalancing::Client.new,
+        AutoScalingClient: Aws::AutoScaling::Client.new,
+        CloudWatchClient: Aws::CloudWatch::Client.new,
+        DynamoDBClient: Aws::DynamoDB::Client.new,
+        S3Client: Aws::S3::Client.new
       }
     end
   end
