@@ -76,7 +76,7 @@ module RubyAemAws
         AutoScalingClient: Aws::AutoScaling::Client.new(region: region),
         CloudWatchClient: Aws::CloudWatch::Client.new(region: region),
         DynamoDBClient: Aws::DynamoDB::Client.new(region: region),
-        S3Client: Aws::S3::Client.new
+        S3Client: Aws::S3::Client.new(region: region)
       }
     end
   end
