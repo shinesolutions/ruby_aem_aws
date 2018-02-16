@@ -31,7 +31,6 @@ module RubyAemAws
 
       # @param stack_prefix AWS tag: StackPrefix
       # @param ec2_resource AWS EC2 resource
-      # @param elb_client AWS ELB client
       # @param cloud_watch_client AWS CloudWatch client
       # @return new RubyAemAws::FullSet::AuthorStandby
       def initialize(stack_prefix, ec2_resource, cloud_watch_client)
