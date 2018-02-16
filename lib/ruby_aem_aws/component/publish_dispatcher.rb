@@ -33,6 +33,7 @@ module RubyAemAws
       # @param stack_prefix AWS tag: StackPrefix
       # @param ec2_resource AWS EC2 resource
       # @param asg_client AWS AutoScalingGroup client
+      # @param elb_client AWS ELB client
       # @param cloud_watch_client AWS CloudWatch client
       # @return new RubyAemAws::FullSet::PublishDispatcher
       def initialize(stack_prefix, ec2_resource, asg_client, elb_client, cloud_watch_client)

@@ -21,20 +21,55 @@ module RubyAemAws
     class Author
       attr_reader :author_primary, :author_standby
 
-      # ELB_ID = 'AuthorLoadBalancer'.freeze
-      # ELB_NAME = 'AEM Author Load Balancer'.freeze
+      ELB_ID = 'AuthorLoadBalancer'.freeze
+      #ELB_NAME = 'AEM Author Load Balancer'.freeze
+      ELB_NAME = 'michaelb-AuthorLo-GD3OAO968YX'.freeze
 
       # @param stack_prefix AWS tag: StackPrefix
       # @param ec2_resource AWS EC2 resource
+      # @param elb_client AWS ELB client
+      # @param cloud_watch_client AWS CloudWatch client
       # @return new RubyAemAws::FullSet::Author
-      def initialize(stack_prefix, ec2_resource, cloud_watch_client)
+      def initialize(stack_prefix, ec2_resource, elb_client, cloud_watch_client)
         @author_primary = Component::AuthorPrimary.new(stack_prefix, ec2_resource, cloud_watch_client)
         @author_standby = Component::AuthorStandby.new(stack_prefix, ec2_resource, cloud_watch_client)
+        @ec2_resource = ec2_resource
+        @elb_client = elb_client
       end
 
-      # def terminate_primary_instance
+      def terminate_primary_instance
+        instances = @ec2_resource.instances(filter_for_descriptor(@author_primary))
+        instances.each do |instance|
+          instance.stop(force: true)
+        end
+      end
 
-      # def terminate_standby_instance
+      def terminate_standby_instance
+        instances = @ec2_resource.instances(filter_for_descriptor(@author_standby))
+        instances.each do |instance|
+          puts instance.stop(force: true)
+        end
+      end
+
+      # Not Working, since ELB name contains spaces atm 16/02/2018
+      def describe_loadbalancer
+        @elb_client.describe_load_balancers( {
+                                              load_balancer_names: [
+                                                ELB_NAME,
+                                              ],
+                                            } )
+      end
+
+
+      private def filter_for_descriptor(instance)
+        {
+          filters: [
+            { name: 'tag:StackPrefix', values: [instance.descriptor.stack_prefix] },
+            { name: 'tag:Component', values: [instance.descriptor.ec2.component] },
+            { name: 'tag:Name', values: [instance.descriptor.ec2.name] }
+          ]
+        }
+      end
 
       # def wait_until_healthy
       #   - wait until both primary and standby are healthy

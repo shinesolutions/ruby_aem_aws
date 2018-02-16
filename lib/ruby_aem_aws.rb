@@ -21,19 +21,23 @@ module RubyAemAws
   class AemAws
     # @param conf configuration hash of the following configuration values:
     # - region: the AWS region (eg ap-southeast-2)
+    # - aws_access_key_id: the AWS access key
+    # - aws_secret_access_key: the AWS secret access key
+    # - aws_profile: AWS profile name
     # @return new RubyAemAws::AemAws instance
     def initialize(conf = {})
       conf[:region] ||= Constants::REGION_DEFAULT
       conf[:aws_access_key_id] ||= Constants::ACCESS_KEY_ID
-      conf[:aws_scret_access_key] ||= Constants::SECRET_ACCESS_KEY
+      conf[:aws_secret_access_key] ||= Constants::SECRET_ACCESS_KEY
       conf[:aws_profile] ||= Constants::PROFILE
 
       Aws.config.update(region: conf[:region])
 
-      credentials = Aws::Credentials.new(conf[:aws_access_key_id], conf[:aws_scret_access_key]) unless conf[:aws_access_key_id].nil?
+      credentials = Aws::Credentials.new(conf[:aws_access_key_id], conf[:aws_secret_access_key]) unless conf[:aws_access_key_id].nil?
       credentials = Aws::SharedCredentials.new(profile_name: conf[:aws_profile]) unless conf[:aws_profile].nil?
       raise RubyAemAws::ArgumentError unless defined? credentials
       Aws.config.update(credentials: credentials)
+
       aws = AwsCreator.create_aws
       @ec2_client = aws[:Ec2Client]
       @ec2_resource = aws[:Ec2Resource]
