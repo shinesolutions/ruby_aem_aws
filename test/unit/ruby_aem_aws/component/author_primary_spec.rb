@@ -56,6 +56,7 @@ describe 'AuthorPrimary' do
   private def component_creator(environment)
     author = RubyAemAws::Component::Author.new(TEST_STACK_PREFIX,
                                                environment.ec2_resource,
+                                               nil,
                                                environment.cloud_watch_client)
     author.author_primary
   end

@@ -37,11 +37,15 @@ module RubyAemAws
       end
 
       def terminate_primary_instance
-        author_primary.get_instance.terminate
+        instance = author_primary.get_instance
+        instance.terminate
+        instance.wait_until_terminated
       end
 
       def terminate_standby_instance
-        author_standby.get_instance.terminate
+        instance = author_standby.get_instance
+        instance.terminate
+        instance.wait_until_terminated
       end
 
       # Not Working, since ELB name contains spaces atm 16/02/2018
