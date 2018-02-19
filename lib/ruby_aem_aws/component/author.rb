@@ -22,8 +22,7 @@ module RubyAemAws
       attr_reader :author_primary, :author_standby
 
       ELB_ID = 'AuthorLoadBalancer'.freeze
-      #ELB_NAME = 'AEM Author Load Balancer'.freeze
-      ELB_NAME = 'michaelb-AuthorLo-GD3OAO968YX'.freeze
+      # ELB_NAME = 'AEM Author Load Balancer'.freeze
 
       # @param stack_prefix AWS tag: StackPrefix
       # @param ec2_resource AWS EC2 resource
@@ -38,39 +37,27 @@ module RubyAemAws
       end
 
       def terminate_primary_instance
-        instances = @ec2_resource.instances(filter_for_descriptor(@author_primary))
-        instances.each do |instance|
-          instance.stop(force: true)
-        end
+        author_primary.get_instance.terminate
       end
 
       def terminate_standby_instance
-        instances = @ec2_resource.instances(filter_for_descriptor(@author_standby))
-        instances.each do |instance|
-          puts instance.stop(force: true)
-        end
+        author_standby.get_instance.terminate
       end
 
       # Not Working, since ELB name contains spaces atm 16/02/2018
+      # @return AWS ELB descripton
       def describe_loadbalancer
-        @elb_client.describe_load_balancers( {
-                                              load_balancer_names: [
-                                                ELB_NAME,
-                                              ],
-                                            } )
+        @elb_client.describe_load_balancers(filter_for_elb)
       end
 
-
-      private def filter_for_descriptor(instance)
+      def filter_for_elb
         {
-          filters: [
-            { name: 'tag:StackPrefix', values: [instance.descriptor.stack_prefix] },
-            { name: 'tag:Component', values: [instance.descriptor.ec2.component] },
-            { name: 'tag:Name', values: [instance.descriptor.ec2.name] }
+          load_balancer_names:
+          [
+            ELB_NAME
           ]
         }
       end
-
       # def wait_until_healthy
       #   - wait until both primary and standby are healthy
       # end

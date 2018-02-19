@@ -35,5 +35,15 @@ module RubyAemAws
         ]
       }
     end
+
+    private def filter_for_snapshot(snapshot_type)
+      {
+        filters: [
+          { name: 'tag:StackPrefix', values: [@descriptor.stack_prefix] },
+          { name: 'tag:SnapshotType', values: [snapshot_type] },
+          { name: 'tag:Component', values: [@descriptor.ec2.component] }
+        ]
+      }
+    end
   end
 end

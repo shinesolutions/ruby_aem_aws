@@ -13,24 +13,18 @@
 # limitations under the License.
 
 module RubyAemAws
-  # Mixin for interaction with AWS DynamoDB
-  module DynamoDB
-    # @param filter Filter to scan for
-    # @return scanned attribute
-    def scan(filter)
-      # We need to give AWS time to update the DynamoDB
-      # consistent_read seems not to work everytime
-      sleep 5
-      dynamodb_client.scan(filter)
-    end
-
-    # @param filter Filter to query for
-    # @return queried attribute
-    def query(filter)
-      # We need to give AWS time to update the DynamoDB
-      # consistent_read seems not to work everytime
-      sleep 5
-      dynamodb_client.query(filter)
+  # Mixin for checking snapshots of a component via EC2 client
+  # Add this to a component to make it capable of determining its own snapshots.
+  module SnapshotVerifier
+    # @param snapshot_type AEM snapshot type
+    # @return true if snapshot exist, false is no snapshot exist
+    def snapshot?(snapshot_type)
+      has_snapshot = false
+      get_snapshots(snapshot_type).each do |s|
+        next if s.nil?
+        has_snapshot = true
+      end
+      has_snapshot
     end
   end
 end

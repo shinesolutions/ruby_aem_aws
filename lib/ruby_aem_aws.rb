@@ -48,6 +48,7 @@ module RubyAemAws
       @cloud_watch_client = aws[:CloudWatchClient]
       @dynamodb_client = aws[:DynamoDBClient]
       @s3_client = aws[:S3Client]
+      @s3_resource = aws[:S3Resource]
     end
 
     def test_connection
@@ -74,8 +75,8 @@ module RubyAemAws
       RubyAemAws::FullSetStack.new(stack_prefix, @ec2_resource, @elb_client, @auto_scaling_client, @cloud_watch_client)
     end
 
-    def stack_manager(stack_prefix, topicarn)
-      RubyAemAws::StackManager.new(stack_prefix, topicarn, @ec2_client, @dynamodb_client, @s3_client)
+    def stack_manager(stack_prefix)
+      RubyAemAws::StackManager.new(stack_prefix, @dynamodb_client, @s3_client, @s3_resource)
     end
   end
 
@@ -89,7 +90,8 @@ module RubyAemAws
         AutoScalingClient: Aws::AutoScaling::Client.new,
         CloudWatchClient: Aws::CloudWatch::Client.new,
         DynamoDBClient: Aws::DynamoDB::Client.new,
-        S3Client: Aws::S3::Client.new
+        S3Client: Aws::S3::Client.new,
+        S3Resource: Aws::S3::Resource.new
       }
     end
   end

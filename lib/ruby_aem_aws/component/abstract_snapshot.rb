@@ -12,25 +12,17 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-module RubyAemAws
-  # Mixin for interaction with AWS DynamoDB
-  module DynamoDB
-    # @param filter Filter to scan for
-    # @return scanned attribute
-    def scan(filter)
-      # We need to give AWS time to update the DynamoDB
-      # consistent_read seems not to work everytime
-      sleep 5
-      dynamodb_client.scan(filter)
-    end
+require 'aws-sdk'
+require_relative 'abstract_component'
 
-    # @param filter Filter to query for
-    # @return queried attribute
-    def query(filter)
-      # We need to give AWS time to update the DynamoDB
-      # consistent_read seems not to work everytime
-      sleep 5
-      dynamodb_client.query(filter)
+module RubyAemAws
+  # Add method to scan for snapshots
+  module AbstractSnapshot
+    include AbstractComponent
+    # @param snapshot_type Type of snapsthot to look for
+    # @return EC2 Resource snapshots collection
+    def get_snapshots(snapshot_type)
+      ec2_resource.snapshots(filter_for_snapshot(snapshot_type))
     end
   end
 end

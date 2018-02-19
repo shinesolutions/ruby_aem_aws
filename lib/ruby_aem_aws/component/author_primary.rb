@@ -13,8 +13,10 @@
 # limitations under the License.
 
 require_relative 'abstract_single_component'
+require_relative 'abstract_snapshot'
 require_relative 'mixins/healthy_state_verifier'
 require_relative 'mixins/metric_verifier'
+require_relative 'mixins/snapshot_verifier'
 
 module RubyAemAws
   module Component
@@ -22,8 +24,10 @@ module RubyAemAws
     class AuthorPrimary
       attr_reader :descriptor, :ec2_resource, :cloud_watch_client
       include AbstractSingleComponent
+      include AbstractSnapshot
       include HealthyStateVerifier
       include MetricVerifier
+      include SnapshotVerifier
 
       EC2_COMPONENT = 'author-primary'.freeze
       EC2_NAME = 'AEM Author - Primary'.freeze

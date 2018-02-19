@@ -13,8 +13,10 @@
 # limitations under the License.
 
 require_relative 'abstract_grouped_component'
+require_relative 'abstract_snapshot'
 require_relative 'mixins/healthy_count_verifier'
 require_relative 'mixins/metric_verifier'
+require_relative 'mixins/snapshot_verifier'
 
 module RubyAemAws
   module Component
@@ -22,8 +24,10 @@ module RubyAemAws
     class PublishDispatcher
       attr_reader :descriptor, :ec2_resource, :asg_client, :elb_client, :cloud_watch_client
       include AbstractGroupedComponent
+      include AbstractSnapshot
       include HealthyCountVerifier
       include MetricVerifier
+      include SnapshotVerifier
 
       EC2_COMPONENT = 'publish-dispatcher'.freeze
       EC2_NAME = 'AEM Publish Dispatcher'.freeze
