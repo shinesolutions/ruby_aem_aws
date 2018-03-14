@@ -28,17 +28,18 @@ module RubyAemAws
     # @param auto_scaling_client AWS AutoScaling client
     # @param cloud_watch_client AWS CloudWatch client
     # @return new RubyAemAws::FullSetStack instance
-    def initialize(stack_prefix, ec2_resource, elb_client, auto_scaling_client, cloud_watch_client)
+    def initialize(stack_prefix, ec2_resource, elb_client, auto_scaling_client, cloud_watch_client, cloudformation_client)
       @stack_prefix = stack_prefix
       @ec2_resource = ec2_resource
       @elb_client = elb_client
       @auto_scaling_client = auto_scaling_client
       @cloud_watch_client = cloud_watch_client
+      @cloudformation_client = cloudformation_client
     end
 
     # @return new RubyAemAws::Component::AuthorDispatcher instance
     def author_dispatcher
-      RubyAemAws::Component::AuthorDispatcher.new(@stack_prefix, @ec2_resource, @auto_scaling_client, @elb_client, @cloud_watch_client)
+      RubyAemAws::Component::AuthorDispatcher.new(@stack_prefix, @ec2_resource, @auto_scaling_client, @elb_client, @cloud_watch_client, @cloudformation_client)
     end
 
     # @return new RubyAemAws::Component::Author instance

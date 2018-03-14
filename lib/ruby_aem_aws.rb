@@ -46,6 +46,7 @@ module RubyAemAws
       # The V2 API only supports Application ELBs, and we currently use Classic.
       # @elb_client = Aws::ElasticLoadBalancingV2::Client.new(region: conf[:region])
       @cloud_watch_client = aws[:CloudWatchClient]
+      @cloudformation_client = aws[:CloudFormationClient]
       @dynamodb_client = aws[:DynamoDBClient]
       @s3_client = aws[:S3Client]
       @s3_resource = aws[:S3Resource]
@@ -72,7 +73,7 @@ module RubyAemAws
     # @param stack_prefix AWS tag: StackPrefix
     # @return new RubyAemAws::FullSetStack instance
     def full_set(stack_prefix)
-      RubyAemAws::FullSetStack.new(stack_prefix, @ec2_resource, @elb_client, @auto_scaling_client, @cloud_watch_client)
+      RubyAemAws::FullSetStack.new(stack_prefix, @ec2_resource, @elb_client, @auto_scaling_client, @cloud_watch_client, @cloudformation_client)
     end
 
     def stack_manager(stack_prefix)
@@ -89,6 +90,7 @@ module RubyAemAws
         ElbClient: Aws::ElasticLoadBalancing::Client.new,
         AutoScalingClient: Aws::AutoScaling::Client.new,
         CloudWatchClient: Aws::CloudWatch::Client.new,
+        CloudFormationClient: Aws::CloudFormation::Client.new,
         DynamoDBClient: Aws::DynamoDB::Client.new,
         S3Client: Aws::S3::Client.new,
         S3Resource: Aws::S3::Resource.new
