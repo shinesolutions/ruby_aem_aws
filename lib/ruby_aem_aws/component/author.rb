@@ -22,7 +22,7 @@ module RubyAemAws
       attr_reader :author_primary, :author_standby
 
       ELB_ID = 'AuthorLoadBalancer'.freeze
-      # ELB_NAME = 'AEM Author Load Balancer'.freeze
+      ELB_NAME = 'AEM Author Load Balancer'.freeze
 
       # @param stack_prefix AWS tag: StackPrefix
       # @param ec2_resource AWS EC2 resource
@@ -54,6 +54,11 @@ module RubyAemAws
         @elb_client.describe_load_balancers(filter_for_elb)
       end
 
+      def wait_until_healthy
+        author_primary.wait_until_healthy
+        author_standby.wait_until_healthy
+      end
+
       def filter_for_elb
         {
           load_balancer_names:
@@ -62,9 +67,6 @@ module RubyAemAws
           ]
         }
       end
-      # def wait_until_healthy
-      #   - wait until both primary and standby are healthy
-      # end
     end
   end
 end

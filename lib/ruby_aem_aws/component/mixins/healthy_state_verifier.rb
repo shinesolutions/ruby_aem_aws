@@ -30,7 +30,14 @@ module RubyAemAws
     end
 
     def wait_until_healthy
-      raise NotYetImplementedError
+      instance_healthy = false
+      get_all_instances.each do |i|
+        next if i.nil?
+        i.wait_until_running
+        instance_healthy = true
+        return false if i.state.name != Constants::INSTANCE_STATE_HEALTHY
+      end
+      instance_healthy
     end
   end
 end

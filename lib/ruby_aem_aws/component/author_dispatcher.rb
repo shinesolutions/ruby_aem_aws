@@ -51,9 +51,19 @@ module RubyAemAws
         @cloud_watch_client = cloud_watch_client
       end
 
-      # def terminate_all_instances
+      def terminate_all_instances
+        get_all_instances.each do |i|
+          next if i.nil?
+          i.terminate
+          i.wait_until_terminated
+        end
+      end
 
-      # def terminate_random_instance
+      def terminate_random_instance
+        instance = get_random_instance
+        instance.terminate
+        instance.wait_until_terminated
+      end
     end
   end
 end
