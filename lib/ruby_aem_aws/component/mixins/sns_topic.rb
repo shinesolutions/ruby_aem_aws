@@ -16,7 +16,7 @@ module RubyAemAws
   # Mixin for interaction with AWS SNS
   module SNSTopic
     # @param topicarn the ARN of the SNS Topix to publish the message
-    # @param sns_message the SNS Message to publish
+    # @param message the SNS Message to publish
     # @return Message ID
     def publish(topicarn, message)
       client = Aws::SNS::Topic.new(topicarn)

@@ -52,6 +52,9 @@ module RubyAemAws
       @s3_resource = aws[:S3Resource]
     end
 
+    # Test connection to Amazon AWS
+    #
+    # @return One or more regions that are currently available.
     def test_connection
       result = []
       @ec2_client.describe_regions.regions.each do |region|
@@ -76,6 +79,10 @@ module RubyAemAws
       RubyAemAws::FullSetStack.new(stack_prefix, @ec2_resource, @elb_client, @auto_scaling_client, @cloud_watch_client, @cloudformation_client)
     end
 
+    # Create Stack Manager resources
+    #
+    # @param stack_prefix AWS tag: StackPrefix
+    # @return new RubyAemAws::StackManager instance
     def stack_manager(stack_prefix)
       RubyAemAws::StackManager.new(stack_prefix, @dynamodb_client, @s3_client, @s3_resource)
     end
