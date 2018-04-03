@@ -19,9 +19,16 @@ module RubyAemAws
   # Add method to scan for snapshots
   module AbstractSnapshot
     include AbstractComponent
+
+    # @param snapshot_id Type of snapsthot to look for
+    # @return Class Aws::EC2::Snapshot
+    def get_snapshot_by_id(snapshot_id)
+      ec2_resource.snapshot(snapshot_id).data
+    end
+
     # @param snapshot_type Type of snapsthot to look for
     # @return EC2 Resource snapshots collection
-    def get_snapshots(snapshot_type)
+    def get_snapshots_by_type(snapshot_type)
       ec2_resource.snapshots(filter_for_snapshot(snapshot_type))
     end
   end

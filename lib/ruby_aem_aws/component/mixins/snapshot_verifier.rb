@@ -16,11 +16,17 @@ module RubyAemAws
   # Mixin for checking snapshots of a component via EC2 client
   # Add this to a component to make it capable of determining its own snapshots.
   module SnapshotVerifier
+    # @param snapshot_id AWS Snapshot ID
+    # @return true if snapshot exists, nil if no snapshot exists
+    def snapshot?(snapshot_id)
+      return true unless get_snapshot_by_id(snapshot_id).nil?
+    end
+
     # @param snapshot_type AEM snapshot type
-    # @return true if snapshot exist, false is no snapshot exist
-    def snapshot?(snapshot_type)
+    # @return true if snapshots exist, false is no snapshots exist
+    def snapshots?(snapshot_type)
       has_snapshot = false
-      get_snapshots(snapshot_type).each do |s|
+      get_snapshots_by_type(snapshot_type).each do |s|
         next if s.nil?
         has_snapshot = true
       end
