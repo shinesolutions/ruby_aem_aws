@@ -20,6 +20,20 @@ module RubyAemAws
     end
   end
 
+  # Raise this when ELB is misconfigured.
+  class ELBMisconfiguration < StandardError
+    def initialize(msg = 'ELB misconfigured')
+      super
+    end
+  end
+
+  # Raise this when a unknown Response received.
+  class UnknownResponse < StandardError
+    def initialize(msg = 'Unknown response code')
+      super
+    end
+  end
+
   # Raise this when a component unexpectedly has more than one instance.
   class ExpectedSingleInstanceError < StandardError
     # def initialize(count, descriptor)

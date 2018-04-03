@@ -43,6 +43,13 @@ module RubyAemAws
         @ec2_resource = ec2_resource
         @cloud_watch_client = cloud_watch_client
       end
+
+      # @return Aws::EC2::Instance
+      def terminate
+        instance = get_instance
+        instance.terminate
+        instance.wait_until_terminated
+      end
     end
   end
 end

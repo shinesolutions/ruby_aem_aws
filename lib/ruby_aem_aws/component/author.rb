@@ -36,36 +36,20 @@ module RubyAemAws
         @elb_client = elb_client
       end
 
-      def terminate_primary_instance
-        instance = author_primary.get_instance
-        instance.terminate
-        instance.wait_until_terminated
+      # @return true, if all author instances are healthy
+      def healthy?
+        instance = 0
+        instance += 1 if author_primary.healthy?
+        instance += 1 if author_standby.healthy?
+        return true unless instance < 2
       end
 
-      def terminate_standby_instance
-        instance = author_standby.get_instance
-        instance.terminate
-        instance.wait_until_terminated
-      end
-
-      # Not Working, since ELB name contains spaces atm 16/02/2018
-      # @return AWS ELB descripton
-      def describe_loadbalancer
-        @elb_client.describe_load_balancers(filter_for_elb)
-      end
-
+      # @return true, if all author instances are healthy
       def wait_until_healthy
-        author_primary.wait_until_healthy
-        author_standby.wait_until_healthy
-      end
-
-      def filter_for_elb
-        {
-          load_balancer_names:
-          [
-            ELB_NAME
-          ]
-        }
+        instance = 0
+        instance += 1 if author_primary.wait_until_healthy.eql? true
+        instance += 1 if author_standby.wait_until_healthy.eql? true
+        return true unless instance < 2
       end
     end
   end

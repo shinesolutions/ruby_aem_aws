@@ -63,8 +63,11 @@ module RubyAemAws
       :ready
     end
 
+    # @return true, if all instances within the ELB are healthy
     def wait_until_healthy
-      raise NotYetImplementedError
+      raise ELBMisconfiguration if health_state.eql?(:misconfigured)
+      sleep 2 while health_state.eql?(:recovering) || health_state.eql?(:scaling)
+      return true if health_state.eql?(:ready)
     end
 
     private
