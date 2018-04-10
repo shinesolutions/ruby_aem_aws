@@ -56,8 +56,8 @@ module RubyAemAws
 
       desired_capacity = asg.desired_capacity
       # puts("calc health_state: #{elb_running_instances} / #{desired_capacity}")
-      return :misconfigured if desired_capacity < 1
 
+      return :misconfigured if desired_capacity < 1
       return :recovering if elb_running_instances < desired_capacity
       return :scaling if elb_running_instances > desired_capacity
       :ready
@@ -97,12 +97,8 @@ module RubyAemAws
 
       desired_capacity = asg.desired_capacity
       # puts("calc health_state: #{elb_running_instances} / #{desired_capacity}")
+
       return :misconfigured if desired_capacity < 1
-
-      puts "desired_capacity #{desired_capacity}"
-
-      puts "elb_running_instances #{elb_running_instances}"
-
       return :recovering if elb_running_instances < desired_capacity
       return :scaling if elb_running_instances > desired_capacity
       :ready
