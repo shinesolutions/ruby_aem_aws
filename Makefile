@@ -4,17 +4,15 @@ export AWS_PROFILE = sandpit
 all: deps clean build lint install test-unit test-integration doc
 ci: deps clean build lint install test-unit doc
 
+clean:
+	rm -rf .bundler bin ruby_aem_aws-*.gem out
+
 deps:
 	gem install bundler
-	rm -rf .bundle
-	bundle install
-
-clean:
-	rm -f ruby_aem_aws-*.gem
-	rm -rf out
+	bundle install --binstubs
 
 lint:
-	rubocop
+	bundle exec rubocop
 
 build: clean
 	gem build ruby_aem_aws.gemspec
@@ -23,22 +21,22 @@ install: build
 	gem install `ls ruby_aem_aws-*.gem`
 
 test-unit:
-	rspec test/unit
+	bundle exec rspec test/unit
 
 test-integration: install
-	rspec test/integration
+	bundle exec rspec test/integration
 
 test-integration-connection: install
-	rspec test/integration/ruby_aem_aws_spec.rb
+	bundle exec rspec test/integration/ruby_aem_aws_spec.rb
 
 test-integration-consolidated: install
-	rspec test/integration/consolidated
+	bundle exec rspec test/integration/consolidated
 
 test-integration-full-set: install
-	rspec test/integration/full-set
+	bundle exec rspec test/integration/full-set
 
 doc:
-	yard doc --output-dir doc/api/master/
+	bundle exec yard doc --output-dir doc/api/master/
 
 doc-publish:
 	gh-pages --dist doc/

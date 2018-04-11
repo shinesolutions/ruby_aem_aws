@@ -1,4 +1,6 @@
-*.DS_Store
+.bundle
+bin
+.DS_Store
 .yardoc
 doc
 ruby_aem_aws-*.gem
