@@ -48,14 +48,11 @@ module RubyAemAws
       return :no_elb if elb.nil?
 
       elb_running_instances = 0
-      # puts("ELB: #{elb.load_balancer_name} (#{elb.instances.length})")
       get_instances_state_from_elb(elb).each do |i|
-        # puts("  Instance #{i[:id]}: #{i[:state]}")
         elb_running_instances += 1 if i[:state] == RubyAemAws::Constants::INSTANCE_STATE_HEALTHY
       end
 
       desired_capacity = asg.desired_capacity
-      # puts("calc health_state: #{elb_running_instances} / #{desired_capacity}")
 
       return :misconfigured if desired_capacity < 1
       return :recovering if elb_running_instances < desired_capacity
@@ -89,14 +86,11 @@ module RubyAemAws
       elb_instance_state = elb_client.describe_instance_health(load_balancer_name: elb.load_balancer_name)
 
       elb_running_instances = 0
-      # puts("ELB: #{elb.load_balancer_name} (#{elb.instances.length})")
       elb_instance_state.instance_states.each do |i|
-        # puts("  Instance #{i[:id]}: #{i[:state]}")
         elb_running_instances += 1 if i.state == RubyAemAws::Constants::ELB_INSTANCE_INSERVICE
       end
 
       desired_capacity = asg.desired_capacity
-      # puts("calc health_state: #{elb_running_instances} / #{desired_capacity}")
 
       return :misconfigured if desired_capacity < 1
       return :recovering if elb_running_instances < desired_capacity

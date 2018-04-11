@@ -26,7 +26,6 @@ DEFAULT_REGION = 'ap-southeast-2'.freeze
 
 def init_client
   region = { region: ENV['AWS_REGION'] || DEFAULT_REGION }
-  # puts("Initialising AWS client with region: #{region}")
   RubyAemAws::AemAws.new(region)
 end
 
@@ -34,12 +33,10 @@ DEFAULT_STACK_PREFIX = 'sandpit'.freeze
 
 def init_consolidated
   stack_prefix = { stack_prefix: ENV['STACK_PREFIX'] || DEFAULT_STACK_PREFIX }
-  # puts("Initialising consolidated stack with prefix: #{stack_prefix}")
   init_client.consolidated(stack_prefix)
 end
 
 def init_full_set
   stack_prefix = { stack_prefix: ENV['STACK_PREFIX'] || DEFAULT_STACK_PREFIX }
-  # puts("Initialising consolidated stack with prefix: #{stack_prefix}")
   init_client.full_set(stack_prefix)
 end
