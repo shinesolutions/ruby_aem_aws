@@ -1,3 +1,6 @@
+### 0.9.2
+*
+
 ### 0.9.1
 * Add support for AEM Stack Manager Events
 * Add feature to get Dispatcher ELB health state
