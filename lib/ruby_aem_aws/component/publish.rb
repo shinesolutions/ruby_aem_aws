@@ -13,8 +13,10 @@
 # limitations under the License.
 
 require_relative 'abstract_grouped_component'
+require_relative 'abstract_snapshot'
 require_relative 'mixins/healthy_state_verifier'
 require_relative 'mixins/metric_verifier'
+require_relative 'mixins/snapshot_verifier'
 
 module RubyAemAws
   module Component
@@ -22,9 +24,11 @@ module RubyAemAws
     class Publish
       attr_reader :descriptor, :ec2_resource, :cloud_watch_client, :asg_client
       include AbstractGroupedComponent
+      include AbstractSnapshot
       # Can't verify state by count as there's no ELB.
       include HealthyStateVerifier
       include MetricVerifier
+      include SnapshotVerifier
 
       EC2_COMPONENT = 'publish'.freeze
       EC2_NAME = 'AEM Publish'.freeze
@@ -42,9 +46,19 @@ module RubyAemAws
         @cloud_watch_client = cloud_watch_client
       end
 
-      # def terminate_all_instances
+      def terminate_all_instances
+        get_all_instances.each do |i|
+          next if i.nil?
+          i.terminate
+          i.wait_until_terminated
+        end
+      end
 
-      # def terminate_random_instance
+      def terminate_random_instance
+        instance = get_random_instance
+        instance.terminate
+        instance.wait_until_terminated
+      end
     end
   end
 end

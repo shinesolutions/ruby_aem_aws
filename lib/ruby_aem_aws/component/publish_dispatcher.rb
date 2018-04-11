@@ -13,8 +13,10 @@
 # limitations under the License.
 
 require_relative 'abstract_grouped_component'
+require_relative 'abstract_snapshot'
 require_relative 'mixins/healthy_count_verifier'
 require_relative 'mixins/metric_verifier'
+require_relative 'mixins/snapshot_verifier'
 
 module RubyAemAws
   module Component
@@ -22,8 +24,10 @@ module RubyAemAws
     class PublishDispatcher
       attr_reader :descriptor, :ec2_resource, :asg_client, :elb_client, :cloud_watch_client
       include AbstractGroupedComponent
+      include AbstractSnapshot
       include HealthyCountVerifier
       include MetricVerifier
+      include SnapshotVerifier
 
       EC2_COMPONENT = 'publish-dispatcher'.freeze
       EC2_NAME = 'AEM Publish Dispatcher'.freeze
@@ -33,6 +37,7 @@ module RubyAemAws
       # @param stack_prefix AWS tag: StackPrefix
       # @param ec2_resource AWS EC2 resource
       # @param asg_client AWS AutoScalingGroup client
+      # @param elb_client AWS ELB client
       # @param cloud_watch_client AWS CloudWatch client
       # @return new RubyAemAws::FullSet::PublishDispatcher
       def initialize(stack_prefix, ec2_resource, asg_client, elb_client, cloud_watch_client)
@@ -45,9 +50,19 @@ module RubyAemAws
         @cloud_watch_client = cloud_watch_client
       end
 
-      # def terminate_all_instances
+      def terminate_all_instances
+        get_all_instances.each do |i|
+          next if i.nil?
+          i.terminate
+          i.wait_until_terminated
+        end
+      end
 
-      # def terminate_random_instance
+      def terminate_random_instance
+        instance = get_random_instance
+        instance.terminate
+        instance.wait_until_terminated
+      end
     end
   end
 end

@@ -14,9 +14,11 @@
 
 require 'aws-sdk'
 require_relative 'abstract_single_component'
+require_relative 'abstract_snapshot'
 require_relative 'mixins/healthy_state_verifier'
 require_relative 'mixins/metric_verifier'
 require_relative 'component_descriptor'
+require_relative 'mixins/snapshot_verifier'
 
 module RubyAemAws
   module Component
@@ -24,8 +26,10 @@ module RubyAemAws
     class AuthorPublishDispatcher
       attr_reader :descriptor, :ec2_resource, :cloud_watch_client
       include AbstractSingleComponent
+      include AbstractSnapshot
       include HealthyStateVerifier
       include MetricVerifier
+      include SnapshotVerifier
 
       EC2_COMPONENT = 'author-publish-dispatcher'.freeze
       EC2_NAME = 'AuthorPublishDispatcher'.freeze

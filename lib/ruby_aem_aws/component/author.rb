@@ -21,24 +21,36 @@ module RubyAemAws
     class Author
       attr_reader :author_primary, :author_standby
 
-      # ELB_ID = 'AuthorLoadBalancer'.freeze
-      # ELB_NAME = 'AEM Author Load Balancer'.freeze
+      ELB_ID = 'AuthorLoadBalancer'.freeze
+      ELB_NAME = 'AEM Author Load Balancer'.freeze
 
       # @param stack_prefix AWS tag: StackPrefix
       # @param ec2_resource AWS EC2 resource
+      # @param elb_client AWS ELB client
+      # @param cloud_watch_client AWS CloudWatch client
       # @return new RubyAemAws::FullSet::Author
-      def initialize(stack_prefix, ec2_resource, cloud_watch_client)
+      def initialize(stack_prefix, ec2_resource, elb_client, cloud_watch_client)
         @author_primary = Component::AuthorPrimary.new(stack_prefix, ec2_resource, cloud_watch_client)
         @author_standby = Component::AuthorStandby.new(stack_prefix, ec2_resource, cloud_watch_client)
+        @ec2_resource = ec2_resource
+        @elb_client = elb_client
       end
 
-      # def terminate_primary_instance
+      # @return true, if all author instances are healthy
+      def healthy?
+        instance = 0
+        instance += 1 if author_primary.healthy?
+        instance += 1 if author_standby.healthy?
+        return true unless instance < 2
+      end
 
-      # def terminate_standby_instance
-
-      # def wait_until_healthy
-      #   - wait until both primary and standby are healthy
-      # end
+      # @return true, if all author instances are healthy
+      def wait_until_healthy
+        instance = 0
+        instance += 1 if author_primary.wait_until_healthy.eql? true
+        instance += 1 if author_standby.wait_until_healthy.eql? true
+        return true unless instance < 2
+      end
     end
   end
 end

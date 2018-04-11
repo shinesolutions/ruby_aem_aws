@@ -13,8 +13,10 @@
 # limitations under the License.
 
 require_relative 'abstract_single_component'
+require_relative 'abstract_snapshot'
 require_relative 'mixins/healthy_state_verifier'
 require_relative 'mixins/metric_verifier'
+require_relative 'mixins/snapshot_verifier'
 
 module RubyAemAws
   module Component
@@ -22,20 +24,30 @@ module RubyAemAws
     class AuthorPrimary
       attr_reader :descriptor, :ec2_resource, :cloud_watch_client
       include AbstractSingleComponent
+      include AbstractSnapshot
       include HealthyStateVerifier
       include MetricVerifier
+      include SnapshotVerifier
 
       EC2_COMPONENT = 'author-primary'.freeze
       EC2_NAME = 'AEM Author - Primary'.freeze
 
       # @param stack_prefix AWS tag: StackPrefix
       # @param ec2_resource AWS EC2 resource
+      # @param cloud_watch_client AWS CloudWatch client
       # @return new RubyAemAws::FullSet::AuthorPrimary
       def initialize(stack_prefix, ec2_resource, cloud_watch_client)
         @descriptor = ComponentDescriptor.new(stack_prefix,
                                               EC2Descriptor.new(EC2_COMPONENT, EC2_NAME))
         @ec2_resource = ec2_resource
         @cloud_watch_client = cloud_watch_client
+      end
+
+      # @return Aws::EC2::Instance
+      def terminate
+        instance = get_instance
+        instance.terminate
+        instance.wait_until_terminated
       end
     end
   end

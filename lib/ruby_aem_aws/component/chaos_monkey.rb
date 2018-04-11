@@ -13,8 +13,10 @@
 # limitations under the License.
 
 require_relative 'abstract_single_component'
+require_relative 'abstract_snapshot'
 require_relative 'mixins/healthy_state_verifier'
 require_relative 'mixins/metric_verifier'
+require_relative 'mixins/snapshot_verifier'
 
 module RubyAemAws
   module Component
@@ -22,9 +24,11 @@ module RubyAemAws
     class ChaosMonkey
       attr_reader :descriptor, :ec2_resource, :asg_client, :cloud_watch_client
       include AbstractSingleComponent
+      include AbstractSnapshot
       # Can't verify state by count as there's no ELB.
       include HealthyStateVerifier
       include MetricVerifier
+      include SnapshotVerifier
 
       EC2_COMPONENT = 'chaos-monkey'.freeze
       EC2_NAME = 'AEM Chaos Monkey'.freeze

@@ -20,6 +20,20 @@ module RubyAemAws
     end
   end
 
+  # Raise this when ELB is misconfigured.
+  class ELBMisconfiguration < StandardError
+    def initialize(msg = 'ELB misconfigured')
+      super
+    end
+  end
+
+  # Raise this when a unknown Response received.
+  class UnknownResponse < StandardError
+    def initialize(msg = 'Unknown response code')
+      super
+    end
+  end
+
   # Raise this when a component unexpectedly has more than one instance.
   class ExpectedSingleInstanceError < StandardError
     # def initialize(count, descriptor)
@@ -30,6 +44,17 @@ module RubyAemAws
     # end
 
     def initialize(msg = 'Expected exactly one instance')
+      super
+    end
+  end
+
+  # Raise this when credentials can't be found
+  class ArgumentError < StandardError
+    def initialize(msg = "No credentials found!
+      Set environment variable AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY or AWS_PROFILE.
+      Alternative use following syntax:
+      RubyAemAws::AemAws.new(aws_access_key_id, aws_scret_access_key) or
+      RubyAemAws::AemAws.new(credentials_profile_name)")
       super
     end
   end
