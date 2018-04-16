@@ -116,7 +116,20 @@ module RubyAemAws
 
     # @return AutoScalingGroup by StackPrefix and Component tags.
     def find_auto_scaling_group(asg_client)
-      autoscaling_groups = asg_client.describe_auto_scaling_groups
+      autoscaling_groups = asg_client.describe_auto_scaling_groups(max_records: 50)
+      find_auto_scaling_group = find_auto_scaling_group_name(autoscaling_groups)
+
+      return find_auto_scaling_group unless find_auto_scaling_group.nil?
+
+      until autoscaling_groups.next_token.nil?
+        autoscaling_groups = asg_client.describe_auto_scaling_groups(max_records: 50, next_token: autoscaling_groups.next_token)
+        find_auto_scaling_group = find_auto_scaling_group_name(autoscaling_groups)
+        return find_auto_scaling_group unless find_auto_scaling_group.nil?
+      end
+      return nil if find_auto_scaling_group.nil?
+    end
+
+    def find_auto_scaling_group_name(autoscaling_groups)
       autoscaling_groups.auto_scaling_groups.each do |autoscaling_group|
         asg_matches_stack_prefix = false
         asg_matches_component = false
