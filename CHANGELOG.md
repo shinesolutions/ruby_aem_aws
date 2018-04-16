@@ -1,5 +1,5 @@
 ### 0.9.2
-*
+* Handle AutoScalingGroups describe beyond max records by using next token
 
 ### 0.9.1
 * Add support for AEM Stack Manager Events
