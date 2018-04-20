@@ -94,8 +94,8 @@ module RubyAemAws
       {
         Ec2Client: Aws::EC2::Client.new,
         Ec2Resource: Aws::EC2::Resource.new,
-        ElbClient: Aws::ElasticLoadBalancing::Client.new,
-        AutoScalingClient: Aws::AutoScaling::Client.new,
+        ElbClient: Aws::ElasticLoadBalancing::Client.new(retry_limit: 16, retry_backoff: lambda{|c| sleep 60 }),
+        AutoScalingClient: Aws::AutoScaling::Client.new(retry_limit: 16, retry_backoff: lambda{|c| sleep 60 }),
         CloudWatchClient: Aws::CloudWatch::Client.new,
         DynamoDBClient: Aws::DynamoDB::Client.new,
         S3Client: Aws::S3::Client.new,
