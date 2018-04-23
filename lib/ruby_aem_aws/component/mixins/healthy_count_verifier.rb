@@ -101,14 +101,14 @@ module RubyAemAws
     # @return true, if all EC2 instances within the ELB are running
     def wait_until_healthy
       raise ELBMisconfiguration if health_state.eql?(:misconfigured)
-      sleep 2 while health_state.eql?(:recovering) || health_state.eql?(:scaling)
+      sleep 60 while health_state.eql?(:recovering) || health_state.eql?(:scaling)
       return true if health_state.eql?(:ready)
     end
 
     # @return true, if all instances within the ELB are inService
     def wait_until_healthy_elb
       raise ELBMisconfiguration if health_state_elb.eql?(:misconfigured)
-      sleep 2 while health_state_elb.eql?(:recovering) || health_state_elb.eql?(:scaling)
+      sleep 60 while health_state_elb.eql?(:recovering) || health_state_elb.eql?(:scaling)
       return true if health_state_elb.eql?(:ready)
     end
 
