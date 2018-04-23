@@ -1,5 +1,5 @@
 ### 0.9.3
-*
+* Reduce frequency of ASG and ELB client calls
 
 ### 0.9.2
 * Handle AutoScalingGroups describe beyond max records by using next token
