@@ -15,10 +15,8 @@
 module RubyAemAws
   # Mixin for checking that an instance has associated CloudWatch metrics.
   module CloudwatchClient
-    # @param namespace Cloudwatch namespace name
-    # @param metric_name Cloudwatch metric name
-    # @param dimension Cloudwatch dimension filter
-    # @return Cloudwatch client list_metrics response
+    # @param alarm_name Cloudwatch alarm name
+    # @return Cloudwatch client describe_alarms response
     def get_alarm(alarm_name)
       alarm_filter = filter_for_cloudwatch_alarm(alarm_name)
 
@@ -35,9 +33,10 @@ module RubyAemAws
 
     # @param loggroup_name Cloudwatch loggroup name
     # @param log_stream_name Cloudwatch log stream name
-    # @return Cloudwatch log client describe_log_streams response
-    def get_log_event(loggroup_name, logfile_name, log_message)
-      filter = filter_for_cloudwatch_log_event(loggroup_name, logfile_name, log_message)
+    # @param log_message Log message to filter for
+    # @return Cloudwatch log client filter_log_events response
+    def get_log_event(loggroup_name, log_stream_name, log_message)
+      filter = filter_for_cloudwatch_log_event(loggroup_name, log_stream_name, log_message)
       response = cloud_watch_log_client.filter_log_events(filter)
 
       until response.next_token.nil?

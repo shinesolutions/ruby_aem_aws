@@ -31,6 +31,8 @@ module RubyAemAws
     # @param elb_client AWS ELB client
     # @param auto_scaling_client AWS AutoScaling client
     # @param cloud_watch_client AWS CloudWatch client
+    # @param cloudformation_client AWS Cloudformation client
+    # @param cloud_watch_log_client AWS CloudWatchLog client
     # @return new RubyAemAws::FullSetStack instance
     def initialize(stack_prefix, ec2_resource, elb_client, auto_scaling_client, cloud_watch_client, cloudformation_client, cloud_watch_log_client)
       @stack_prefix = stack_prefix

@@ -21,12 +21,15 @@ module RubyAemAws
     include CloudwatchClient
     include AbstractCloudwatch
 
+    # @param alarm_name name of the Cloudwatch alarm
+    # @return True if Cloudwatch alarm exists for component
     def component_alarm?(alarm_name)
       alarm?(alarm_name)
     end
 
+    # @param namespace Cloudwatch metric namespace
     # @param metric_name Cloudwatch metric name
-    # @return True if all component instances have the CW metric
+    # @return True if Cloudwatch metric exists for component
     def component_metric?(namespace, metric_name)
       dimensions_name = 'FixedDimension'
       dimensions_value = "#{@descriptor.stack_prefix_in}-#{@descriptor.ec2.component}"
@@ -34,6 +37,8 @@ module RubyAemAws
       return true if response.eql? true
     end
 
+    # @param metric_name Cloudwatch EC2 metric name
+    # @return True if Cloudwatch EC2 metric exists for all component instances
     def component_ec2_metric?(metric_name)
       namespace = 'AWS/EC2'
       dimensions_name = 'InstanceId'
@@ -56,11 +61,12 @@ module RubyAemAws
       return true unless instances_with_metric < instances_found
     end
 
-    # @param logfile_name name of the logfile of the log stream
-    # @return True if all component have the log stream
-    def component_log_event?(logfile_name, log_message)
+    # @param log_stream_name Cloudwatch log stream name
+    # @param log_message name of the logfile of the log stream
+    # @return True if log message exists in Cloudwatch log stream for all component instances
+    def component_log_event?(log_stream_name, log_message)
       instances_with_log_stream = []
-      loggroup_name = "#{@descriptor.stack_prefix_in}#{logfile_name}"
+      loggroup_name = "#{@descriptor.stack_prefix_in}#{log_stream_name}"
 
       instances = get_all_instances
       instances_found = instances.count
@@ -79,21 +85,21 @@ module RubyAemAws
       return true unless instances_with_log_stream < instances_found
     end
 
-    # @param logfile_name name of the logfile of the loggroup
-    # @return True if loggroup exists
-    def component_loggroup?(logfile_name)
-      loggroup_name = "#{@descriptor.stack_prefix_in}#{logfile_name}"
+    # @param log_stream_name Cloudwatch log stream name
+    # @return True if Cloudwatch loggroup exists for component
+    def component_loggroup?(log_stream_name)
+      loggroup_name = "#{@descriptor.stack_prefix_in}#{log_stream_name}"
 
       response = loggroup?(loggroup_name)
 
       return true if response.eql? true
     end
 
-    # @param logfile_name name of the logfile of the log stream
-    # @return True if all component have the log stream
-    def component_log_stream?(logfile_name)
+    # @param log_stream_name Cloudwatch log stream name
+    # @return True if Cloudwatch log stream exists for all component instances
+    def component_log_stream?(log_stream_name)
       instances_with_log_stream = []
-      loggroup_name = "#{@descriptor.stack_prefix_in}#{logfile_name}"
+      loggroup_name = "#{@descriptor.stack_prefix_in}#{log_stream_name}"
 
       instances = get_all_instances
       instances_found = instances.count
@@ -113,13 +119,18 @@ module RubyAemAws
     end
 
     # @param alarm_name name of the Cloudwatch alarm
-    # @return True if Cloudwatch alarm exist
+    # @return True if Cloudwatch alarm exists
     def alarm?(alarm_name)
       response = get_alarm(alarm_name)
 
       return true unless response.metric_alarms.empty?
     end
 
+    # @param namespace Cloudwatch metric namespace
+    # @param metric_name Cloudwatch metric name
+    # @param dimensions_name Cloudwatch metric dimension name
+    # @param dimensions_value Cloudwatch metric dimension value
+    # @return True if Cloudwatch metric exists
     def metric?(namespace, metric_name, dimensions_name, dimensions_value)
       dimension_values = dimensions_value_filter_for_cloudwatch_metric(dimensions_name, dimensions_value)
       dimension_filter = dimensions_filter_for_cloudwatch_metric(dimension_values)
@@ -129,30 +140,35 @@ module RubyAemAws
       return true unless response.metrics.empty?
     end
 
-    # @param logfile_name name of the logfile of the log stream
-    # @return True if all component have the log stream
-    def log_stream?(loggroup_name, logfile_name)
+    # @param loggroup_name Cloudwatch loggroup name
+    # @param log_stream_name Cloudwatch log stream name
+    # @return True if Cloudwatch log stream exists
+    def log_stream?(loggroup_name, log_stream_name)
       response = loggroup?(loggroup_name)
       return false unless response.eql? true
 
-      response = get_log_streams(loggroup_name, logfile_name)
+      response = get_log_streams(loggroup_name, log_stream_name)
 
       return true unless response.log_streams.empty?
     end
 
-    # @param logfile_name name of the logfile of the log stream
-    # @return True if all component have the log stream
-    def log_event?(loggroup_name, logfile_name, log_message)
+    # @param loggroup_name Cloudwatch loggroup name
+    # @param log_stream_name Cloudwatch log stream name
+    # @param log_message name of the logfile of the log stream
+    # @return True if Cloudwatch log event exists
+    def log_event?(loggroup_name, log_stream_name, log_message)
       response = loggroup?(loggroup_name)
       return false unless response.eql? true
 
-      response = log_stream?(loggroup_name, logfile_name)
+      response = log_stream?(loggroup_name, log_stream_name)
       return false unless response.eql? true
 
-      response = get_log_event(loggroup_name, logfile_name, log_message)
+      response = get_log_event(loggroup_name, log_stream_name, log_message)
       return true unless response.events.empty?
     end
 
+    # @param loggroup Cloudwatch loggroup name
+    # @return True if Cloudwatch loggroup exists
     def loggroup?(loggroup_name)
       namespace = 'AWS/Logs'
       metric_name = 'IncomingLogEvents'

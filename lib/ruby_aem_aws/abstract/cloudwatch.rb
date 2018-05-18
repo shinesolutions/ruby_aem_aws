@@ -17,20 +17,29 @@ require_relative '../error'
 module RubyAemAws
   # Add common methods to all Components.
   module AbstractCloudwatch
+    # @param alarm_name Cloudwatch alarm name
+    # @return Array of a Cloudwatch alarm filter to filter for a specific Cloudwatch alarm
     private def filter_for_cloudwatch_alarm(alarm_name)
       {
         alarm_names: [alarm_name]
       }
     end
 
-    private def filter_for_cloudwatch_log_event(loggroup_name, logfile_name, log_message)
+    # @param loggroup_name Cloudwatch loggroup name
+    # @param log_stream_name Cloudwatch logstream name
+    # @param log_message log message to filter for
+    # @return Array of a Cloudwatch log event filter to filter for a specific Cloudwatch log event
+    private def filter_for_cloudwatch_log_event(loggroup_name, log_stream_name, log_message)
       {
         log_group_name: loggroup_name,
-        log_stream_names: [logfile_name],
+        log_stream_names: [log_stream_name],
         filter_pattern: log_message
       }
     end
 
+    # @param loggroup_name Cloudwatch loggroup name
+    # @param log_stream_name Cloudwatch logstream name
+    # @return Array of a Cloudwatch log stream filter to filter for a specific Cloudwatch log stream
     private def filter_for_cloudwatch_log_stream(log_group_name, log_stream_name)
       {
         log_group_name: log_group_name,
@@ -39,6 +48,9 @@ module RubyAemAws
       }
     end
 
+    # @param namespace Cloudwatch metric namespace
+    # @param metric_name Cloudwatch metric name
+    # @return Array of a Cloudwatch metric filter to filter for a specific Cloudwatch metric
     private def filter_for_cloudwatch_metric(namespace, metric_name)
       {
         namespace: namespace,
@@ -46,6 +58,8 @@ module RubyAemAws
       }
     end
 
+    # @param dimension_values Cloudwatch Dimension value
+    # @return Array of a Cloudwatch dimension filter for the Cloudwatch metric filter
     private def dimensions_filter_for_cloudwatch_metric(dimension_values)
       {
         dimensions: [
@@ -54,6 +68,9 @@ module RubyAemAws
       }
     end
 
+    # @param dimensions_name Cloudwatch Dimension name
+    # @param dimension_values Cloudwatch Dimension value
+    # @return Array of a Cloudwatch Dimension value filter for the Cloudwatch dimension filter
     private def dimensions_value_filter_for_cloudwatch_metric(dimensions_name, dimensions_value)
       {
         name: dimensions_name,

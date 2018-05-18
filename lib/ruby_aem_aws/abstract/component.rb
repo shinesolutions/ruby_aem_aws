@@ -36,6 +36,8 @@ module RubyAemAws
       }
     end
 
+    # @param snapshot_type SnapshotType tag
+    # @return Array of a EC2 filter to filter for a specific Snapshottype
     private def filter_for_snapshot(snapshot_type)
       {
         filters: [

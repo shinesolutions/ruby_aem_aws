@@ -15,6 +15,10 @@
 module RubyAemAws
   # Add common methods to StackManager resource
   module AbstractStackManager
+
+    # @param dynamodb_tablename AWS DynamoDB table name
+    # @param attribute_value value to scan for
+    # @return Array of a DynamoDB filter to scan for a specific value
     private def filter_for_db_scan(dynamodb_tablename, attribute_value)
       {
         table_name: dynamodb_tablename,
@@ -29,6 +33,9 @@ module RubyAemAws
       }
     end
 
+    # @param dynamodb_tablename AWS DynamoDB table name
+    # @param attkey_attribute_valueribute_value Key value to query for
+    # @return Array of a DynamoDB filter to query for a specific value
     private def filter_for_db_query(dynamodb_tablename, key_attribute_value)
       {
         table_name: dynamodb_tablename,
@@ -49,6 +56,10 @@ module RubyAemAws
       }
     end
 
+    # @param task Stack Manager task to trigger
+    # @param stack_prefix Target Stack Prefix name
+    # @param details SNS Message payload
+    # @return Array of a AWS SNS publish filter to query for a specific value
     private def message_for_sns_publish(task, stack_prefix, details)
       "{ \"default\": \"{ 'task': '#{task}', 'stack_prefix': '#{stack_prefix}', 'details': #{details} }\"}"
     end

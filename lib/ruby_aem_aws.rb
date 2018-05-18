@@ -69,6 +69,8 @@ module RubyAemAws
     #
     # @param stack_prefix AWS tag: StackPrefix
     # @param cloud_watch_client AWS Cloudwatch Client
+    # @param cloudformation_client AWS Cloudformation Client
+    # @param cloud_watch_log_client AWS Cloudwatch Log Client
     # @return new RubyAemAws::ConsolidatedStack instance
     def consolidated(stack_prefix)
       RubyAemAws::ConsolidatedStack.new(stack_prefix, @ec2_resource, @cloud_watch_client, @cloudformation_client, @cloud_watch_log_client)
@@ -77,7 +79,11 @@ module RubyAemAws
     # Create a full set instance.
     #
     # @param stack_prefix AWS tag: StackPrefix
+    # @param elb_client AWS ElasticLoadBalancer Client
+    # @param auto_scaling_client AWS AutoScalingGroup Client
     # @param cloud_watch_client AWS Cloudwatch Client
+    # @param cloudformation_client AWS Cloudformation Client
+    # @param cloud_watch_log_client AWS Cloudwatch Log Client
     # @return new RubyAemAws::FullSetStack instance
     def full_set(stack_prefix)
       RubyAemAws::FullSetStack.new(stack_prefix, @ec2_resource, @elb_client, @auto_scaling_client, @cloud_watch_client, @cloudformation_client, @cloud_watch_log_client)
@@ -86,7 +92,12 @@ module RubyAemAws
     # Create Stack Manager resources
     #
     # @param stack_prefix AWS tag: StackPrefix
+    # @param dynamodb_client AWS DynamoDB Client
+    # @param s3_client AWS S3 Client
+    # @param s3_resource AWS S3 resource connection
+    # @param cloudformation_client AWS Cloudformation Client
     # @param cloud_watch_client AWS Cloudwatch Client
+    # @param cloud_watch_log_client AWS Cloudwatch Log Client
     # @return new RubyAemAws::StackManager instance
     def stack_manager(stack_prefix)
       RubyAemAws::StackManager.new(stack_prefix, @dynamodb_client, @s3_client, @s3_resource, @cloudformation_client, @cloud_watch_client, @cloud_watch_log_client)
