@@ -12,58 +12,64 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-require_relative 'component/author_dispatcher'
-require_relative 'component/author'
-require_relative 'component/chaos_monkey'
-require_relative 'component/orchestrator'
-require_relative 'component/publish_dispatcher'
-require_relative 'component/publish'
+require_relative '../component/author_dispatcher'
+require_relative '../component/author'
+require_relative '../component/chaos_monkey'
+require_relative '../component/orchestrator'
+require_relative '../component/publish_dispatcher'
+require_relative '../component/publish'
+require_relative '../mixins/metric_verifier'
 
 module RubyAemAws
   # Factory for the full-set AEM stack component interfaces.
   class FullSetStack
+    attr_reader :cloudformation_client, :cloud_watch_client
+    include MetricVerifier
+
     # @param stack_prefix AWS tag: StackPrefix
     # @param ec2_resource AWS EC2 resource
     # @param elb_client AWS ELB client
     # @param auto_scaling_client AWS AutoScaling client
     # @param cloud_watch_client AWS CloudWatch client
     # @return new RubyAemAws::FullSetStack instance
-    def initialize(stack_prefix, ec2_resource, elb_client, auto_scaling_client, cloud_watch_client)
+    def initialize(stack_prefix, ec2_resource, elb_client, auto_scaling_client, cloud_watch_client, cloudformation_client, cloud_watch_log_client)
       @stack_prefix = stack_prefix
       @ec2_resource = ec2_resource
       @elb_client = elb_client
       @auto_scaling_client = auto_scaling_client
       @cloud_watch_client = cloud_watch_client
+      @cloud_watch_log_client = cloud_watch_log_client
+      @cloudformation_client = cloudformation_client
     end
 
     # @return new RubyAemAws::Component::AuthorDispatcher instance
     def author_dispatcher
-      RubyAemAws::Component::AuthorDispatcher.new(@stack_prefix, @ec2_resource, @auto_scaling_client, @elb_client, @cloud_watch_client)
+      RubyAemAws::Component::AuthorDispatcher.new(@stack_prefix, @ec2_resource, @auto_scaling_client, @elb_client, @cloud_watch_client, @cloud_watch_log_client)
     end
 
     # @return new RubyAemAws::Component::Author instance
     def author
-      RubyAemAws::Component::Author.new(@stack_prefix, @ec2_resource, @elb_client, @cloud_watch_client)
+      RubyAemAws::Component::Author.new(@stack_prefix, @ec2_resource, @elb_client, @cloud_watch_client, @cloud_watch_log_client)
     end
 
     # @return new RubyAemAws::Component::ChaosMonkey instance
     def chaos_monkey
-      RubyAemAws::Component::ChaosMonkey.new(@stack_prefix, @ec2_resource, @auto_scaling_client, @cloud_watch_client)
+      RubyAemAws::Component::ChaosMonkey.new(@stack_prefix, @ec2_resource, @auto_scaling_client, @cloud_watch_client, @cloud_watch_log_client)
     end
 
     # @return new RubyAemAws::Component::Orchestrator instance
     def orchestrator
-      RubyAemAws::Component::Orchestrator.new(@stack_prefix, @ec2_resource, @auto_scaling_client, @cloud_watch_client)
+      RubyAemAws::Component::Orchestrator.new(@stack_prefix, @ec2_resource, @auto_scaling_client, @cloud_watch_client, @cloud_watch_log_client)
     end
 
     # @return new RubyAemAws::Component::Publish instance
     def publish
-      RubyAemAws::Component::Publish.new(@stack_prefix, @ec2_resource, @auto_scaling_client, @cloud_watch_client)
+      RubyAemAws::Component::Publish.new(@stack_prefix, @ec2_resource, @auto_scaling_client, @cloud_watch_client, @cloud_watch_log_client)
     end
 
     # @return new RubyAemAws::Component::PublishDispatcher instance
     def publish_dispatcher
-      RubyAemAws::Component::PublishDispatcher.new(@stack_prefix, @ec2_resource, @auto_scaling_client, @elb_client, @cloud_watch_client)
+      RubyAemAws::Component::PublishDispatcher.new(@stack_prefix, @ec2_resource, @auto_scaling_client, @elb_client, @cloud_watch_client, @cloud_watch_log_client)
     end
   end
 end

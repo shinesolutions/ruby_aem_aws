@@ -12,24 +12,30 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-require_relative 'component/author_publish_dispatcher'
+require_relative '../component/author_publish_dispatcher'
 
 module RubyAemAws
   # Factory for the consolidated AEM stack component interface.
   class ConsolidatedStack
+    attr_reader :cloudformation_client
+
     # @param stack_prefix AWS tag: StackPrefix
     # @param ec2_resource AWS EC2 client
     # @param cloud_watch_client AWS CloudWatch client
+    # @param cloudformation_client AWS Cloudformation Client
+    # @param cloud_watch_log_client AWS Cloudwatch Log Client
     # @return new RubyAemAws::ConsolidatedStack instance
-    def initialize(stack_prefix, ec2_resource, cloud_watch_client)
+    def initialize(stack_prefix, ec2_resource, cloud_watch_client, cloudformation_client, cloud_watch_log_client)
       @stack_prefix = stack_prefix
       @ec2_resource = ec2_resource
       @cloud_watch_client = cloud_watch_client
+      @cloud_watch_log_client = cloud_watch_log_client
+      @cloudformation_client = cloudformation_client
     end
 
     # @return new RubyAemAws::Component::AuthorPublishDispatcher instance
     def author_publish_dispatcher
-      RubyAemAws::Component::AuthorPublishDispatcher.new(@stack_prefix, @ec2_resource, @cloud_watch_client)
+      RubyAemAws::Component::AuthorPublishDispatcher.new(@stack_prefix, @ec2_resource, @cloud_watch_client, @cloud_watch_log_client)
     end
   end
 end

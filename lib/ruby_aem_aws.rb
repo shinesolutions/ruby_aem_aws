@@ -12,9 +12,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-require_relative 'ruby_aem_aws/consolidated_stack'
-require_relative 'ruby_aem_aws/full_set_stack'
-require_relative 'ruby_aem_aws/stack_manager'
+require_relative 'ruby_aem_aws/architecture/consolidated_stack'
+require_relative 'ruby_aem_aws/architecture/full_set_stack'
+require_relative 'ruby_aem_aws/architecture/stack_manager'
 
 module RubyAemAws
   # AemAws class represents the AWS stack for AEM.
@@ -46,7 +46,9 @@ module RubyAemAws
       @auto_scaling_client = aws[:AutoScalingClient]
       # The V2 API only supports Application ELBs, and we currently use Classic.
       # @elb_client = Aws::ElasticLoadBalancingV2::Client.new(region: conf[:region])
+      @cloudformation_client = aws[:CloudFormationClient]
       @cloud_watch_client = aws[:CloudWatchClient]
+      @cloud_watch_log_client = aws[:CloudWatchLogsClient]
       @dynamodb_client = aws[:DynamoDBClient]
       @s3_client = aws[:S3Client]
       @s3_resource = aws[:S3Resource]
@@ -66,25 +68,28 @@ module RubyAemAws
     # Create a consolidated instance.
     #
     # @param stack_prefix AWS tag: StackPrefix
+    # @param cloud_watch_client AWS Cloudwatch Client
     # @return new RubyAemAws::ConsolidatedStack instance
     def consolidated(stack_prefix)
-      RubyAemAws::ConsolidatedStack.new(stack_prefix, @ec2_resource, @cloud_watch_client)
+      RubyAemAws::ConsolidatedStack.new(stack_prefix, @ec2_resource, @cloud_watch_client, @cloudformation_client, @cloud_watch_log_client)
     end
 
     # Create a full set instance.
     #
     # @param stack_prefix AWS tag: StackPrefix
+    # @param cloud_watch_client AWS Cloudwatch Client
     # @return new RubyAemAws::FullSetStack instance
     def full_set(stack_prefix)
-      RubyAemAws::FullSetStack.new(stack_prefix, @ec2_resource, @elb_client, @auto_scaling_client, @cloud_watch_client)
+      RubyAemAws::FullSetStack.new(stack_prefix, @ec2_resource, @elb_client, @auto_scaling_client, @cloud_watch_client, @cloudformation_client, @cloud_watch_log_client)
     end
 
     # Create Stack Manager resources
     #
     # @param stack_prefix AWS tag: StackPrefix
+    # @param cloud_watch_client AWS Cloudwatch Client
     # @return new RubyAemAws::StackManager instance
     def stack_manager(stack_prefix)
-      RubyAemAws::StackManager.new(stack_prefix, @dynamodb_client, @s3_client, @s3_resource)
+      RubyAemAws::StackManager.new(stack_prefix, @dynamodb_client, @s3_client, @s3_resource, @cloudformation_client, @cloud_watch_client, @cloud_watch_log_client)
     end
   end
 
@@ -100,7 +105,13 @@ module RubyAemAws
         AutoScalingClient: Aws::AutoScaling::Client.new(
           retry_limit: 20
         ),
-        CloudWatchClient: Aws::CloudWatch::Client.new,
+        CloudFormationClient: Aws::CloudFormation::Client.new,
+        CloudWatchClient: Aws::CloudWatch::Client.new(
+          retry_limit: 20
+        ),
+        CloudWatchLogsClient: Aws::CloudWatchLogs::Client.new(
+          retry_limit: 20
+        ),
         DynamoDBClient: Aws::DynamoDB::Client.new,
         S3Client: Aws::S3::Client.new,
         S3Resource: Aws::S3::Resource.new

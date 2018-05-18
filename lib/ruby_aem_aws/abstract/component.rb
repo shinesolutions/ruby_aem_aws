@@ -12,8 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-require_relative 'component_descriptor'
-require_relative 'mixins/instance_describer'
+require_relative '../component/component_descriptor'
+require_relative '../mixins/instance_describer'
 require_relative '../error'
 
 module RubyAemAws

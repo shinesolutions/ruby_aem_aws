@@ -12,17 +12,17 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-require_relative 'abstract_grouped_component'
-require_relative 'abstract_snapshot'
-require_relative 'mixins/healthy_count_verifier'
-require_relative 'mixins/metric_verifier'
-require_relative 'mixins/snapshot_verifier'
+require_relative '../abstract/grouped_component'
+require_relative '../abstract/snapshot'
+require_relative '../mixins/healthy_count_verifier'
+require_relative '../mixins/metric_verifier'
+require_relative '../mixins/snapshot_verifier'
 
 module RubyAemAws
   module Component
     # Interface to the AWS instance running the PublishDispatcher component of a full-set AEM stack.
     class PublishDispatcher
-      attr_reader :descriptor, :ec2_resource, :asg_client, :elb_client, :cloud_watch_client
+      attr_reader :descriptor, :ec2_resource, :asg_client, :elb_client, :cloud_watch_client, :cloud_watch_log_client
       include AbstractGroupedComponent
       include AbstractSnapshot
       include HealthyCountVerifier
@@ -39,8 +39,9 @@ module RubyAemAws
       # @param asg_client AWS AutoScalingGroup client
       # @param elb_client AWS ELB client
       # @param cloud_watch_client AWS CloudWatch client
+      # @param cloud_watch_log_client AWS Cloudwatch Log Client
       # @return new RubyAemAws::FullSet::PublishDispatcher
-      def initialize(stack_prefix, ec2_resource, asg_client, elb_client, cloud_watch_client)
+      def initialize(stack_prefix, ec2_resource, asg_client, elb_client, cloud_watch_client, cloud_watch_log_client)
         @descriptor = ComponentDescriptor.new(stack_prefix,
                                               EC2Descriptor.new(EC2_COMPONENT, EC2_NAME),
                                               ELBDescriptor.new(ELB_ID, ELB_NAME))
@@ -48,6 +49,7 @@ module RubyAemAws
         @asg_client = asg_client
         @elb_client = elb_client
         @cloud_watch_client = cloud_watch_client
+        @cloud_watch_log_client = cloud_watch_log_client
       end
 
       def terminate_all_instances

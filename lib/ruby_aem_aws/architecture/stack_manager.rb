@@ -12,20 +12,24 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-require_relative 'component/stack_manager_resources'
+require_relative '../component/stack_manager_resources'
 
 module RubyAemAws
   # Interface to interact with AEM StackManager
   class StackManager
-    attr_reader :sm_resources
+    attr_reader :sm_resources, :cloudformation_client
     # @param stack_prefix AWS tag: StackPrefix
     # @param dynamodb_client AWS DynamoDB client
     # @param s3_client AWS S3 client
     # @param s3_resource AWS S3 resource
+    # @param cloudformation_client AWS Cloudformation Client
+    # @param cloud_watch_client AWS Cloudwatch Client
+    # @param cloud_watch_log_client AWS Cloudwatch Log Client
     # @return new RubyAemAws::StackManager instance
-    def initialize(stack_prefix, dynamodb_client, s3_client, s3_resource)
-      @sm_resources = RubyAemAws::Component::StackManagerResources.new(dynamodb_client, s3_client, s3_resource)
+    def initialize(stack_prefix, dynamodb_client, s3_client, s3_resource, cloudformation_client, cloud_watch_client, cloud_watch_log_client)
+      @sm_resources = RubyAemAws::Component::StackManagerResources.new(dynamodb_client, s3_client, s3_resource, cloud_watch_client, cloud_watch_log_client)
       @stack_prefix = stack_prefix
+      @cloudformation_client = cloudformation_client
     end
   end
 end

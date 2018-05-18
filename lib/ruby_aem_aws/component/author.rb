@@ -28,10 +28,11 @@ module RubyAemAws
       # @param ec2_resource AWS EC2 resource
       # @param elb_client AWS ELB client
       # @param cloud_watch_client AWS CloudWatch client
+      # @param cloud_watch_log_client AWS Cloudwatch Log Client
       # @return new RubyAemAws::FullSet::Author
-      def initialize(stack_prefix, ec2_resource, elb_client, cloud_watch_client)
-        @author_primary = Component::AuthorPrimary.new(stack_prefix, ec2_resource, cloud_watch_client)
-        @author_standby = Component::AuthorStandby.new(stack_prefix, ec2_resource, cloud_watch_client)
+      def initialize(stack_prefix, ec2_resource, elb_client, cloud_watch_client, cloud_watch_log_client)
+        @author_primary = Component::AuthorPrimary.new(stack_prefix, ec2_resource, cloud_watch_client, cloud_watch_log_client)
+        @author_standby = Component::AuthorStandby.new(stack_prefix, ec2_resource, cloud_watch_client, cloud_watch_log_client)
         @ec2_resource = ec2_resource
         @elb_client = elb_client
       end
