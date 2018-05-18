@@ -26,7 +26,7 @@ module RubyAemAws
       include AbstractGroupedComponent
       include AbstractSnapshot
       # Can't verify state by count as there's no ELB.
-      include HealthyStateVerifier
+      include HealthyCountVerifier
       include MetricVerifier
       include SnapshotVerifier
 
