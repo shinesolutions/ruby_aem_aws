@@ -24,18 +24,6 @@ module RubyAemAws
       %i[ready scaling].include? health_state
     end
 
-    # Aggregate health_states considered healthy.
-    # @return health_state_elb is ready or scaling.
-    def healthy_elb?
-      %i[ready scaling].include? health_state_elb
-    end
-
-    # Aggregate health_states considered healthy.
-    # @return health_state_asg is ready or scaling.
-    def healthy_asg?
-      %i[ready scaling].include? health_state_asg
-    end
-
     # Provides detail of the state of the instances comprising the component.
     # @return one of:
     # - no_asg: AutoScalingGroup could not be located (by StackPrefix and Component tags).
@@ -110,37 +98,6 @@ module RubyAemAws
       :ready
     end
 
-    # Provides detail of the state of the instances comprising the component.
-    # @return one of:
-    # - no_asg: AutoScalingGroup could not be located (by StackPrefix and Component tags).
-    # - misconfigured: AutoScalingGroup.desired_capacity is less than 1.
-    # - recovering: ELB running instance count is less than AutoScalingGroup.desired_capacity.
-    # - scaling: ELB running instance count is more than AutoScalingGroup.desired_capacity.
-    # - ready: ELB running instance count is equal to AutoScalingGroup.desired_capacity.
-    def health_state_asg
-      asg = find_auto_scaling_group(asg_client)
-      return :no_asg if asg.nil?
-
-      # Debug:
-      # unless asg.nil?
-      #   puts("ASG: #{asg} #{asg.auto_scaling_group_name} (#{asg.desired_capacity})")
-      #   asg.instances.each do |i|
-      #     puts("  Instance #{i.instance_id}: #{i.health_status}")
-      #   end
-      # end
-
-      desired_capacity = asg.desired_capacity
-      instances_inservice = 0
-      asg.instances.each do |instances|
-        instances_inservice += 1 if instances.health_status.eql? 'Healthy'
-      end
-
-      return :misconfigured if desired_capacity < 1
-      return :recovering if instances_inservice < desired_capacity
-      return :scaling if instances_inservice > desired_capacity
-      :ready
-    end
-
     # @return true, if all EC2 instances within the ELB are running
     def wait_until_healthy
       raise ELBMisconfiguration if health_state.eql?(:misconfigured)
@@ -153,12 +110,6 @@ module RubyAemAws
       raise ELBMisconfiguration if health_state_elb.eql?(:misconfigured)
       sleep 60 while health_state_elb.eql?(:recovering) || health_state_elb.eql?(:scaling)
       return true if health_state_elb.eql?(:ready)
-    end
-
-    def wait_until_healthy_asg
-      raise ASGMisconfiguration if health_state_asg.eql?(:misconfigured)
-      sleep 60 while health_state_asg.eql?(:recovering) || health_state_asg.eql?(:scaling)
-      return true if health_state_asg.eql?(:ready)
     end
 
     private

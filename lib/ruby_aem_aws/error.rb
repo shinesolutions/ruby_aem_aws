@@ -27,13 +27,6 @@ module RubyAemAws
     end
   end
 
-  # Raise this when ASG is misconfigured.
-  class ASGMisconfiguration < StandardError
-    def initialize(msg = 'ASG misconfigured')
-      super
-    end
-  end
-
   # Raise this when a unknown Response received.
   class UnknownResponse < StandardError
     def initialize(msg = 'Unknown response code')
