@@ -19,17 +19,26 @@ module RubyAemAws
   class StackManager
     attr_reader :sm_resources, :cloudformation_client
     # @param stack_prefix AWS tag: StackPrefix
-    # @param dynamodb_client AWS DynamoDB client
-    # @param s3_client AWS S3 client
-    # @param s3_resource AWS S3 resource
-    # @param cloudformation_client AWS Cloudformation Client
-    # @param cloud_watch_client AWS Cloudwatch Client
-    # @param cloud_watch_log_client AWS Cloudwatch Log Client
+    # @param params Array of AWS Clients and Resource connections:
+    # - CloudFormationClient: AWS Cloudformation Client.
+    # - CloudWatchClient: AWS Cloudwatch Client.
+    # - CloudWatchLogsClient: AWS Cloudwatch Logs Client.
+    # - DynamoDBClient: AWS DynamoDB Client.
+    # - S3Client: AWS S3 Client.
+    # - S3Resource: AWS S3 Resource connection.
     # @return new RubyAemAws::StackManager instance
-    def initialize(stack_prefix, dynamodb_client, s3_client, s3_resource, cloudformation_client, cloud_watch_client, cloud_watch_log_client)
-      @sm_resources = RubyAemAws::Component::StackManagerResources.new(dynamodb_client, s3_client, s3_resource, cloud_watch_client, cloud_watch_log_client)
+    def initialize(stack_prefix, params)
+      stack_manager_aws_client = {
+        CloudWatchClient: params[:CloudWatchClient],
+        CloudWatchLogsClient: params[:CloudWatchLogsClient],
+        DynamoDBClient: params[:DynamoDBClient],
+        S3Client: params[:S3Client],
+        S3Resource: params[:S3Resource]
+      }
+
+      @sm_resources = RubyAemAws::Component::StackManagerResources.new(stack_manager_aws_client)
+      @cloudformation_client = params[:CloudFormationClient]
       @stack_prefix = stack_prefix
-      @cloudformation_client = cloudformation_client
     end
   end
 end

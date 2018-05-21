@@ -39,19 +39,7 @@ module RubyAemAws
       raise RubyAemAws::ArgumentError unless defined? credentials
       Aws.config.update(credentials: credentials)
 
-      aws = AwsCreator.create_aws
-      @ec2_client = aws[:Ec2Client]
-      @ec2_resource = aws[:Ec2Resource]
-      @elb_client = aws[:ElbClient]
-      @auto_scaling_client = aws[:AutoScalingClient]
-      # The V2 API only supports Application ELBs, and we currently use Classic.
-      # @elb_client = Aws::ElasticLoadBalancingV2::Client.new(region: conf[:region])
-      @cloudformation_client = aws[:CloudFormationClient]
-      @cloud_watch_client = aws[:CloudWatchClient]
-      @cloud_watch_log_client = aws[:CloudWatchLogsClient]
-      @dynamodb_client = aws[:DynamoDBClient]
-      @s3_client = aws[:S3Client]
-      @s3_resource = aws[:S3Resource]
+      @aws = AwsCreator.create_aws
     end
 
     # Test connection to Amazon AWS
@@ -59,7 +47,8 @@ module RubyAemAws
     # @return One or more regions that are currently available.
     def test_connection
       result = []
-      @ec2_client.describe_regions.regions.each do |region|
+      ec2_client = @aws[:Ec2Client]
+      ec2_client.describe_regions.regions.each do |region|
         result.push("Region #{region.region_name} (#{region.endpoint})")
       end
       !result.empty?
@@ -68,39 +57,69 @@ module RubyAemAws
     # Create a consolidated instance.
     #
     # @param stack_prefix AWS tag: StackPrefix
-    # @param cloud_watch_client AWS Cloudwatch Client
-    # @param cloudformation_client AWS Cloudformation Client
-    # @param cloud_watch_log_client AWS Cloudwatch Log Client
+    # @param aws_clients Array of AWS Clients and Resource connections:
+    # - CloudFormationClient: AWS Cloudformation Client.
+    # - CloudWatchClient: AWS Cloudwatch Client.
+    # - CloudWatchLogsClient: AWS Cloudwatch Logs Client.
+    # - Ec2Resource: AWS EC2 Resource connection.
     # @return new RubyAemAws::ConsolidatedStack instance
     def consolidated(stack_prefix)
-      RubyAemAws::ConsolidatedStack.new(stack_prefix, @ec2_resource, @cloud_watch_client, @cloudformation_client, @cloud_watch_log_client)
+      aws_clients = {
+        CloudFormationClient: @aws[:CloudFormationClient],
+        CloudWatchClient: @aws[:CloudWatchClient],
+        CloudWatchLogsClient: @aws[:CloudWatchLogsClient],
+        Ec2Resource: @aws[:Ec2Resource]
+      }
+
+      RubyAemAws::ConsolidatedStack.new(stack_prefix, aws_clients)
     end
 
     # Create a full set instance.
     #
     # @param stack_prefix AWS tag: StackPrefix
-    # @param elb_client AWS ElasticLoadBalancer Client
-    # @param auto_scaling_client AWS AutoScalingGroup Client
-    # @param cloud_watch_client AWS Cloudwatch Client
-    # @param cloudformation_client AWS Cloudformation Client
-    # @param cloud_watch_log_client AWS Cloudwatch Log Client
+    # @param aws_clients Array of AWS Clients and Resource connections:
+    # - AutoScalingClient: AWS AutoScalingGroup Client.
+    # - CloudFormationClient: AWS Cloudformation Client.
+    # - CloudWatchClient: AWS Cloudwatch Client.
+    # - CloudWatchLogsClient: AWS Cloudwatch Logs Client.
+    # - Ec2Resource: AWS EC2 Resource connection.
+    # - ElbClient: AWS ElasticLoadBalancer Client.
     # @return new RubyAemAws::FullSetStack instance
     def full_set(stack_prefix)
-      RubyAemAws::FullSetStack.new(stack_prefix, @ec2_resource, @elb_client, @auto_scaling_client, @cloud_watch_client, @cloudformation_client, @cloud_watch_log_client)
+      aws_clients = {
+        AutoScalingClient: @aws[:AutoScalingClient],
+        CloudFormationClient: @aws[:CloudFormationClient],
+        CloudWatchClient: @aws[:CloudWatchClient],
+        CloudWatchLogsClient: @aws[:CloudWatchLogsClient],
+        Ec2Resource: @aws[:Ec2Resource],
+        ElbClient: @aws[:ElbClient]
+      }
+
+      RubyAemAws::FullSetStack.new(stack_prefix, aws_clients)
     end
 
     # Create Stack Manager resources
     #
     # @param stack_prefix AWS tag: StackPrefix
-    # @param dynamodb_client AWS DynamoDB Client
-    # @param s3_client AWS S3 Client
-    # @param s3_resource AWS S3 resource connection
-    # @param cloudformation_client AWS Cloudformation Client
-    # @param cloud_watch_client AWS Cloudwatch Client
-    # @param cloud_watch_log_client AWS Cloudwatch Log Client
+    # @param aws_clients Array of AWS Clients and Resource connections:
+    # - CloudFormationClient: AWS Cloudformation Client.
+    # - CloudWatchClient: AWS Cloudwatch Client.
+    # - CloudWatchLogsClient: AWS Cloudwatch Logs Client.
+    # - DynamoDBClient: AWS DynamoDB Client.
+    # - S3Client: AWS S3 Client.
+    # - S3Resource: AWS S3 Resource connection.
     # @return new RubyAemAws::StackManager instance
     def stack_manager(stack_prefix)
-      RubyAemAws::StackManager.new(stack_prefix, @dynamodb_client, @s3_client, @s3_resource, @cloudformation_client, @cloud_watch_client, @cloud_watch_log_client)
+      aws_clients = {
+        CloudFormationClient: @aws[:CloudFormationClient],
+        CloudWatchClient: @aws[:CloudWatchClient],
+        CloudWatchLogsClient: @aws[:CloudWatchLogsClient],
+        DynamoDBClient: @aws[:DynamoDBClient],
+        S3Client: @aws[:S3Client],
+        S3Resource: @aws[:S3Resource]
+      }
+
+      RubyAemAws::StackManager.new(stack_prefix, aws_clients)
     end
   end
 

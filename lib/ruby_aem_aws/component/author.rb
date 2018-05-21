@@ -25,16 +25,23 @@ module RubyAemAws
       ELB_NAME = 'AEM Author Load Balancer'.freeze
 
       # @param stack_prefix AWS tag: StackPrefix
-      # @param ec2_resource AWS EC2 resource
-      # @param elb_client AWS ELB client
-      # @param cloud_watch_client AWS CloudWatch client
-      # @param cloud_watch_log_client AWS Cloudwatch Log Client
+      # @param params Array of AWS Clients and Resource connections:
+      # - CloudWatchClient: AWS Cloudwatch Client.
+      # - CloudWatchLogsClient: AWS Cloudwatch Logs Client.
+      # - Ec2Resource: AWS EC2 Resource connection.
+      # - ElbClient: AWS ElasticLoadBalancer Client.
       # @return new RubyAemAws::FullSet::Author
-      def initialize(stack_prefix, ec2_resource, elb_client, cloud_watch_client, cloud_watch_log_client)
-        @author_primary = Component::AuthorPrimary.new(stack_prefix, ec2_resource, cloud_watch_client, cloud_watch_log_client)
-        @author_standby = Component::AuthorStandby.new(stack_prefix, ec2_resource, cloud_watch_client, cloud_watch_log_client)
-        @ec2_resource = ec2_resource
-        @elb_client = elb_client
+      def initialize(stack_prefix, params)
+        author_aws_clients = {
+          CloudWatchClient: params[:CloudWatchClient],
+          CloudWatchLogsClient: params[:CloudWatchLogsClient],
+          Ec2Resource: params[:Ec2Resource]
+        }
+
+        @author_primary = Component::AuthorPrimary.new(stack_prefix, author_aws_clients)
+        @author_standby = Component::AuthorStandby.new(stack_prefix, author_aws_clients)
+        @ec2_resource = params[:Ec2Resource]
+        @elb_client = params[:ElbClient]
       end
 
       # @return true, if all author instances are healthy

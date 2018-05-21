@@ -27,51 +27,115 @@ module RubyAemAws
     include MetricVerifier
 
     # @param stack_prefix AWS tag: StackPrefix
-    # @param ec2_resource AWS EC2 resource
-    # @param elb_client AWS ELB client
-    # @param auto_scaling_client AWS AutoScaling client
-    # @param cloud_watch_client AWS CloudWatch client
-    # @param cloudformation_client AWS Cloudformation client
-    # @param cloud_watch_log_client AWS CloudWatchLog client
+    # @param params Array of AWS Clients and Resource connections:
+    # - AutoScalingClient: AWS AutoScalingGroup Client.
+    # - CloudFormationClient: AWS Cloudformation Client.
+    # - CloudWatchClient: AWS Cloudwatch Client.
+    # - CloudWatchLogsClient: AWS Cloudwatch Logs Client.
+    # - Ec2Resource: AWS EC2 Resource connection.
+    # - ElbClient: AWS ElasticLoadBalancer Client.
     # @return new RubyAemAws::FullSetStack instance
-    def initialize(stack_prefix, ec2_resource, elb_client, auto_scaling_client, cloud_watch_client, cloudformation_client, cloud_watch_log_client)
+    def initialize(stack_prefix, params)
+      @author_aws_clients = {
+        CloudWatchClient: params[:CloudWatchClient],
+        CloudWatchLogsClient: params[:CloudWatchLogsClient],
+        Ec2Resource: params[:Ec2Resource],
+        ElbClient: params[:ElbClient]
+      }
+
+      @dispatcher_aws_clients = {
+        AutoScalingClient: params[:AutoScalingClient],
+        CloudWatchClient: params[:CloudWatchClient],
+        CloudWatchLogsClient: params[:CloudWatchLogsClient],
+        Ec2Resource: params[:Ec2Resource],
+        ElbClient: params[:ElbClient]
+      }
+
+      @publish_aws_clients = {
+        AutoScalingClient: params[:AutoScalingClient],
+        CloudWatchClient: params[:CloudWatchClient],
+        CloudWatchLogsClient: params[:CloudWatchLogsClient],
+        Ec2Resource: params[:Ec2Resource]
+      }
+
+      @aem_java_aws_clients = {
+        AutoScalingClient: params[:AutoScalingClient],
+        CloudWatchClient: params[:CloudWatchClient],
+        CloudWatchLogsClient: params[:CloudWatchLogsClient],
+        Ec2Resource: params[:Ec2Resource]
+      }
+
+      @cloudformation_client = params[:CloudFormationClient]
+      @cloud_watch_client = params[:CloudWatchClient]
       @stack_prefix = stack_prefix
-      @ec2_resource = ec2_resource
-      @elb_client = elb_client
-      @auto_scaling_client = auto_scaling_client
-      @cloud_watch_client = cloud_watch_client
-      @cloud_watch_log_client = cloud_watch_log_client
-      @cloudformation_client = cloudformation_client
     end
 
+    # @param stack_prefix AWS tag: StackPrefix
+    # @param dispatcher_aws_clients Array of AWS Clients and Resource connections:
+    # - AutoScalingClient: AWS AutoScalingGroup Client.
+    # - CloudWatchClient: AWS Cloudwatch Client.
+    # - CloudWatchLogsClient: AWS Cloudwatch Logs Client.
+    # - Ec2Resource: AWS EC2 Resource connection.
+    # - ElbClient: AWS ElasticLoadBalancer Client.
     # @return new RubyAemAws::Component::AuthorDispatcher instance
     def author_dispatcher
-      RubyAemAws::Component::AuthorDispatcher.new(@stack_prefix, @ec2_resource, @auto_scaling_client, @elb_client, @cloud_watch_client, @cloud_watch_log_client)
+      RubyAemAws::Component::AuthorDispatcher.new(@stack_prefix, @dispatcher_aws_clients)
     end
 
+    # @param stack_prefix AWS tag: StackPrefix
+    # @param author_aws_clients Array of AWS Clients and Resource connections:
+    # - CloudWatchClient: AWS Cloudwatch Client.
+    # - CloudWatchLogsClient: AWS Cloudwatch Logs Client.
+    # - Ec2Resource: AWS EC2 Resource connection.
+    # - ElbClient: AWS ElasticLoadBalancer Client.
     # @return new RubyAemAws::Component::Author instance
     def author
-      RubyAemAws::Component::Author.new(@stack_prefix, @ec2_resource, @elb_client, @cloud_watch_client, @cloud_watch_log_client)
+      RubyAemAws::Component::Author.new(@stack_prefix, @author_aws_clients)
     end
 
+    # @param stack_prefix AWS tag: StackPrefix
+    # @param chaos_monkey_aws_clients Array of AWS Clients and Resource connections:
+    # - AutoScalingClient: AWS AutoScalingGroup Client.
+    # - CloudWatchClient: AWS Cloudwatch Client.
+    # - CloudWatchLogsClient: AWS Cloudwatch Logs Client.
+    # - Ec2Resource: AWS EC2 Resource connection.
     # @return new RubyAemAws::Component::ChaosMonkey instance
     def chaos_monkey
-      RubyAemAws::Component::ChaosMonkey.new(@stack_prefix, @ec2_resource, @auto_scaling_client, @cloud_watch_client, @cloud_watch_log_client)
+      RubyAemAws::Component::ChaosMonkey.new(@stack_prefix, @aem_java_aws_clients)
     end
 
+    # @param stack_prefix AWS tag: StackPrefix
+    # @param orchestrator_aws_clients Array of AWS Clients and Resource connections:
+    # - AutoScalingClient: AWS AutoScalingGroup Client.
+    # - CloudWatchClient: AWS Cloudwatch Client.
+    # - CloudWatchLogsClient: AWS Cloudwatch Logs Client.
+    # - Ec2Resource: AWS EC2 Resource connection.
     # @return new RubyAemAws::Component::Orchestrator instance
     def orchestrator
-      RubyAemAws::Component::Orchestrator.new(@stack_prefix, @ec2_resource, @auto_scaling_client, @cloud_watch_client, @cloud_watch_log_client)
+      RubyAemAws::Component::Orchestrator.new(@stack_prefix, @aem_java_aws_clients)
     end
 
+    # @param stack_prefix AWS tag: StackPrefix
+    # @param publish_aws_clients Array of AWS Clients and Resource connections:
+    # - AutoScalingClient: AWS AutoScalingGroup Client.
+    # - CloudWatchClient: AWS Cloudwatch Client.
+    # - CloudWatchLogsClient: AWS Cloudwatch Logs Client.
+    # - Ec2Resource: AWS EC2 Resource connection.
     # @return new RubyAemAws::Component::Publish instance
     def publish
-      RubyAemAws::Component::Publish.new(@stack_prefix, @ec2_resource, @auto_scaling_client, @cloud_watch_client, @cloud_watch_log_client)
+      RubyAemAws::Component::Publish.new(@stack_prefix, @publish_aws_clients)
     end
 
+    # @param stack_prefix AWS tag: StackPrefix
+    # @param dispatcher_aws_clients Array of AWS Clients and Resource connections:
+    # - AutoScalingClient: AWS AutoScalingGroup Client.
+    # - CloudWatchClient: AWS Cloudwatch Client.
+    # - CloudWatchLogsClient: AWS Cloudwatch Logs Client.
+    # - Ec2Resource: AWS EC2 Resource connection.
+    # - ElbClient: AWS ElasticLoadBalancer Client.
     # @return new RubyAemAws::Component::PublishDispatcher instance
     def publish_dispatcher
-      RubyAemAws::Component::PublishDispatcher.new(@stack_prefix, @ec2_resource, @auto_scaling_client, @elb_client, @cloud_watch_client, @cloud_watch_log_client)
+      RubyAemAws::Component::PublishDispatcher.new(@stack_prefix, @dispatcher_aws_clients)
     end
   end
 end

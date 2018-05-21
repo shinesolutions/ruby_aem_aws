@@ -30,17 +30,19 @@ module RubyAemAws
       include S3Access
 
       # @param dynamodb_client AWS DynamoDB client connection
-      # @param s3_client AWS S3 client connection
-      # @param s3_resource AWS S3 client connection
-      # @param cloud_watch_client AWS Cloudwatch Client
-      # @param cloud_watch_log_client AWS Cloudwatch Log Client
+      # @param params Array of AWS Clients and Resource connections:
+      # - CloudWatchClient: AWS Cloudwatch Client.
+      # - CloudWatchLogsClient: AWS Cloudwatch Logs Client.
+      # - DynamoDBClient: AWS DynamoDB Client.
+      # - S3Client: AWS S3 Client.
+      # - S3Resource: AWS S3 Resource connection.
       # @return new RubyAemAws::StackManager::StackManagerResources
-      def initialize(dynamodb_client, s3_client, s3_resource, cloud_watch_client, cloud_watch_log_client)
-        @dynamodb_client = dynamodb_client
-        @s3_client = s3_client
-        @s3_resource = s3_resource
-        @cloud_watch_client = cloud_watch_client
-        @cloud_watch_log_client = cloud_watch_log_client
+      def initialize(params)
+        @dynamodb_client = params[:DynamoDBClient]
+        @s3_client = params[:S3Client]
+        @s3_resource = params[:S3Resource]
+        @cloud_watch_client = params[:CloudWatchLogsClient]
+        @cloud_watch_log_client = params[:CloudWatchLogsClient]
       end
 
       # @param topicarn AWS SNS-Topic ARN

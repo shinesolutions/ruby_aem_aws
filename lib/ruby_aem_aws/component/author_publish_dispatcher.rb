@@ -34,16 +34,17 @@ module RubyAemAws
       EC2_NAME = 'AuthorPublishDispatcher'.freeze
 
       # @param stack_prefix AWS tag: StackPrefix
-      # @param ec2_resource AWS EC2 resource
-      # @param cloud_watch_client AWS CloudWatch client
-      # @param cloud_watch_log_client AWS Cloudwatch Log Client
+      # @param params Array of AWS Clients and Resource connections:
+      # - CloudWatchClient: AWS Cloudwatch Client.
+      # - CloudWatchLogsClient: AWS Cloudwatch Logs Client.
+      # - Ec2Resource: AWS EC2 Resource connection.
       # @return new RubyAemAws::Consolidated::AuthorPublishDispatcher instance
-      def initialize(stack_prefix, ec2_resource, cloud_watch_client, cloud_watch_log_client)
+      def initialize(stack_prefix, params)
         @descriptor = ComponentDescriptor.new(stack_prefix,
                                               EC2Descriptor.new(EC2_COMPONENT, EC2_NAME))
-        @ec2_resource = ec2_resource
-        @cloud_watch_client = cloud_watch_client
-        @cloud_watch_log_client = cloud_watch_log_client
+        @cloud_watch_client = params[:CloudWatchClient]
+        @cloud_watch_log_client = params[:CloudWatchLogsClient]
+        @ec2_resource = params[:Ec2Resource]
       end
     end
   end

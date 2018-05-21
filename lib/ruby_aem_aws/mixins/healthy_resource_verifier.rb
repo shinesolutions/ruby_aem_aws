@@ -17,11 +17,17 @@ require_relative '../constants'
 module RubyAemAws
   # Mixin for checking health of a component via ELB 'healthy' count vs ASG desired_capacity.
   # Add this to a component to make it capable of determining its own health.
-  module HealthyCountVerifier
+  module HealthyResourceVerifier
     # Aggregate health_states considered healthy.
-    # @return health_state is ready or scaling.
-    def healthy?
-      %i[ready scaling].include? health_state
+    # @return health_state_elb is ready or scaling.
+    def healthy_elb?
+      %i[ready scaling].include? health_state_elb
+    end
+
+    # Aggregate health_states considered healthy.
+    # @return health_state_asg is ready or scaling.
+    def healthy_asg?
+      %i[ready scaling].include? health_state_asg
     end
 
     # Provides detail of the state of the instances comprising the component.
@@ -32,7 +38,7 @@ module RubyAemAws
     # - recovering: ELB running instance count is less than AutoScalingGroup.desired_capacity.
     # - scaling: ELB running instance count is more than AutoScalingGroup.desired_capacity.
     # - ready: ELB running instance count is equal to AutoScalingGroup.desired_capacity.
-    def health_state
+    def health_state_elb
       asg = find_auto_scaling_group(asg_client)
       return :no_asg if asg.nil?
 
@@ -47,9 +53,11 @@ module RubyAemAws
       elb = find_elb(elb_client)
       return :no_elb if elb.nil?
 
+      elb_instance_state = elb_client.describe_instance_health(load_balancer_name: elb.load_balancer_name)
+
       elb_running_instances = 0
-      get_instances_state_from_elb(elb).each do |i|
-        elb_running_instances += 1 if i[:state] == RubyAemAws::Constants::INSTANCE_STATE_HEALTHY
+      elb_instance_state.instance_states.each do |i|
+        elb_running_instances += 1 if i.state == RubyAemAws::Constants::ELB_INSTANCE_INSERVICE
       end
 
       desired_capacity = asg.desired_capacity
@@ -60,11 +68,48 @@ module RubyAemAws
       :ready
     end
 
-    # @return true, if all EC2 instances within the ELB are running
-    def wait_until_healthy
-      raise ELBMisconfiguration if health_state.eql?(:misconfigured)
-      sleep 60 while health_state.eql?(:recovering) || health_state.eql?(:scaling)
-      return true if health_state.eql?(:ready)
+    # Provides detail of the state of the instances comprising the component.
+    # @return one of:
+    # - no_asg: AutoScalingGroup could not be located (by StackPrefix and Component tags).
+    # - misconfigured: AutoScalingGroup.desired_capacity is less than 1.
+    # - recovering: ELB running instance count is less than AutoScalingGroup.desired_capacity.
+    # - scaling: ELB running instance count is more than AutoScalingGroup.desired_capacity.
+    # - ready: ELB running instance count is equal to AutoScalingGroup.desired_capacity.
+    def health_state_asg
+      asg = find_auto_scaling_group(asg_client)
+      return :no_asg if asg.nil?
+
+      # Debug:
+      # unless asg.nil?
+      #   puts("ASG: #{asg} #{asg.auto_scaling_group_name} (#{asg.desired_capacity})")
+      #   asg.instances.each do |i|
+      #     puts("  Instance #{i.instance_id}: #{i.health_status}")
+      #   end
+      # end
+
+      desired_capacity = asg.desired_capacity
+      instances_inservice = 0
+      asg.instances.each do |instances|
+        instances_inservice += 1 if instances.health_status.eql? 'Healthy'
+      end
+
+      return :misconfigured if desired_capacity < 1
+      return :recovering if instances_inservice < desired_capacity
+      return :scaling if instances_inservice > desired_capacity
+      :ready
+    end
+
+    # @return true, if all instances within the ELB are inService
+    def wait_until_healthy_elb
+      raise ELBMisconfiguration if health_state_elb.eql?(:misconfigured)
+      sleep 60 while health_state_elb.eql?(:recovering) || health_state_elb.eql?(:scaling)
+      return true if health_state_elb.eql?(:ready)
+    end
+
+    def wait_until_healthy_asg
+      raise ASGMisconfiguration if health_state_asg.eql?(:misconfigured)
+      sleep 60 while health_state_asg.eql?(:recovering) || health_state_asg.eql?(:scaling)
+      return true if health_state_asg.eql?(:ready)
     end
 
     private
@@ -129,20 +174,6 @@ module RubyAemAws
         return elb if elb_matches_stack_prefix && elb_matches_logical_id
       end
       nil
-    end
-
-    def get_instances_state_from_elb(elb)
-      stack_prefix_instances = []
-      elb.instances.each do |i|
-        instance = get_instance_by_id(i.instance_id)
-        next if instance.nil?
-        instance.tags.each do |tag|
-          next if tag.key != 'StackPrefix'
-          break if tag.value != descriptor.stack_prefix
-          stack_prefix_instances.push(id: i.instance_id, state: instance.state.name)
-        end
-      end
-      stack_prefix_instances
     end
   end
 end

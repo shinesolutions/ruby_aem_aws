@@ -15,7 +15,6 @@
 module RubyAemAws
   # Add common methods to StackManager resource
   module AbstractStackManager
-
     # @param dynamodb_tablename AWS DynamoDB table name
     # @param attribute_value value to scan for
     # @return Array of a DynamoDB filter to scan for a specific value

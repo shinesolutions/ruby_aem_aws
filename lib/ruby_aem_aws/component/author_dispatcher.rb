@@ -14,7 +14,7 @@
 
 require_relative '../abstract/grouped_component'
 require_relative '../abstract/snapshot'
-require_relative '../mixins/healthy_count_verifier'
+require_relative '../mixins/healthy_resource_verifier'
 require_relative '../mixins/metric_verifier'
 require_relative 'component_descriptor'
 require_relative '../mixins/snapshot_verifier'
@@ -26,7 +26,7 @@ module RubyAemAws
       attr_reader :descriptor, :ec2_resource, :asg_client, :elb_client, :cloud_watch_client, :cloud_watch_log_client
       include AbstractGroupedComponent
       include AbstractSnapshot
-      include HealthyCountVerifier
+      include HealthyResourceVerifier
       include MetricVerifier
       include SnapshotVerifier
 
@@ -36,21 +36,22 @@ module RubyAemAws
       ELB_NAME = 'AEM Author Dispatcher Load Balancer'.freeze
 
       # @param stack_prefix AWS tag: StackPrefix
-      # @param ec2_resource AWS EC2 resource
-      # @param asg_client AWS AutoScalingGroup client
-      # @param elb_client AWS ElasticLoadBalancer client
-      # @param cloud_watch_client AWS CloudWatch client
-      # @param cloud_watch_log_client AWS Cloudwatch Log Client
+      # @param params Array of AWS Clients and Resource connections:
+      # - AutoScalingClient: AWS AutoScalingGroup Client.
+      # - CloudWatchClient: AWS Cloudwatch Client.
+      # - CloudWatchLogsClient: AWS Cloudwatch Logs Client.
+      # - Ec2Resource: AWS EC2 Resource connection.
+      # - ElbClient: AWS ElasticLoadBalancer Client.
       # @return new RubyAemAws::FullSet::AuthorDispatcher
-      def initialize(stack_prefix, ec2_resource, asg_client, elb_client, cloud_watch_client, cloud_watch_log_client)
+      def initialize(stack_prefix, params)
         @descriptor = ComponentDescriptor.new(stack_prefix,
                                               EC2Descriptor.new(EC2_COMPONENT, EC2_NAME),
                                               ELBDescriptor.new(ELB_ID, ELB_NAME))
-        @ec2_resource = ec2_resource
-        @elb_client = elb_client
-        @asg_client = asg_client
-        @cloud_watch_client = cloud_watch_client
-        @cloud_watch_log_client = cloud_watch_log_client
+        @asg_client = params[:AutoScalingClient]
+        @cloud_watch_client = params[:CloudWatchClient]
+        @cloud_watch_log_client = params[:CloudWatchLogsClient]
+        @ec2_resource = params[:Ec2Resource]
+        @elb_client = params[:ElbClient]
       end
 
       def terminate_all_instances

@@ -20,22 +20,30 @@ module RubyAemAws
     attr_reader :cloudformation_client
 
     # @param stack_prefix AWS tag: StackPrefix
-    # @param ec2_resource AWS EC2 client
-    # @param cloud_watch_client AWS CloudWatch client
-    # @param cloudformation_client AWS Cloudformation Client
-    # @param cloud_watch_log_client AWS Cloudwatch Log Client
+    # @param params Array of AWS Clients and Resource connections:
+    # - CloudFormationClient: AWS Cloudformation Client.
+    # - CloudWatchClient: AWS Cloudwatch Client.
+    # - CloudWatchLogsClient: AWS Cloudwatch Logs Client.
+    # - Ec2Resource: AWS EC2 Resource connection.
     # @return new RubyAemAws::ConsolidatedStack instance
-    def initialize(stack_prefix, ec2_resource, cloud_watch_client, cloudformation_client, cloud_watch_log_client)
-      @stack_prefix = stack_prefix
-      @ec2_resource = ec2_resource
-      @cloud_watch_client = cloud_watch_client
-      @cloud_watch_log_client = cloud_watch_log_client
+    def initialize(stack_prefix, params)
+      @consolidated_aws_clients = {
+        CloudWatchClient: params[:CloudWatchClient],
+        CloudWatchLogsClient: params[:CloudWatchLogsClient],
+        Ec2Resource: params[:Ec2Resource]
+      }
       @cloudformation_client = cloudformation_client
+      @stack_prefix = stack_prefix
     end
 
+    # @param stack_prefix AWS tag: StackPrefix
+    # @param consolidated_aws_clients Array of AWS Clients and Resource connections:
+    # - CloudWatchClient: AWS Cloudwatch Client.
+    # - CloudWatchLogsClient: AWS Cloudwatch Logs Client.
+    # - Ec2Resource: AWS EC2 Resource connection.
     # @return new RubyAemAws::Component::AuthorPublishDispatcher instance
     def author_publish_dispatcher
-      RubyAemAws::Component::AuthorPublishDispatcher.new(@stack_prefix, @ec2_resource, @cloud_watch_client, @cloud_watch_log_client)
+      RubyAemAws::Component::AuthorPublishDispatcher.new(@stack_prefix, @consolidated_aws_clients)
     end
   end
 end
