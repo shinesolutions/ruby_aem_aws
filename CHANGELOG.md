@@ -1,3 +1,6 @@
+### 1.1.0
+*
+
 ### 1.0.0
 * Restructure modules by architectures, components, and clients
 * Add AutoScalingGroup health check support
