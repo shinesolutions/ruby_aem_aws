@@ -36,7 +36,7 @@ module RubyAemAws
     def get_s3_object(bucket, s3_object_name, dest_path)
       options = { bucket: bucket, key: s3_object_name }
       options = options.merge(response_target: dest_path) unless dest_path.nil?
-      s3_client.get_object(**options)
+      s3_client.get_object(options)
     end
   end
 end

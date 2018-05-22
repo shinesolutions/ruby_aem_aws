@@ -12,8 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-require_relative 'component_descriptor'
-require_relative 'mixins/instance_describer'
+require_relative '../component/component_descriptor'
+require_relative '../mixins/instance_describer'
 require_relative '../error'
 
 module RubyAemAws
@@ -36,6 +36,8 @@ module RubyAemAws
       }
     end
 
+    # @param snapshot_type SnapshotType tag
+    # @return Array of a EC2 filter to filter for a specific Snapshottype
     private def filter_for_snapshot(snapshot_type)
       {
         filters: [

@@ -13,23 +13,23 @@
 # limitations under the License.
 
 require 'aws-sdk'
-require_relative 'abstract_component'
+require_relative 'component'
 
 module RubyAemAws
-  # Add method to scan for snapshots
-  module AbstractSnapshot
+  # Add common methods to all Components.
+  module AbstractSingleComponent
     include AbstractComponent
 
-    # @param snapshot_id Type of snapsthot to look for
-    # @return Class Aws::EC2::Snapshot
-    def get_snapshot_by_id(snapshot_id)
-      ec2_resource.snapshot(snapshot_id).data
+    def get_instance
+      instances = ec2_resource.instances(filter_for_descriptor).select { |instance| InstanceState::ALL_ACTIVE.include?(instance.state.name) }
+      count = instances.count
+      raise RubyAemAws::ExpectedSingleInstanceError if count > 1
+      return nil if count.zero?
+      instances.first
     end
 
-    # @param snapshot_type Type of snapsthot to look for
-    # @return EC2 Resource snapshots collection
-    def get_snapshots_by_type(snapshot_type)
-      ec2_resource.snapshots(filter_for_snapshot(snapshot_type))
+    def get_all_instances
+      [get_instance]
     end
   end
 end

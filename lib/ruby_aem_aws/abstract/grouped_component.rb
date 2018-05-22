@@ -13,7 +13,7 @@
 # limitations under the License.
 
 require 'aws-sdk'
-require_relative 'abstract_component'
+require_relative 'component'
 
 module RubyAemAws
   # Add common methods to all Components.

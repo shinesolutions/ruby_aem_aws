@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-require_relative '../../constants'
+require_relative '../constants'
 
 module RubyAemAws
   # Mixin for checking health of a component via ELB 'healthy' count vs ASG desired_capacity.
@@ -60,56 +60,11 @@ module RubyAemAws
       :ready
     end
 
-    # Provides detail of the state of the instances comprising the component.
-    # @return one of:
-    # - no_asg: AutoScalingGroup could not be located (by StackPrefix and Component tags).
-    # - no_elb: ElasticLoadBalancer could not be located (by StackPrefix and aws:cloudformation:logical-id tags).
-    # - misconfigured: AutoScalingGroup.desired_capacity is less than 1.
-    # - recovering: ELB running instance count is less than AutoScalingGroup.desired_capacity.
-    # - scaling: ELB running instance count is more than AutoScalingGroup.desired_capacity.
-    # - ready: ELB running instance count is equal to AutoScalingGroup.desired_capacity.
-    def health_state_elb
-      asg = find_auto_scaling_group(asg_client)
-      return :no_asg if asg.nil?
-
-      # Debug:
-      # unless asg.nil?
-      #   puts("ASG: #{asg} #{asg.auto_scaling_group_name} (#{asg.desired_capacity})")
-      #   asg.instances.each do |i|
-      #     puts("  Instance #{i.instance_id}: #{i.health_status}")
-      #   end
-      # end
-
-      elb = find_elb(elb_client)
-      return :no_elb if elb.nil?
-
-      elb_instance_state = elb_client.describe_instance_health(load_balancer_name: elb.load_balancer_name)
-
-      elb_running_instances = 0
-      elb_instance_state.instance_states.each do |i|
-        elb_running_instances += 1 if i.state == RubyAemAws::Constants::ELB_INSTANCE_INSERVICE
-      end
-
-      desired_capacity = asg.desired_capacity
-
-      return :misconfigured if desired_capacity < 1
-      return :recovering if elb_running_instances < desired_capacity
-      return :scaling if elb_running_instances > desired_capacity
-      :ready
-    end
-
     # @return true, if all EC2 instances within the ELB are running
     def wait_until_healthy
       raise ELBMisconfiguration if health_state.eql?(:misconfigured)
       sleep 60 while health_state.eql?(:recovering) || health_state.eql?(:scaling)
       return true if health_state.eql?(:ready)
-    end
-
-    # @return true, if all instances within the ELB are inService
-    def wait_until_healthy_elb
-      raise ELBMisconfiguration if health_state_elb.eql?(:misconfigured)
-      sleep 60 while health_state_elb.eql?(:recovering) || health_state_elb.eql?(:scaling)
-      return true if health_state_elb.eql?(:ready)
     end
 
     private

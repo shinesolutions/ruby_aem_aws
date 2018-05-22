@@ -12,29 +12,37 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-require_relative 'abstract_stackmanager'
-require_relative 'mixins/sns_topic'
-require_relative 'mixins/dynamo_db'
-require_relative 'mixins/s3'
+require_relative '../abstract/stackmanager'
+require_relative '../client/sns_topic'
+require_relative '../client/dynamo_db'
+require_relative '../client/s3'
+require_relative '../mixins/metric_verifier'
 
 module RubyAemAws
   module Component
     # Interface to the AWS StackManager to send out commands
     class StackManagerResources
-      attr_reader :dynamodb_client, :s3_client, :s3_resource
+      attr_reader :dynamodb_client, :s3_client, :s3_resource, :cloud_watch_client, :cloud_watch_log_client
       include AbstractStackManager
       include DynamoDB
+      include MetricVerifier
       include SNSTopic
       include S3Access
 
       # @param dynamodb_client AWS DynamoDB client connection
-      # @param s3_client AWS S3 client connection
-      # @param s3_resource AWS S3 client connection
+      # @param params Array of AWS Clients and Resource connections:
+      # - CloudWatchClient: AWS Cloudwatch Client.
+      # - CloudWatchLogsClient: AWS Cloudwatch Logs Client.
+      # - DynamoDBClient: AWS DynamoDB Client.
+      # - S3Client: AWS S3 Client.
+      # - S3Resource: AWS S3 Resource connection.
       # @return new RubyAemAws::StackManager::StackManagerResources
-      def initialize(dynamodb_client, s3_client, s3_resource)
-        @dynamodb_client = dynamodb_client
-        @s3_client = s3_client
-        @s3_resource = s3_resource
+      def initialize(params)
+        @dynamodb_client = params[:DynamoDBClient]
+        @s3_client = params[:S3Client]
+        @s3_resource = params[:S3Resource]
+        @cloud_watch_client = params[:CloudWatchLogsClient]
+        @cloud_watch_log_client = params[:CloudWatchLogsClient]
       end
 
       # @param topicarn AWS SNS-Topic ARN
