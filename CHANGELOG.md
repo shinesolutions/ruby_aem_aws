@@ -1,5 +1,6 @@
-### 0.9.4
-*
+### 1.0.0
+* Restructure modules by architectures, components, and clients
+* Add AutoScalingGroup health check support
 
 ### 0.9.3
 * Reduce frequency of ASG and ELB client calls
