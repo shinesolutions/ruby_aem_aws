@@ -53,13 +53,15 @@ describe 'AuthorPublishDispatcher' do
     let(:create_component) { ->(env) { component_creator(env) } }
   end
 
-  private def component_creator(environment)
+  private
+
+  def component_creator(environment)
     RubyAemAws::Component::AuthorPublishDispatcher.new(TEST_STACK_PREFIX,
                                                        environment.ec2_resource,
                                                        environment.cloud_watch_client)
   end
 
-  private def environment_creator
+  def environment_creator
     Aws::AemEnvironment.new(mock_ec2_resource(RubyAemAws::Component::AuthorDispatcher::EC2_COMPONENT,
                                               RubyAemAws::Component::AuthorDispatcher::EC2_NAME),
                             nil,

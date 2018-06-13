@@ -214,8 +214,10 @@ module AwsEc2Mocker
     ec2_instance
   end
 
+  private
+
   # Intentional replication of AWS instance filter logic for use by mock EC2 Resource.
-  private def filter_instances(instances, filters)
+  def filter_instances(instances, filters)
     filtered = instances
     # Include only instances that match all filters.
     filters.each do |filter|
@@ -231,7 +233,7 @@ module AwsEc2Mocker
     filtered
   end
 
-  private def ec2_tag(resource_id, key, value)
+  def ec2_tag(resource_id, key, value)
     ec2_tag = double('ec2_tag')
     allow(ec2_tag).to receive(:resource_id) { resource_id }
     allow(ec2_tag).to receive(:key) { key }
@@ -278,8 +280,10 @@ module AwsCloudWatchMocker
     end
   end
 
+  private
+
   # Intentional replication of AWS metric filter logic for use by mock CloudWatch Client.
-  private def filter_by_instance(mock_metrics, instance_id)
+  def filter_by_instance(mock_metrics, instance_id)
     mock_metrics.select { |mock_metric|
       instance_id == mock_metric.dimensions[0].value
     }
