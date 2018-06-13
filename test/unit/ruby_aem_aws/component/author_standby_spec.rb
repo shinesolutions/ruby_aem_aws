@@ -52,7 +52,9 @@ describe 'AuthorStandby' do
     let(:create_component) { ->(env) { component_creator(env) } }
   end
 
-  private def component_creator(environment)
+  private
+
+  def component_creator(environment)
     author = RubyAemAws::Component::Author.new(TEST_STACK_PREFIX,
                                                environment.ec2_resource,
                                                nil,
@@ -60,7 +62,7 @@ describe 'AuthorStandby' do
     author.author_standby
   end
 
-  private def environment_creator
+  def environment_creator
     Aws::AemEnvironment.new(mock_ec2_resource(RubyAemAws::Component::AuthorStandby::EC2_COMPONENT,
                                               RubyAemAws::Component::AuthorStandby::EC2_NAME),
                             nil,
