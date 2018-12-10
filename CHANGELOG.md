@@ -1,3 +1,6 @@
+### 1.1.1
+* Add termination feature for Chaos Monkey & Orchestrator
+
 ### 1.1.0
 * Update ec2 resource filter to only get running ec2 instances #17
 
