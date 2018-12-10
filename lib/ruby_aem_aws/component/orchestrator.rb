@@ -49,9 +49,19 @@ module RubyAemAws
         @ec2_resource = params[:Ec2Resource]
       end
 
-      # def terminate_all_instances
+      def terminate_all_instances
+        get_all_instances.each do |i|
+          next if i.nil?
+          i.terminate
+          i.wait_until_terminated
+        end
+      end
 
-      # def terminate_random_instance
+      def terminate_random_instance
+        instance = get_instance
+        instance.terminate
+        instance.wait_until_terminated
+      end
     end
   end
 end
