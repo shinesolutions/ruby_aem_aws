@@ -1,7 +1,7 @@
 # TODO: re-enable Metric/AbcSize, Metrics/CyclomaticComplexity, and Metrics/PerceivedComplexity
 AllCops:
   DisplayCopNames: true
-  TargetRubyVersion: 2.1
+  TargetRubyVersion: 2.3
 Metrics/AbcSize:
   Enabled: false
 Metrics/BlockLength:

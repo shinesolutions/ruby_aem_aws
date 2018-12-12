@@ -3,6 +3,8 @@
 
 ### 1.1.0
 * Update ec2 resource filter to only get running ec2 instances #17
+* Remove support for Ruby 2.2
+* Remove support for Ruby 2.3
 
 ### 1.0.0
 * Restructure modules by architectures, components, and clients
