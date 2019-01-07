@@ -12,9 +12,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-require_relative '../abstract/single_component'
+require_relative '../abstract/grouped_component'
 require_relative '../abstract/snapshot'
-require_relative '../mixins/healthy_state_verifier'
+require_relative '../mixins/healthy_resource_verifier'
 require_relative '../mixins/metric_verifier'
 require_relative '../mixins/snapshot_verifier'
 
@@ -23,10 +23,9 @@ module RubyAemAws
     # Interface to the AWS instance running the Orchestrator component of a full-set AEM stack.
     class Orchestrator
       attr_reader :descriptor, :ec2_resource, :asg_client, :cloud_watch_client, :cloud_watch_log_client
-      include AbstractSingleComponent
+      include AbstractGroupedComponent
       include AbstractSnapshot
-      # Can't verify state by count as there's no ELB.
-      include HealthyStateVerifier
+      include HealthyResourceVerifier
       include MetricVerifier
       include SnapshotVerifier
 
@@ -49,9 +48,19 @@ module RubyAemAws
         @ec2_resource = params[:Ec2Resource]
       end
 
-      # def terminate_all_instances
+      def terminate_all_instances
+        get_all_instances.each do |i|
+          next if i.nil?
+          i.terminate
+          i.wait_until_terminated
+        end
+      end
 
-      # def terminate_random_instance
+      def terminate_random_instance
+        instance = get_random_instance
+        instance.terminate
+        instance.wait_until_terminated
+      end
     end
   end
 end
