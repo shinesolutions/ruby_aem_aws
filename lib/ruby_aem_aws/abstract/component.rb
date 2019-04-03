@@ -23,7 +23,7 @@ module RubyAemAws
     include InstanceDescriber
 
     def to_s
-      "#{self.class.name.split('::').last}(#{@descriptor.stack_prefix unless @descriptor.nil?})"
+      "#{self.class.name.split('::').last}(#{@descriptor&.stack_prefix})"
     end
 
     private
