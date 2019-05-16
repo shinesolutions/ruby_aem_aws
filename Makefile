@@ -44,7 +44,10 @@ doc-publish:
 publish:
 	gem push `ls ruby_aem_aws-*.gem`
 
+release:
+	rtk release
+
 tools:
 	npm install -g gh-pages
 
-.PHONY: all ci deps clean build lint install test-unit test-integration test-integration-connection test-integration-consolidated test-integration-full-set doc doc-publish publish tools
+.PHONY: all ci deps clean build lint install test-unit test-integration test-integration-connection test-integration-consolidated test-integration-full-set doc doc-publish publish release tools
