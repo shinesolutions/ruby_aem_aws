@@ -8,7 +8,7 @@ clean:
 	rm -rf .bundler bin ruby_aem_aws-*.gem out
 
 deps:
-	gem install bundler
+	gem install bundler --version=1.17.3
 	bundle install --binstubs
 
 lint:
