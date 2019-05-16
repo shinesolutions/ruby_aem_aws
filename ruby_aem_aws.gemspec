@@ -1,6 +1,8 @@
+gem_conf = YAML.load_file('conf/gem.yaml')
+
 Gem::Specification.new do |s|
   s.name              = 'ruby_aem_aws'
-  s.version           = '1.2.0'
+  s.version           = gem_conf['version']
   s.platform          = Gem::Platform::RUBY
   s.authors           = ['Shine Solutions']
   s.email             = ['opensource@shinesolutions.com']
