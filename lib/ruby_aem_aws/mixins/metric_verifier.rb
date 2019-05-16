@@ -48,6 +48,7 @@ module RubyAemAws
 
       instances.each do |instance|
         next if instance.nil?
+
         instance_id = instance.instance_id
         dimensions_value = instance.instance_id
 
@@ -73,6 +74,7 @@ module RubyAemAws
 
       instances.each do |instance|
         next if instance.nil?
+
         instance_id = instance.instance_id
         log_stream_name = "#{@descriptor.ec2.component}/#{instance_id}"
 
@@ -106,6 +108,7 @@ module RubyAemAws
 
       instances.each do |instance|
         next if instance.nil?
+
         instance_id = instance.instance_id
         log_stream_name = "#{@descriptor.ec2.component}/#{instance_id}"
 

@@ -28,6 +28,7 @@ module RubyAemAws
       has_snapshot = false
       get_snapshots_by_type(snapshot_type).each do |s|
         next if s.nil?
+
         has_snapshot = true
       end
       has_snapshot

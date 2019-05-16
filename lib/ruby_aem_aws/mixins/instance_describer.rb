@@ -21,6 +21,7 @@ module RubyAemAws
       descriptions = []
       get_all_instances.each do |i|
         next if i.nil?
+
         descriptions.push(describe_instance(i))
       end
       descriptions.join(', ')

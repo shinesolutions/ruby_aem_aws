@@ -37,6 +37,7 @@ module RubyAemAws
       credentials = Aws::SharedCredentials.new(profile_name: conf[:aws_profile]) unless conf[:aws_profile].nil?
       credentials = Aws::InstanceProfileCredentials.new if conf[:aws_profile].nil? && conf[:aws_access_key_id].nil?
       raise RubyAemAws::ArgumentError unless defined? credentials
+
       Aws.config.update(credentials: credentials)
 
       @aws = AwsCreator.create_aws

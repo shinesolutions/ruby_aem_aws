@@ -65,6 +65,7 @@ module RubyAemAws
       return :misconfigured if desired_capacity < 1
       return :recovering if elb_running_instances < desired_capacity
       return :scaling if elb_running_instances > desired_capacity
+
       :ready
     end
 
@@ -96,18 +97,21 @@ module RubyAemAws
       return :misconfigured if desired_capacity < 1
       return :recovering if instances_inservice < desired_capacity
       return :scaling if instances_inservice > desired_capacity
+
       :ready
     end
 
     # @return true, if all instances within the ELB are inService
     def wait_until_healthy_elb
       raise ELBMisconfiguration if health_state_elb.eql?(:misconfigured)
+
       sleep 60 while health_state_elb.eql?(:recovering) || health_state_elb.eql?(:scaling)
       return true if health_state_elb.eql?(:ready)
     end
 
     def wait_until_healthy_asg
       raise ASGMisconfiguration if health_state_asg.eql?(:misconfigured)
+
       sleep 60 while health_state_asg.eql?(:recovering) || health_state_asg.eql?(:scaling)
       return true if health_state_asg.eql?(:ready)
     end
@@ -138,6 +142,7 @@ module RubyAemAws
           if tag.key == 'StackPrefix' && tag.value == descriptor.stack_prefix
             asg_matches_stack_prefix = true
             break if asg_matches_component
+
             next
           end
           if tag.key == 'Component' && tag.value == descriptor.ec2.component
@@ -164,6 +169,7 @@ module RubyAemAws
           if tag.key == 'StackPrefix' && tag.value == descriptor.stack_prefix
             elb_matches_stack_prefix = true
             break if elb_matches_logical_id
+
             next
           end
           if tag.key == 'aws:cloudformation:logical-id' && tag.value == descriptor.elb.id

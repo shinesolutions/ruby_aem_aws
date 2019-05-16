@@ -57,12 +57,14 @@ module RubyAemAws
       return :misconfigured if desired_capacity < 1
       return :recovering if elb_running_instances < desired_capacity
       return :scaling if elb_running_instances > desired_capacity
+
       :ready
     end
 
     # @return true, if all EC2 instances within the ELB are running
     def wait_until_healthy
       raise ELBMisconfiguration if health_state.eql?(:misconfigured)
+
       sleep 60 while health_state.eql?(:recovering) || health_state.eql?(:scaling)
       return true if health_state.eql?(:ready)
     end
@@ -93,6 +95,7 @@ module RubyAemAws
           if tag.key == 'StackPrefix' && tag.value == descriptor.stack_prefix
             asg_matches_stack_prefix = true
             break if asg_matches_component
+
             next
           end
           if tag.key == 'Component' && tag.value == descriptor.ec2.component
@@ -119,6 +122,7 @@ module RubyAemAws
           if tag.key == 'StackPrefix' && tag.value == descriptor.stack_prefix
             elb_matches_stack_prefix = true
             break if elb_matches_logical_id
+
             next
           end
           if tag.key == 'aws:cloudformation:logical-id' && tag.value == descriptor.elb.id
@@ -136,9 +140,11 @@ module RubyAemAws
       elb.instances.each do |i|
         instance = get_instance_by_id(i.instance_id)
         next if instance.nil?
+
         instance.tags.each do |tag|
           next if tag.key != 'StackPrefix'
           break if tag.value != descriptor.stack_prefix
+
           stack_prefix_instances.push(id: i.instance_id, state: instance.state.name)
         end
       end

@@ -6,6 +6,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+### Changed
+- Fix empty line after guard clause Rubocop violations
+
 ## [1.2.0] - 2019-04-03
 
 ### Added

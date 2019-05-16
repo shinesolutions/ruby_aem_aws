@@ -227,6 +227,7 @@ module AwsEc2Mocker
           t.key == key.to_s
         }
         next if found_tag.nil?
+
         found_tag.value == value
       }
     end

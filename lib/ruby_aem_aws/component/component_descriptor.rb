@@ -18,6 +18,7 @@ module RubyAemAws
       def stack_prefix
         # Unwrap from {:stack_prefix = value} to the value if necessary.
         return stack_prefix_in[:stack_prefix] if stack_prefix_in.is_a? Hash
+
         stack_prefix_in
       end
     end

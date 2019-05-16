@@ -57,6 +57,7 @@ module RubyAemAws
       def terminate_all_instances
         get_all_instances.each do |i|
           next if i.nil?
+
           i.terminate
           i.wait_until_terminated
         end
