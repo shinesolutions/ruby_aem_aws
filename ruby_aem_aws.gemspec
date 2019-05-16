@@ -1,3 +1,5 @@
+require 'yaml'
+
 gem_conf = YAML.load_file('conf/gem.yaml')
 
 Gem::Specification.new do |s|
