@@ -46,6 +46,11 @@ module RubyAemAws
         @cloud_watch_log_client = params[:CloudWatchLogsClient]
         @ec2_resource = params[:Ec2Resource]
       end
+
+      def get_tags
+        instance = get_instance
+        instance.tags
+      end
     end
   end
 end

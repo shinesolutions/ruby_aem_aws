@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+### Added
+
+- Add new component method get_tags
+
 ## 1.2.1 - 2019-05-16
 ### Changed
 - Fix empty line after guard clause Rubocop violations

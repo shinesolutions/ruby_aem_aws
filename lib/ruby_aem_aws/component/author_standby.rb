@@ -52,6 +52,11 @@ module RubyAemAws
         instance.terminate
         instance.wait_until_terminated
       end
+
+      def get_tags
+        instance = get_instance
+        instance.tags
+      end
     end
   end
 end
