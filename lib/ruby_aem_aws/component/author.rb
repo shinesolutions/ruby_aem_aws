@@ -59,6 +59,13 @@ module RubyAemAws
         instance += 1 if author_standby.wait_until_healthy.eql? true
         return true unless instance < 2
       end
+
+      def get_tags
+        tags = []
+        tags.push(author_primary.get_tags)
+        tags.push(author_standby.get_tags)
+        tags
+      end
     end
   end
 end

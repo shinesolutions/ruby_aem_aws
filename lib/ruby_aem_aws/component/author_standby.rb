@@ -23,7 +23,7 @@ module RubyAemAws
     # Interface to the AWS instance running the Author-Standby component of a full-set AEM stack.
     class AuthorStandby
       attr_reader :descriptor, :ec2_resource, :cloud_watch_client, :cloud_watch_log_client
-      include AbstractGroupedComponent
+      include AbstractSingleComponent
       include AbstractSnapshot
       include HealthyStateVerifier
       include MetricVerifier
@@ -51,6 +51,11 @@ module RubyAemAws
         instance = get_instance
         instance.terminate
         instance.wait_until_terminated
+      end
+
+      def get_tags
+        instance = get_instance
+        instance.tags
       end
     end
   end
