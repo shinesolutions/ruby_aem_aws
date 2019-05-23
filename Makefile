@@ -5,7 +5,7 @@ all: deps clean build lint install test-unit test-integration doc
 ci: deps clean build lint install doc
 
 clean:
-	rm -rf .bundler bin ruby_aem_aws-*.gem out
+	rm -rf .bundler Gemfile.lock bin ruby_aem_aws-*.gem out
 
 deps:
 	gem install bundler --version=1.17.3
