@@ -64,8 +64,13 @@ module RubyAemAws
       end
 
       def get_tags
-        instance = get_instance
-        instance.tags
+        tags = []
+        get_all_instances.each do |i|
+          next if i.nil?
+
+          tags.push(i.tags)
+        end
+        tags
       end
     end
   end
