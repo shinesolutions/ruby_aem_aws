@@ -1,8 +1,8 @@
 #export RUBYOPT = --enable-frozen-string-literal
 export AWS_PROFILE = sandpit
 
-all: deps clean build lint install test-unit test-integration doc
-ci: deps clean build lint install doc
+all: clean deps build lint install test-unit test-integration doc
+ci: clean deps build lint install doc
 
 clean:
 	rm -rf .bundler Gemfile.lock bin ruby_aem_aws-*.gem out
@@ -12,7 +12,7 @@ deps:
 	bundle install --binstubs
 
 lint:
-	bundle exec rubocop
+	bundle exec rubocop lib/ test/
 	bundle exec yaml-lint .*.yml conf/*.yaml
 
 build: clean
