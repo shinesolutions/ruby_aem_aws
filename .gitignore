@@ -4,8 +4,6 @@ bin
 .yardoc
 doc
 ruby_aem_aws-*.gem
-*.lock
-
 # IntelliJ Idea
 .idea/
 *.iml
