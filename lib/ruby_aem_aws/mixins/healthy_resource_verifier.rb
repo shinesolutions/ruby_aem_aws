@@ -87,11 +87,14 @@ module RubyAemAws
       #     puts("  Instance #{i.instance_id}: #{i.health_status}")
       #   end
       # end
-
-      desired_capacity = asg.desired_capacity
       instances_inservice = 0
-      asg.instances.each do |instances|
-        instances_inservice += 1 if instances.health_status.eql? 'Healthy'
+      desired_capacity = asg.desired_capacity
+
+      get_all_instances.each do |i|
+        next if i.nil? || i.state.code != 16
+        return false if i.state.name != Constants::INSTANCE_STATE_HEALTHY
+
+        instances_inservice += 1
       end
 
       return :misconfigured if desired_capacity < 1

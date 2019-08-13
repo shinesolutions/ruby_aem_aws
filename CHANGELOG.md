@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+### Changed
+- Changed ASG health check to check ec2 instance state code to determine running component instance #22
+
 ## 1.3.0 - 2019-05-23
 ### Added
 - Add new component method get_tags
