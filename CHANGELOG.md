@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - Changed ASG health check to check ec2 instance state code to determine running component instance #22
+- Add additional skip for instances which do not have state code 16
 
 ## 1.3.0 - 2019-05-23
 ### Added
