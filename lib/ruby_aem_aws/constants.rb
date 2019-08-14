@@ -24,6 +24,16 @@ module RubyAemAws
     ALL_ACTIVE = [PENDING, RUNNING, SHUTTING_DOWN, STOPPING, STOPPED].freeze
   end
 
+  # API InstanceState codes https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_InstanceState.html
+  class InstanceStateCode
+    PENDING = 0
+    RUNNING = 16
+    SHUTTING_DOWN = 32
+    TERMINATED = 48
+    STOPPING = 64
+    STOPPED = 80
+  end
+
   class ELBInstanceState
     INSERVICE = 'InService'.freeze
     OUTOFSERVICE = 'OutOfService'.freeze
@@ -37,6 +47,7 @@ module RubyAemAws
     SECRET_ACCESS_KEY = ENV['AWS_SECRET_ACCESS_KEY'] || ENV['aws_scret_access_key']
     PROFILE = ENV['AWS_PROFILE']
     INSTANCE_STATE_HEALTHY = RubyAemAws::InstanceState::RUNNING.freeze
+    INSTANCE_STATE_CODE_RUNNING = RubyAemAws::InstanceStateCode::RUNNING
     ELB_INSTANCE_INSERVICE = RubyAemAws::ELBInstanceState::INSERVICE.freeze
   end
 end
