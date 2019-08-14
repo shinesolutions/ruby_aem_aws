@@ -55,7 +55,7 @@ module RubyAemAws
 
       def terminate_all_instances
         get_all_instances.each do |i|
-          next if i.nil?
+          next if i.nil? || i.state.code != 16
 
           i.terminate
           i.wait_until_terminated
@@ -71,7 +71,7 @@ module RubyAemAws
       def get_tags
         tags = []
         get_all_instances.each do |i|
-          next if i.nil?
+          next if i.nil? || i.state.code != 16
 
           tags.push(i.tags)
         end
