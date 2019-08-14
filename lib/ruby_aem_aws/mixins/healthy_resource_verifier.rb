@@ -91,7 +91,7 @@ module RubyAemAws
       desired_capacity = asg.desired_capacity
 
       get_all_instances.each do |i|
-        next if i.nil? || i.state.code != 16
+        next if i.nil? || i.state.code != Constants::INSTANCE_STATE_CODE_RUNNING
         return false if i.state.name != Constants::INSTANCE_STATE_HEALTHY
 
         instances_inservice += 1

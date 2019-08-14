@@ -14,6 +14,7 @@
 
 require_relative '../abstract/grouped_component'
 require_relative '../abstract/snapshot'
+require_relative '../constants'
 require_relative '../mixins/healthy_resource_verifier'
 require_relative '../mixins/metric_verifier'
 require_relative '../mixins/snapshot_verifier'
@@ -55,7 +56,7 @@ module RubyAemAws
 
       def terminate_all_instances
         get_all_instances.each do |i|
-          next if i.nil? || i.state.code != 16
+          next if i.nil? || i.state.code != Constants::INSTANCE_STATE_CODE_RUNNING
 
           i.terminate
           i.wait_until_terminated
@@ -71,7 +72,7 @@ module RubyAemAws
       def get_tags
         tags = []
         get_all_instances.each do |i|
-          next if i.nil? || i.state.code != 16
+          next if i.nil? || i.state.code != Constants::INSTANCE_STATE_CODE_RUNNING
 
           tags.push(i.tags)
         end

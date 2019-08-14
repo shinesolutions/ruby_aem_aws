@@ -22,7 +22,7 @@ module RubyAemAws
     def healthy?
       has_instance = false
       get_all_instances.each do |i|
-        next if i.nil? || i.state.code != 16
+        next if i.nil? || i.state.code != Constants::INSTANCE_STATE_CODE_RUNNING
 
         has_instance = true
         return false if i.state.name != Constants::INSTANCE_STATE_HEALTHY
@@ -33,7 +33,7 @@ module RubyAemAws
     def wait_until_healthy
       instance_healthy = false
       get_all_instances.each do |i|
-        next if i.nil? || i.state.code != 16
+        next if i.nil? || i.state.code != Constants::INSTANCE_STATE_CODE_RUNNING
 
         i.wait_until_running
         instance_healthy = true
