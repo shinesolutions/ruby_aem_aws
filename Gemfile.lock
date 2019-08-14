@@ -803,7 +803,7 @@ GEM
     tuples (0.1.0)
     unicode-display_width (1.6.0)
     yaml-lint (0.0.10)
-    yard (0.9.19)
+    yard (0.9.20)
 
 PLATFORMS
   ruby
@@ -817,7 +817,7 @@ DEPENDENCIES
   simplecov (= 0.16.1)
   tuples (= 0.1.0)
   yaml-lint (= 0.0.10)
-  yard (= 0.9.19)
+  yard (= 0.9.20)
 
 BUNDLED WITH
    1.17.3
