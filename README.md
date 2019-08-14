@@ -1,5 +1,6 @@
 [![Build Status](https://img.shields.io/travis/shinesolutions/ruby_aem.svg)](http://travis-ci.org/shinesolutions/ruby_aem)
 [![Published Version](https://badge.fury.io/rb/ruby_aem.svg)](https://rubygems.org/gems/ruby_aem)
+[![Known Vulnerabilities](https://snyk.io/test/github/shinesolutions/ruby_aem_aws/badge.svg)](https://snyk.io/test/github/shinesolutions/ruby_aem_aws)
 
 ruby_aem_aws
 ------------
@@ -33,7 +34,5 @@ Required parameters:
 
 Optional parameters:
 
-- `AWS_REGION` eg `ap-southeast-2` 
+- `AWS_REGION` eg `ap-southeast-2`
 - `STACK_PREFIX` eg `bob`
-    
-    
