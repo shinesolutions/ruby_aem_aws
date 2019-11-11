@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+### Fixed
+- Fixed consolidated client connection #10
+
 ## 1.4.0 - 2019-08-14
 ### Changed
 - Changed ASG health check to check ec2 instance state code to determine running component instance [#22]
