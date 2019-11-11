@@ -111,7 +111,7 @@ module RubyAemAws
       instances.each do |instance|
         next if instance.nil?
 
-        #@instance_id is needed by method _get_log_stream_name
+        # @instance_id is needed by method _get_log_stream_name
         @instance_id = instance.instance_id
         log_stream_name = _get_log_stream_name(loggroup_name)
 
@@ -164,9 +164,7 @@ module RubyAemAws
       response = loggroup?(loggroup_name)
       return false unless response.eql? true
 
-      while log_stream_name.eql? nil
-        log_stream_name = _get_log_stream_name(loggroup_name)
-      end
+      log_stream_name = _get_log_stream_name(loggroup_name) while log_stream_name.eql? nil
 
       response = get_log_event(loggroup_name, log_stream_name, log_message)
       return true unless response.events.empty?
@@ -203,8 +201,6 @@ module RubyAemAws
 
         return log_stream_name_hostname if response.eql? true
       end
-
-      return nil
     end
   end
 end
