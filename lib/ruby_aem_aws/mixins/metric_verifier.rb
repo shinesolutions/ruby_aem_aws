@@ -62,12 +62,12 @@ module RubyAemAws
       return true unless instances_with_metric < instances_found
     end
 
-    # @param log_stream_name Cloudwatch log stream name
+    # @param log_file_name Name of the log file available on Cloudwatch
     # @param log_message name of the logfile of the log stream
     # @return True if log message exists in Cloudwatch log stream for all component instances
-    def component_log_event?(log_stream_name, log_message)
-      instances_with_log_stream = []
-      loggroup_name = "#{@descriptor.stack_prefix_in}#{log_stream_name}"
+    def component_log_event?(log_file_name, log_message)
+      instances_with_log_event = []
+      loggroup_name = "#{@descriptor.stack_prefix_in}#{log_file_name}"
 
       instances = get_all_instances
       instances_found = instances.count
@@ -75,33 +75,35 @@ module RubyAemAws
       instances.each do |instance|
         next if instance.nil?
 
+        # @instance_id is needed by method _get_log_stream_name
+        @instance_id = instance.instance_id
+        response = log_event?(loggroup_name, log_message)
+
+        next unless response.eql? true
+
         instance_id = instance.instance_id
-        log_stream_name = "#{@descriptor.ec2.component}/#{instance_id}"
-
-        response = log_event?(loggroup_name, log_stream_name, log_message)
-
-        instances_with_log_stream.push(instance_id) if response.eql? true
+        instances_with_log_event.push(instance_id)
       end
-      instances_with_log_stream = instances_with_log_stream.count
+      instances_with_log_event = instances_with_log_event.count
 
-      return true unless instances_with_log_stream < instances_found
+      return true unless instances_with_log_event < instances_found
     end
 
-    # @param log_stream_name Cloudwatch log stream name
+    # @param log_file_name Name of the log file available on Cloudwatch
     # @return True if Cloudwatch loggroup exists for component
-    def component_loggroup?(log_stream_name)
-      loggroup_name = "#{@descriptor.stack_prefix_in}#{log_stream_name}"
+    def component_loggroup?(log_file_name)
+      loggroup_name = "#{@descriptor.stack_prefix_in}#{log_file_name}"
 
       response = loggroup?(loggroup_name)
 
       return true if response.eql? true
     end
 
-    # @param log_stream_name Cloudwatch log stream name
+    # @param log_file_name Name of the log file available on Cloudwatch
     # @return True if Cloudwatch log stream exists for all component instances
-    def component_log_stream?(log_stream_name)
-      instances_with_log_stream = []
-      loggroup_name = "#{@descriptor.stack_prefix_in}#{log_stream_name}"
+    def component_log_stream?(log_file_name)
+      log_streams_found = []
+      loggroup_name = "#{@descriptor.stack_prefix_in}#{log_file_name}"
 
       instances = get_all_instances
       instances_found = instances.count
@@ -109,16 +111,17 @@ module RubyAemAws
       instances.each do |instance|
         next if instance.nil?
 
-        instance_id = instance.instance_id
-        log_stream_name = "#{@descriptor.ec2.component}/#{instance_id}"
+        #@instance_id is needed by method _get_log_stream_name
+        @instance_id = instance.instance_id
+        log_stream_name = _get_log_stream_name(loggroup_name)
 
-        response = log_stream?(loggroup_name, log_stream_name)
+        next if log_stream_name.eql? nil
 
-        instances_with_log_stream.push(instance_id) if response.eql? true
+        log_streams_found.push(log_stream_name)
       end
-      instances_with_log_stream = instances_with_log_stream.count
+      log_streams_found = log_streams_found.count
 
-      return true unless instances_with_log_stream < instances_found
+      return true unless log_streams_found < instances_found
     end
 
     # @param alarm_name name of the Cloudwatch alarm
@@ -144,7 +147,6 @@ module RubyAemAws
     end
 
     # @param loggroup_name Cloudwatch loggroup name
-    # @param log_stream_name Cloudwatch log stream name
     # @return True if Cloudwatch log stream exists
     def log_stream?(loggroup_name, log_stream_name)
       response = loggroup?(loggroup_name)
@@ -156,15 +158,15 @@ module RubyAemAws
     end
 
     # @param loggroup_name Cloudwatch loggroup name
-    # @param log_stream_name Cloudwatch log stream name
     # @param log_message name of the logfile of the log stream
     # @return True if Cloudwatch log event exists
-    def log_event?(loggroup_name, log_stream_name, log_message)
+    def log_event?(loggroup_name, log_message)
       response = loggroup?(loggroup_name)
       return false unless response.eql? true
 
-      response = log_stream?(loggroup_name, log_stream_name)
-      return false unless response.eql? true
+      while log_stream_name.eql? nil
+        log_stream_name = _get_log_stream_name(loggroup_name)
+      end
 
       response = get_log_event(loggroup_name, log_stream_name, log_message)
       return true unless response.events.empty?
@@ -184,6 +186,25 @@ module RubyAemAws
       response = get_metrics(namespace, metric_name, dimension_filter)
 
       return true unless response.metrics.empty?
+    end
+
+    def _get_log_stream_name(loggroup_name)
+      # Get Logstream name by instance_id
+      log_stream_name_instance_id = "#{@descriptor.ec2.component}/#{@instance_id}"
+      response = log_stream?(loggroup_name, log_stream_name_instance_id)
+
+      return log_stream_name_instance_id if response.eql? true
+
+      # Get Logstream name by ec2 hostname
+      unless response.eql? true
+        ec2_hostname = Socket.gethostname
+        log_stream_name_hostname = "#{@descriptor.ec2.component}/#{ec2_hostname}"
+        response = log_stream?(loggroup_name, log_stream_name_hostname)
+
+        return log_stream_name_hostname if response.eql? true
+      end
+
+      return nil
     end
   end
 end

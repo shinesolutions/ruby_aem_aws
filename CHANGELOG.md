@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 - Fixed consolidated client connection #10
+- Add feature to check for logstream name with hostname in it instead of only using the instance_id #25
 
 ## 1.4.0 - 2019-08-14
 ### Changed
