@@ -194,11 +194,11 @@ module RubyAemAws
       return log_stream_name_instance_id if response.eql? true
 
       # Get Logstream name by ec2 hostname
-      ec2_hostname = Socket.gethostname
-      log_stream_name_hostname = "#{@descriptor.ec2.component}/#{ec2_hostname}"
-      response = log_stream?(loggroup_name, log_stream_name_hostname) unless response.eql? true
+      local_hostname = Socket.gethostname
+      log_stream_name_local_hostname = "#{@descriptor.ec2.component}/#{local_hostname}"
+      response = log_stream?(loggroup_name, log_stream_name_local_hostname) unless response.eql? true
 
-      return log_stream_name_hostname if response.eql? true
+      return log_stream_name_local_hostname if response.eql? true
     end
   end
 end
