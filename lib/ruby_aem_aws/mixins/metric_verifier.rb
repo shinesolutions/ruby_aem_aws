@@ -164,7 +164,7 @@ module RubyAemAws
       response = loggroup?(loggroup_name)
       return false unless response.eql? true
 
-      log_stream_name = _get_log_stream_name(loggroup_name) while log_stream_name.eql? nil
+      log_stream_name = _get_log_stream_name(loggroup_name)
 
       response = get_log_event(loggroup_name, log_stream_name, log_message)
       return true unless response.events.empty?
