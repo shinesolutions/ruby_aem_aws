@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+### Added
+- Add new feature to read AWS Region from AWS environment variable `AWS_DEFAULT_REGION` [shinesolutions/inspec-aem-aws#42]
+- Add new feature to read AWS Region from AWS environment variable `AWS_REGION` [shinesolutions/inspec-aem-aws#42]
+
 ### Changed
 - Change expected config parameter `region` to `aws_region` to keep consistency
 
