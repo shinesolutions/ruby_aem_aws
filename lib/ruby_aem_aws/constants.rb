@@ -42,7 +42,7 @@ module RubyAemAws
   end
 
   class Constants
-    REGION_DEFAULT = 'ap-southeast-2'.freeze
+    REGION_DEFAULT = ENV['AWS_DEFAULT_REGION'] || ENV['aws_default_region'] || 'ap-southeast-2'.freeze
     ACCESS_KEY_ID = ENV['AWS_ACCESS_KEY_ID'] || ENV['aws_access_key_id']
     SECRET_ACCESS_KEY = ENV['AWS_SECRET_ACCESS_KEY'] || ENV['aws_scret_access_key']
     PROFILE = ENV['AWS_PROFILE']
