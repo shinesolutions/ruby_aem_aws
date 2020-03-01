@@ -39,7 +39,7 @@ module RubyAemAws
       }
     end
 
-    # @param loggroup_name Cloudwatch loggroup name
+    # @param log_group_name Cloudwatch loggroup name
     # @param log_stream_name Cloudwatch logstream name
     # @return Array of a Cloudwatch log stream filter to filter for a specific Cloudwatch log stream
     def filter_for_cloudwatch_log_stream(log_group_name, log_stream_name)
@@ -71,7 +71,7 @@ module RubyAemAws
     end
 
     # @param dimensions_name Cloudwatch Dimension name
-    # @param dimension_values Cloudwatch Dimension value
+    # @param dimensions_value Cloudwatch Dimension value
     # @return Array of a Cloudwatch Dimension value filter for the Cloudwatch dimension filter
     def dimensions_value_filter_for_cloudwatch_metric(dimensions_name, dimensions_value)
       {

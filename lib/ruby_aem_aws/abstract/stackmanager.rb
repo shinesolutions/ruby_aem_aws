@@ -35,7 +35,7 @@ module RubyAemAws
     end
 
     # @param dynamodb_tablename AWS DynamoDB table name
-    # @param attkey_attribute_valueribute_value Key value to query for
+    # @param key_attribute_value Key value to query for
     # @return Array of a DynamoDB filter to query for a specific value
     def filter_for_db_query(dynamodb_tablename, key_attribute_value)
       {

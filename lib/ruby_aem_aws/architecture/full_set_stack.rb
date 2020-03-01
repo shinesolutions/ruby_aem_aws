@@ -70,69 +70,31 @@ module RubyAemAws
       @stack_prefix = stack_prefix
     end
 
-    # @param stack_prefix AWS tag: StackPrefix
-    # @param dispatcher_aws_clients Array of AWS Clients and Resource connections:
-    # - AutoScalingClient: AWS AutoScalingGroup Client.
-    # - CloudWatchClient: AWS Cloudwatch Client.
-    # - CloudWatchLogsClient: AWS Cloudwatch Logs Client.
-    # - Ec2Resource: AWS EC2 Resource connection.
-    # - ElbClient: AWS ElasticLoadBalancer Client.
     # @return new RubyAemAws::Component::AuthorDispatcher instance
     def author_dispatcher
       RubyAemAws::Component::AuthorDispatcher.new(@stack_prefix, @dispatcher_aws_clients)
     end
 
-    # @param stack_prefix AWS tag: StackPrefix
-    # @param author_aws_clients Array of AWS Clients and Resource connections:
-    # - CloudWatchClient: AWS Cloudwatch Client.
-    # - CloudWatchLogsClient: AWS Cloudwatch Logs Client.
-    # - Ec2Resource: AWS EC2 Resource connection.
-    # - ElbClient: AWS ElasticLoadBalancer Client.
     # @return new RubyAemAws::Component::Author instance
     def author
       RubyAemAws::Component::Author.new(@stack_prefix, @author_aws_clients)
     end
 
-    # @param stack_prefix AWS tag: StackPrefix
-    # @param chaos_monkey_aws_clients Array of AWS Clients and Resource connections:
-    # - AutoScalingClient: AWS AutoScalingGroup Client.
-    # - CloudWatchClient: AWS Cloudwatch Client.
-    # - CloudWatchLogsClient: AWS Cloudwatch Logs Client.
-    # - Ec2Resource: AWS EC2 Resource connection.
     # @return new RubyAemAws::Component::ChaosMonkey instance
     def chaos_monkey
       RubyAemAws::Component::ChaosMonkey.new(@stack_prefix, @aem_java_aws_clients)
     end
 
-    # @param stack_prefix AWS tag: StackPrefix
-    # @param orchestrator_aws_clients Array of AWS Clients and Resource connections:
-    # - AutoScalingClient: AWS AutoScalingGroup Client.
-    # - CloudWatchClient: AWS Cloudwatch Client.
-    # - CloudWatchLogsClient: AWS Cloudwatch Logs Client.
-    # - Ec2Resource: AWS EC2 Resource connection.
     # @return new RubyAemAws::Component::Orchestrator instance
     def orchestrator
       RubyAemAws::Component::Orchestrator.new(@stack_prefix, @aem_java_aws_clients)
     end
 
-    # @param stack_prefix AWS tag: StackPrefix
-    # @param publish_aws_clients Array of AWS Clients and Resource connections:
-    # - AutoScalingClient: AWS AutoScalingGroup Client.
-    # - CloudWatchClient: AWS Cloudwatch Client.
-    # - CloudWatchLogsClient: AWS Cloudwatch Logs Client.
-    # - Ec2Resource: AWS EC2 Resource connection.
     # @return new RubyAemAws::Component::Publish instance
     def publish
       RubyAemAws::Component::Publish.new(@stack_prefix, @publish_aws_clients)
     end
 
-    # @param stack_prefix AWS tag: StackPrefix
-    # @param dispatcher_aws_clients Array of AWS Clients and Resource connections:
-    # - AutoScalingClient: AWS AutoScalingGroup Client.
-    # - CloudWatchClient: AWS Cloudwatch Client.
-    # - CloudWatchLogsClient: AWS Cloudwatch Logs Client.
-    # - Ec2Resource: AWS EC2 Resource connection.
-    # - ElbClient: AWS ElasticLoadBalancer Client.
     # @return new RubyAemAws::Component::PublishDispatcher instance
     def publish_dispatcher
       RubyAemAws::Component::PublishDispatcher.new(@stack_prefix, @dispatcher_aws_clients)

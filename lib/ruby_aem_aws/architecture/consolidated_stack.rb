@@ -36,11 +36,6 @@ module RubyAemAws
       @stack_prefix = stack_prefix
     end
 
-    # @param stack_prefix AWS tag: StackPrefix
-    # @param consolidated_aws_clients Array of AWS Clients and Resource connections:
-    # - CloudWatchClient: AWS Cloudwatch Client.
-    # - CloudWatchLogsClient: AWS Cloudwatch Logs Client.
-    # - Ec2Resource: AWS EC2 Resource connection.
     # @return new RubyAemAws::Component::AuthorPublishDispatcher instance
     def author_publish_dispatcher
       RubyAemAws::Component::AuthorPublishDispatcher.new(@stack_prefix, @consolidated_aws_clients)

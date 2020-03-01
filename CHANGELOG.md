@@ -15,7 +15,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Change expected config parameter `region` to `aws_region` to keep consistency
 
 ### Fixed
-- Fixed consolidated client connection #10
+- Fixed consolidated client connection [#10]
+- Fix documentation errors
 
 ## 1.4.0 - 2019-08-14
 ### Changed

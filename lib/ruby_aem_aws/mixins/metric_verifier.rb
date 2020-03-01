@@ -170,7 +170,7 @@ module RubyAemAws
       return true unless response.events.empty?
     end
 
-    # @param loggroup Cloudwatch loggroup name
+    # @param loggroup_name Cloudwatch loggroup name
     # @return True if Cloudwatch loggroup exists
     def loggroup?(loggroup_name)
       namespace = 'AWS/Logs'

@@ -29,7 +29,6 @@ module RubyAemAws
       include SNSTopic
       include S3Access
 
-      # @param dynamodb_client AWS DynamoDB client connection
       # @param params Array of AWS Clients and Resource connections:
       # - CloudWatchClient: AWS Cloudwatch Client.
       # - CloudWatchLogsClient: AWS Cloudwatch Logs Client.
