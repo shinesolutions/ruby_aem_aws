@@ -5,11 +5,11 @@
 ruby_aem_aws
 ------------
 
-ruby_aem_aws is a Ruby client for Shine Solutions [Adobe Experience Manager (AEM)](http://www.adobe.com/au/marketing-cloud/enterprise-content-management.html) (AEM) Platform on AWS.
+ruby_aem_aws is a Ruby client for Shine Solutions [Adobe Experience Manager (AEM)](http://www.adobe.com/au/marketing-cloud/enterprise-content-management.html) Platform on AWS.
 
-<!--
-[Versions History](docs/versions.md)
--->
+This library provides an API which enables the interaction with the platform via Ruby language, allowing a deep integration with a number of Ruby-based tools such as [Puppet](https://puppet.com/) and [InSpec](https://www.inspec.io/).
+
+ruby_aem_aws is part of [AEM OpenCloud](https://aemopencloud.io) platform.
 
 Install
 -------
