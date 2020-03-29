@@ -11,8 +11,8 @@ This library provides an API which enables the interaction with the platform via
 
 ruby_aem_aws is part of [AEM OpenCloud](https://aemopencloud.io) platform.
 
-Install
--------
+Installation
+------------
 
     gem install ruby_aem_aws
 
