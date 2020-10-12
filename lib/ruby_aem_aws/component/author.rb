@@ -29,7 +29,7 @@ module RubyAemAws
       # - CloudWatchClient: AWS Cloudwatch Client.
       # - CloudWatchLogsClient: AWS Cloudwatch Logs Client.
       # - Ec2Resource: AWS EC2 Resource connection.
-      # - ElbClient: AWS ElasticLoadBalancer Client.
+      # - ElbClient: AWS ElasticLoadBalancer v2 Client.
       # @return new RubyAemAws::FullSet::Author
       def initialize(stack_prefix, params)
         author_aws_clients = {

@@ -35,10 +35,14 @@ module RubyAemAws
   end
 
   class ELBInstanceState
-    INSERVICE = 'InService'.freeze
-    OUTOFSERVICE = 'OutOfService'.freeze
+    DRAINING = 'draining'.freeze
+    HEALTHY = 'healthy'.freeze
+    INITIAL = 'initial'.freeze
+    UNAVAILABLE = 'unavailable'.freeze
+    UNHEALTHY = 'unhealthy'.freeze
+    UNUSED = 'unused'.freeze
 
-    ALL_ACTIVE = [INSERVICE, OUTOFSERVICE].freeze
+    ALL_ACTIVE = [HEALTHY, INITIAL, UNAVAILABLE, UNUSED].freeze
   end
 
   class Constants
@@ -48,6 +52,6 @@ module RubyAemAws
     PROFILE = ENV['AWS_PROFILE']
     INSTANCE_STATE_HEALTHY = RubyAemAws::InstanceState::RUNNING.freeze
     INSTANCE_STATE_CODE_RUNNING = RubyAemAws::InstanceStateCode::RUNNING
-    ELB_INSTANCE_INSERVICE = RubyAemAws::ELBInstanceState::INSERVICE.freeze
+    ELB_INSTANCE_INSERVICE = RubyAemAws::ELBInstanceState::HEALTHY.freeze
   end
 end

@@ -48,7 +48,10 @@ module RubyAemAws
       return :no_elb if elb.nil?
 
       elb_running_instances = 0
-      get_instances_state_from_elb(elb).each do |i|
+      elb_instances = get_instances_state(elb)
+      return :no_elb_targets if elb_instances.nil?
+
+      elb_instances.each do |i|
         elb_running_instances += 1 if i[:state] == RubyAemAws::Constants::INSTANCE_STATE_HEALTHY
       end
 
@@ -110,11 +113,17 @@ module RubyAemAws
 
     # @return ElasticLoadBalancer by StackPrefix and logical-id tags.
     def find_elb(elb_client)
-      elbs = elb_client.describe_load_balancers.load_balancer_descriptions
+      elbs = elb_client.describe_load_balancers.load_balancers
       elbs.each do |elb|
         elb_matches_stack_prefix = false
         elb_matches_logical_id = false
-        tag_descriptions = elb_client.describe_tags(load_balancer_names: [elb.load_balancer_name]).tag_descriptions
+
+        begin
+          tag_descriptions = elb_client.describe_tags(resource_arns: [elb.load_balancer_arn]).tag_descriptions
+        rescue Aws::ElasticLoadBalancingV2::Errors::LoadBalancerNotFound
+          next
+        end
+
         next if tag_descriptions.empty?
 
         tags = tag_descriptions[0].tags
@@ -130,22 +139,35 @@ module RubyAemAws
             break if elb_matches_stack_prefix
           end
         end
-        return elb if elb_matches_stack_prefix && elb_matches_logical_id
+        return elb.load_balancer_arn if elb_matches_stack_prefix && elb_matches_logical_id
       end
       nil
     end
 
-    def get_instances_state_from_elb(elb)
+    def get_instances_state(elb_arn)
+      described_target_groups = client.describe_target_groups(load_balancer_arn: elb_arn)
+
+      return nil if described_target_groups.target_groups.empty?
+
+      target_group = described_target_groups.target_groups[0]
+      target_group_arn = target_group.target_group_arn
+
+      described_target_health = client.describe_target_health(target_group_arn: target_group_arn)
+
+      return nil if described_target_health.target_health_descriptions.empty?
+
+      targets = described_target_health.target_health_descriptions
+
       stack_prefix_instances = []
-      elb.instances.each do |i|
-        instance = get_instance_by_id(i.instance_id)
+      targets.each do |t|
+        instance = get_instance_by_id(t.target.id)
         next if instance.nil?
 
         instance.tags.each do |tag|
           next if tag.key != 'StackPrefix'
           break if tag.value != descriptor.stack_prefix
 
-          stack_prefix_instances.push(id: i.instance_id, state: instance.state.name)
+          stack_prefix_instances.push(id: t.target.id, state: instance.state.name)
         end
       end
       stack_prefix_instances

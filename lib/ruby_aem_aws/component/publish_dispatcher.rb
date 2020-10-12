@@ -41,7 +41,7 @@ module RubyAemAws
       # - CloudWatchClient: AWS Cloudwatch Client.
       # - CloudWatchLogsClient: AWS Cloudwatch Logs Client.
       # - Ec2Resource: AWS EC2 Resource connection.
-      # - ElbClient: AWS ElasticLoadBalancer Client.
+      # - ElbClient: AWS ElasticLoadBalancer v2 Client.
       # @return new RubyAemAws::FullSet::PublishDispatcher
       def initialize(stack_prefix, params)
         @descriptor = ComponentDescriptor.new(stack_prefix,

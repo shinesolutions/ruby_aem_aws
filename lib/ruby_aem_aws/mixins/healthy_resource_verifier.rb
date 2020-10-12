@@ -53,11 +53,14 @@ module RubyAemAws
       elb = find_elb(elb_client)
       return :no_elb if elb.nil?
 
-      elb_instance_state = elb_client.describe_instance_health(load_balancer_name: elb.load_balancer_name)
+      elb_instance_state = get_instances_elb_state(elb)
+      return :no_elb_targets if elb_instance_state.nil?
+
+      # elb_instance_state = elb_client.describe_instance_health(load_balancer_name: elb.load_balancer_name)
 
       elb_running_instances = 0
-      elb_instance_state.instance_states.each do |i|
-        elb_running_instances += 1 if i.state == RubyAemAws::Constants::ELB_INSTANCE_INSERVICE
+      elb_instance_state do |i|
+        elb_running_instances += 1 if i.target_health.state == RubyAemAws::Constants::ELB_INSTANCE_INSERVICE
       end
 
       desired_capacity = asg.desired_capacity
@@ -160,11 +163,17 @@ module RubyAemAws
 
     # @return ElasticLoadBalancer by StackPrefix and logical-id tags.
     def find_elb(elb_client)
-      elbs = elb_client.describe_load_balancers.load_balancer_descriptions
+      elbs = elb_client.describe_load_balancers.load_balancers
       elbs.each do |elb|
         elb_matches_stack_prefix = false
         elb_matches_logical_id = false
-        tag_descriptions = elb_client.describe_tags(load_balancer_names: [elb.load_balancer_name]).tag_descriptions
+
+        begin
+          tag_descriptions = elb_client.describe_tags(resource_arns: [elb.load_balancer_arn]).tag_descriptions
+        rescue Aws::ElasticLoadBalancingV2::Errors::LoadBalancerNotFound
+          next
+        end
+
         next if tag_descriptions.empty?
 
         tags = tag_descriptions[0].tags
@@ -180,9 +189,24 @@ module RubyAemAws
             break if elb_matches_stack_prefix
           end
         end
-        return elb if elb_matches_stack_prefix && elb_matches_logical_id
+        return elb.load_balancer_arn if elb_matches_stack_prefix && elb_matches_logical_id
       end
       nil
+    end
+
+    def get_instances_elb_state(elb_arn)
+      described_target_groups = client.describe_target_groups(load_balancer_arn: elb_arn)
+
+      return nil if described_target_groups.target_groups.empty?
+
+      target_group = described_target_groups.target_groups[0]
+      target_group_arn = target_group.target_group_arn
+
+      described_target_health = client.describe_target_health(target_group_arn: target_group_arn)
+
+      return nil if described_target_health.target_health_descriptions.empty?
+
+      described_target_health.target_health_descriptions
     end
   end
 end
