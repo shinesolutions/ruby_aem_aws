@@ -192,8 +192,6 @@ module RubyAemAws
           elb_matches_name = true if tag.key == 'Name' && tag.value == descriptor.elb.name
 
           return elb.load_balancer_arn if elb_matches_stack_prefix && elb_matches_name
-
-          next
         end
       end
       nil
