@@ -48,7 +48,10 @@ module RubyAemAws
       return :no_elb if elb.nil?
 
       elb_running_instances = 0
-      get_instances_state_from_elb(elb).each do |i|
+      elb_instances = get_instances_state(elb_client, elb)
+      return :no_elb_targets if elb_instances.nil?
+
+      elb_instances.each do |i|
         elb_running_instances += 1 if i[:state] == RubyAemAws::Constants::INSTANCE_STATE_HEALTHY
       end
 
@@ -108,44 +111,71 @@ module RubyAemAws
       nil
     end
 
-    # @return ElasticLoadBalancer by StackPrefix and logical-id tags.
+    # @return ElasticLoadBalancer Arn.
     def find_elb(elb_client)
-      elbs = elb_client.describe_load_balancers.load_balancer_descriptions
-      elbs.each do |elb|
-        elb_matches_stack_prefix = false
-        elb_matches_logical_id = false
-        tag_descriptions = elb_client.describe_tags(load_balancer_names: [elb.load_balancer_name]).tag_descriptions
-        next if tag_descriptions.empty?
+      elbs = elb_client.describe_load_balancers(page_size: 50)
+      elb_arn = find_elb_arn(elbs.load_balancers)
 
-        tags = tag_descriptions[0].tags
-        tags.each do |tag|
-          if tag.key == 'StackPrefix' && tag.value == descriptor.stack_prefix
-            elb_matches_stack_prefix = true
-            break if elb_matches_logical_id
+      return elb_arn unless elb_arn.nil?
 
-            next
-          end
-          if tag.key == 'aws:cloudformation:logical-id' && tag.value == descriptor.elb.id
-            elb_matches_logical_id = true
-            break if elb_matches_stack_prefix
-          end
-        end
-        return elb if elb_matches_stack_prefix && elb_matches_logical_id
+      until elbs.last_page?
+        elbs = elb_client.describe_load_balancers(page_size: 50, marker: elbs.next_marker)
+        elb_arn = find_elb_arn(elbs.load_balancers)
+        return elb_arn unless elb_arn.nil?
       end
       nil
     end
 
-    def get_instances_state_from_elb(elb)
+    # @return ElasticLoadBalancer Arn by StackPrefix tag & ELB name.
+    def find_elb_arn(elbs)
+      elbs.each do |elb|
+        elb_matches_stack_prefix = false
+        elb_matches_name = false
+        begin
+          tag_descriptions = elb_client.describe_tags(resource_arns: [elb.load_balancer_arn]).tag_descriptions
+        rescue Aws::ElasticLoadBalancingV2::Errors::LoadBalancerNotFound
+          next
+        end
+
+        next if tag_descriptions.empty?
+
+        tags = tag_descriptions[0].tags
+        tags.each do |tag|
+          elb_matches_stack_prefix = true if tag.key == 'StackPrefix' && tag.value == descriptor.stack_prefix
+          elb_matches_name = true if tag.key == 'Name' && tag.value == descriptor.elb.name
+
+          return elb.load_balancer_arn if elb_matches_stack_prefix && elb_matches_name
+
+          next
+        end
+      end
+      nil
+    end
+
+    def get_instances_state(elb_client, elb_arn)
+      described_target_groups = elb_client.describe_target_groups(load_balancer_arn: elb_arn)
+
+      return nil if described_target_groups.target_groups.empty?
+
+      target_group = described_target_groups.target_groups[0]
+      target_group_arn = target_group.target_group_arn
+
+      described_target_health = elb_client.describe_target_health(target_group_arn: target_group_arn)
+
+      return nil if described_target_health.target_health_descriptions.empty?
+
+      targets = described_target_health.target_health_descriptions
+
       stack_prefix_instances = []
-      elb.instances.each do |i|
-        instance = get_instance_by_id(i.instance_id)
+      targets.each do |t|
+        instance = get_instance_by_id(t.target.id)
         next if instance.nil?
 
         instance.tags.each do |tag|
           next if tag.key != 'StackPrefix'
           break if tag.value != descriptor.stack_prefix
 
-          stack_prefix_instances.push(id: i.instance_id, state: instance.state.name)
+          stack_prefix_instances.push(id: t.target.id, state: instance.state.name)
         end
       end
       stack_prefix_instances

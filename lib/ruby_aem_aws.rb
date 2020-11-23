@@ -111,7 +111,7 @@ module RubyAemAws
       {
         Ec2Client: Aws::EC2::Client.new,
         Ec2Resource: Aws::EC2::Resource.new,
-        ElbClient: Aws::ElasticLoadBalancing::Client.new(
+        ElbClient: Aws::ElasticLoadBalancingV2::Client.new(
           retry_limit: 20
         ),
         AutoScalingClient: Aws::AutoScaling::Client.new(

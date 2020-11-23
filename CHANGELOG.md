@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+### Added
+- Add exception rescue while describing the tags of an ELB if ELB was deleted in the meantime [#24]
+
+### Changed
+- Replaced Classic Load Balancer Client with Application Load Balancer Client [#30]
+- Replaced Classic Load Balancer health state verifier with an Application Load Balancer health state verifier  [#30]
+
 ## 1.5.0 - 2020-03-01
 
 ### Added
