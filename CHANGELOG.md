@@ -5,8 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## Unreleased
-
+## [2.0.0] - 2020-11-24
 ### Added
 - Add exception rescue while describing the tags of an ELB if ELB was deleted in the meantime [#24]
 
@@ -15,7 +14,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Replaced Classic Load Balancer health state verifier with an Application Load Balancer health state verifier  [#30]
 
 ## [1.5.0] - 2020-03-01
-
 ### Added
 - Add new feature to read AWS Region from AWS environment variable `AWS_DEFAULT_REGION` [shinesolutions/inspec-aem-aws#42]
 - Add new feature to read AWS Region from AWS environment variable `AWS_REGION` [shinesolutions/inspec-aem-aws#42]
@@ -80,7 +78,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Fix instance handling while getting health state
 
-## [0.9.0] - 2018-01-11
+## 0.9.0 - 2018-01-11
 ### Added
 - Initial version
 
@@ -89,17 +87,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [#22]: https://github.com/shinesolutions/ruby_aem_aws/issues/22
 [#24]: https://github.com/shinesolutions/ruby_aem_aws/issues/24
 [#30]: https://github.com/shinesolutions/ruby_aem_aws/issues/30
-[shinesolutions/inspec-aem-aws#42]: https://github.com/shinesolutions/inspec-aem-aws/issues/42
 
-[Unreleased]: https://github.com/shinesolutions/ruby_aem_aws/compare/1.5.0...HEAD
+[2.0.0]: https://github.com/shinesolutions/ruby_aem_aws/compare/1.5.0...2.0.0
 [1.5.0]: https://github.com/shinesolutions/ruby_aem_aws/compare/1.4.0...1.5.0
 [1.4.0]: https://github.com/shinesolutions/ruby_aem_aws/compare/1.3.0...1.4.0
-[1.3.0]: https://github.com/shinesolutions/ruby_aem_aws/compare/1.2.0...1.3.0
-[1.2.1]: https://github.com/shinesolutions/ruby_aem_aws/compare/f91a8078423485966ad12becc85170364d9ef81f...1.2.1
-[1.2.0]: https://github.com/shinesolutions/ruby_aem_aws/compare/1.1.0...f91a8078423485966ad12becc85170364d9ef81f
+[1.3.0]: https://github.com/shinesolutions/ruby_aem_aws/compare/1.2.1...1.3.0
+[1.2.1]: https://github.com/shinesolutions/ruby_aem_aws/compare/1.2.0...1.2.1
+[1.2.0]: https://github.com/shinesolutions/ruby_aem_aws/compare/1.1.0...1.2.0
 [1.1.0]: https://github.com/shinesolutions/ruby_aem_aws/compare/1.0.0...1.1.0
 [1.0.0]: https://github.com/shinesolutions/ruby_aem_aws/compare/0.9.3...1.0.0
 [0.9.3]: https://github.com/shinesolutions/ruby_aem_aws/compare/0.9.2...0.9.3
 [0.9.2]: https://github.com/shinesolutions/ruby_aem_aws/compare/0.9.1...0.9.2
 [0.9.1]: https://github.com/shinesolutions/ruby_aem_aws/compare/0.9.0...0.9.1
-[0.9.0]: https://github.com/shinesolutions/ruby_aem_aws/compare/0.9.0...0.9.0
