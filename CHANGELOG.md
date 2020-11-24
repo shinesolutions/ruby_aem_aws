@@ -5,6 +5,8 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
 ## [2.0.0] - 2020-11-24
 ### Added
 - Add exception rescue while describing the tags of an ELB if ELB was deleted in the meantime [#24]
@@ -88,6 +90,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [#24]: https://github.com/shinesolutions/ruby_aem_aws/issues/24
 [#30]: https://github.com/shinesolutions/ruby_aem_aws/issues/30
 
+[Unreleased]: https://github.com/shinesolutions/ruby_aem_aws/compare/2.0.0...HEAD
 [2.0.0]: https://github.com/shinesolutions/ruby_aem_aws/compare/1.5.0...2.0.0
 [1.5.0]: https://github.com/shinesolutions/ruby_aem_aws/compare/1.4.0...1.5.0
 [1.4.0]: https://github.com/shinesolutions/ruby_aem_aws/compare/1.3.0...1.4.0
