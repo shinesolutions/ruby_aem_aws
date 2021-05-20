@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+- Upgrade yard to 0.9.26
+
 ## [2.0.0] - 2020-11-24
 ### Added
 - Add exception rescue while describing the tags of an ELB if ELB was deleted in the meantime [#24]
