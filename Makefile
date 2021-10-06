@@ -43,13 +43,21 @@ doc:
 doc-publish:
 	gh-pages --dist doc/
 
-publish:
+publish: install
 	gem push `ls ruby_aem_aws-*.gem`
 
-release:
-	rtk release
+release-major:
+	rtk release --release-increment-type major
+
+release-minor:
+	rtk release --release-increment-type minor
+
+release-patch:
+	rtk release --release-increment-type patch
+
+release: release-minor
 
 tools:
 	npm install -g gh-pages
 
-.PHONY: all ci deps clean build lint install test-unit test-integration test-integration-connection test-integration-consolidated test-integration-full-set doc doc-publish publish release tools
+.PHONY: all ci deps clean build lint install test-unit test-integration test-integration-connection test-integration-consolidated test-integration-full-set doc doc-publish publish release release-major release-minor release-patch tools
