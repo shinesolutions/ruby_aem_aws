@@ -29,11 +29,12 @@ module RubyAemAws
       conf[:aws_region] ||= Constants::REGION_DEFAULT
       conf[:aws_access_key_id] ||= Constants::ACCESS_KEY_ID
       conf[:aws_secret_access_key] ||= Constants::SECRET_ACCESS_KEY
+      conf[:aws_session_token] ||= Constants::SESSION_TOKEN
       conf[:aws_profile] ||= Constants::PROFILE
 
       Aws.config.update(region: conf[:aws_region])
 
-      credentials = Aws::Credentials.new(conf[:aws_access_key_id], conf[:aws_secret_access_key]) unless conf[:aws_access_key_id].nil?
+      credentials = Aws::Credentials.new(conf[:aws_access_key_id], conf[:aws_secret_access_key], session_token=conf[:aws_session_token]) unless conf[:aws_access_key_id].nil?
       credentials = Aws::SharedCredentials.new(profile_name: conf[:aws_profile]) unless conf[:aws_profile].nil?
       credentials = Aws::InstanceProfileCredentials.new if conf[:aws_profile].nil? && conf[:aws_access_key_id].nil?
       raise RubyAemAws::ArgumentError unless defined? credentials

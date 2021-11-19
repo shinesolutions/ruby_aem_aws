@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- Add STS support with session token handling when initialising credential
+
 ### Fixed
 - Fix typo with secret access key lowercase env var name
 
