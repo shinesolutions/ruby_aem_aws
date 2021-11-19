@@ -53,7 +53,7 @@ module RubyAemAws
     def initialize(msg = "No credentials found!
       Set environment variable AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY or AWS_PROFILE.
       Alternative use following syntax:
-      RubyAemAws::AemAws.new(aws_access_key_id, aws_scret_access_key) or
+      RubyAemAws::AemAws.new(aws_access_key_id, aws_secret_access_key) or
       RubyAemAws::AemAws.new(credentials_profile_name)")
       super
     end
