@@ -50,7 +50,7 @@ module RubyAemAws
     ACCESS_KEY_ID = ENV['AWS_ACCESS_KEY_ID'] || ENV['aws_access_key_id']
     SECRET_ACCESS_KEY = ENV['AWS_SECRET_ACCESS_KEY'] || ENV['aws_secret_access_key']
     SESSION_TOKEN = ENV['AWS_SESSION_TOKEN'] || ENV['aws_session_token']
-    PROFILE = ENV['AWS_PROFILE']
+    PROFILE = ENV['AWS_PROFILE'] || ENV['aws_profile']
     INSTANCE_STATE_HEALTHY = RubyAemAws::InstanceState::RUNNING.freeze
     INSTANCE_STATE_CODE_RUNNING = RubyAemAws::InstanceStateCode::RUNNING
     ELB_INSTANCE_INSERVICE = RubyAemAws::ELBInstanceState::HEALTHY.freeze

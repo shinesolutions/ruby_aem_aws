@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- Add aws_profile environment variable as a fallback when initialising the client
+
 ## [2.1.0] - 2021-11-19
 ### Added
 - Add STS support with session token handling when initialising credential
