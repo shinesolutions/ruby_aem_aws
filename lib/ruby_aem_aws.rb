@@ -23,6 +23,7 @@ module RubyAemAws
     # - aws_region: the AWS region (eg ap-southeast-2)
     # - aws_access_key_id: the AWS access key
     # - aws_secret_access_key: the AWS secret access key
+    # - aws_session_token: session token from STS
     # - aws_profile: AWS profile name
     # @return new RubyAemAws::AemAws instance
     def initialize(conf = {})
