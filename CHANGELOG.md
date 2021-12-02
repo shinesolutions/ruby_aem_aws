@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+- Fix CloudWatchClient log events retrieval to handle changes in AWS response payload pagination
+
 ## [2.2.0] - 2021-11-22
 ### Added
 - Add aws_profile environment variable as a fallback when initialising the client

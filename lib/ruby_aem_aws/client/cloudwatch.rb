@@ -36,13 +36,24 @@ module RubyAemAws
     # @param log_message Log message to filter for
     # @return Cloudwatch log client filter_log_events response
     def get_log_event(loggroup_name, log_stream_name, log_message)
-      filter = filter_for_cloudwatch_log_event(loggroup_name, log_stream_name, log_message)
-      response = cloud_watch_log_client.filter_log_events(filter)
+      # Initialise response as an empty response having no events and no next token
+      # This is needed to handle the scenario when initial filter log events returns
+      # a response with nil next token, ensuring the clients of this method to
+      # be able to identify any empty response events.
+      response = { events: [], next_token: nil }
 
-      until response.next_token.nil?
-        next_token = { next_token: response.next_token }
+      filter = filter_for_cloudwatch_log_event(loggroup_name, log_stream_name, log_message)
+      curr_response = cloud_watch_log_client.filter_log_events(filter)
+
+      # Since late 2021 (circa aws-sdk-cloudwatchlog 1.45.0), the last response
+      # is always empty (empty response events and nil next token).
+      # Previous to late 2021, the last response used to contain the filtered events
+      # with nil next token.
+      until curr_response.next_token.nil?
+        next_token = { next_token: curr_response.next_token }
         filter.update(next_token)
-        response = cloud_watch_client.filter_log_events(filter)
+        response = curr_response
+        curr_response = cloud_watch_log_client.filter_log_events(filter)
       end
 
       response
