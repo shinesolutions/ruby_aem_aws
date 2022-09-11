@@ -23,6 +23,7 @@ module RubyAemAws
     # Interface to the AWS StackManager to send out commands
     class StackManagerResources
       attr_reader :dynamodb_client, :s3_client, :s3_resource, :cloud_watch_client, :cloud_watch_log_client
+
       include AbstractStackManager
       include DynamoDB
       include MetricVerifier

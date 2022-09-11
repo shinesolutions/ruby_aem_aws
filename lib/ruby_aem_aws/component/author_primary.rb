@@ -23,6 +23,7 @@ module RubyAemAws
     # Interface to the AWS instance running the Author-Primary component of a full-set AEM stack.
     class AuthorPrimary
       attr_reader :descriptor, :ec2_resource, :cloud_watch_client, :cloud_watch_log_client
+
       include AbstractSingleComponent
       include AbstractSnapshot
       include HealthyStateVerifier

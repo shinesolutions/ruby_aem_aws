@@ -24,6 +24,7 @@ module RubyAemAws
     # Interface to the AWS instance running the Publish component of a full-set AEM stack.
     class Publish
       attr_reader :descriptor, :ec2_resource, :cloud_watch_client, :asg_client, :cloud_watch_log_client
+
       include AbstractGroupedComponent
       include AbstractSnapshot
       include HealthyResourceVerifier

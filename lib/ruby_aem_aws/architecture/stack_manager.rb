@@ -18,6 +18,7 @@ module RubyAemAws
   # Interface to interact with AEM StackManager
   class StackManager
     attr_reader :sm_resources, :cloudformation_client
+
     # @param stack_prefix AWS tag: StackPrefix
     # @param params Array of AWS Clients and Resource connections:
     # - CloudFormationClient: AWS Cloudformation Client.

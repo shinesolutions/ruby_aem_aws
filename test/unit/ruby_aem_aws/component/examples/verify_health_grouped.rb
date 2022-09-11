@@ -20,7 +20,7 @@ shared_examples 'a health by count verifier' do
   end
 end
 
-# rubocop:disable BlockLength
+# rubocop:disable Metrics/BlockLength
 shared_examples 'health via grouped verifier' do
   before do
     @instance_1_id = 'i-00525b1a281aee5b9'.freeze
@@ -147,4 +147,4 @@ shared_examples 'health via grouped verifier' do
     expect { component.wait_until_healthy }.to raise_error(/Not yet implemented/)
   end
 end
-# rubocop:enable BlockLength
+# rubocop:enable Metrics/BlockLength

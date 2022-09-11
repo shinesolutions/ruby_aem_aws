@@ -24,6 +24,7 @@ module RubyAemAws
     # Interface to a single AWS instance running all three AEM components as a consolidated stack.
     class AuthorPublishDispatcher
       attr_reader :descriptor, :ec2_resource, :cloud_watch_client, :cloud_watch_log_client
+
       include AbstractSingleComponent
       include AbstractSnapshot
       include HealthyStateVerifier

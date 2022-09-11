@@ -8,7 +8,7 @@ clean:
 	rm -f ruby_aem_aws-*.gem Gemfile.lock
 
 deps:
-	gem install bundler --version=1.17.3
+	gem install bundler --version=2.3.21
 	rm -rf .bundle
 	bundle install --binstubs
 

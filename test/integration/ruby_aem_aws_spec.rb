@@ -20,9 +20,6 @@ describe 'AWS Connectivity' do
     @aws = init_client
   end
 
-  after do
-  end
-
   it 'can connect' do
     expect(@aws.test_connection).to eq(true)
   end
