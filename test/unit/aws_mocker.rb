@@ -15,18 +15,15 @@
 module AwsMocker
   def add_instance(env, id, state, tags = {})
     @instances = Hash.new {} if @instances.nil?
-
     ec2_resource = env.ec2_resource
     @instances[id] = mock_ec2_instance(ec2_resource, id, state, tags)
     add_ec2_instance(ec2_resource, @instances, ec2_resource.instance_filter)
-
     add_elb_instances(env.elb_client, @instances) if env.elb_client
     add_asg_instances(env.asg_client, @instances) if env.asg_client
   end
 
   def add_metric(env, metric_name, instance_ids)
     @metrics = Hash.new {} if @metrics.nil?
-
     @metrics[metric_name] = mock_cloud_watch_metric(@metrics, metric_name, instance_ids)
     add_metrics(env.cloud_watch_client, @metrics, metric_name, instance_ids)
   end

@@ -24,6 +24,7 @@ module RubyAemAws
   # Factory for the full-set AEM stack component interfaces.
   class FullSetStack
     attr_reader :cloudformation_client, :cloud_watch_client
+
     include MetricVerifier
 
     # @param stack_prefix AWS tag: StackPrefix

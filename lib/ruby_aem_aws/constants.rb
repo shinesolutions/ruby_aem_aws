@@ -47,10 +47,10 @@ module RubyAemAws
 
   class Constants
     REGION_DEFAULT = ENV['AWS_DEFAULT_REGION'] || ENV['aws_default_region'] || ENV['AWS_REGION'] || ENV['aws_region'] || 'ap-southeast-2'.freeze
-    ACCESS_KEY_ID = ENV['AWS_ACCESS_KEY_ID'] || ENV['aws_access_key_id']
-    SECRET_ACCESS_KEY = ENV['AWS_SECRET_ACCESS_KEY'] || ENV['aws_secret_access_key']
-    SESSION_TOKEN = ENV['AWS_SESSION_TOKEN'] || ENV['aws_session_token']
-    PROFILE = ENV['AWS_PROFILE'] || ENV['aws_profile']
+    ACCESS_KEY_ID = ENV['AWS_ACCESS_KEY_ID'] || ENV.fetch('aws_access_key_id', nil)
+    SECRET_ACCESS_KEY = ENV['AWS_SECRET_ACCESS_KEY'] || ENV.fetch('aws_secret_access_key', nil)
+    SESSION_TOKEN = ENV['AWS_SESSION_TOKEN'] || ENV.fetch('aws_session_token', nil)
+    PROFILE = ENV['AWS_PROFILE'] || ENV.fetch('aws_profile', nil)
     INSTANCE_STATE_HEALTHY = RubyAemAws::InstanceState::RUNNING.freeze
     INSTANCE_STATE_CODE_RUNNING = RubyAemAws::InstanceStateCode::RUNNING
     ELB_INSTANCE_INSERVICE = RubyAemAws::ELBInstanceState::HEALTHY.freeze
