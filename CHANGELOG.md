@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+- Update Gemfile to only install AWS SDK libraries which are needed #33
+- Update ruby dependencies to most recent version
+
 ## [2.2.1] - 2021-12-02
 ### Fixed
 - Fix CloudWatchClient log events retrieval to handle changes in AWS response payload pagination
