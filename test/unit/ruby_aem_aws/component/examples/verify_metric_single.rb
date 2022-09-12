@@ -13,11 +13,38 @@
 # limitations under the License.
 
 shared_examples 'a single metric_verifier' do
+  it 'because it responds to .component_alarm? method' do
+    is_expected.to respond_to(:component_alarm?)
+  end
+  it 'because it responds to .component_metric? method' do
+    is_expected.to respond_to(:component_metric?)
+  end
+  it 'because it responds to .component_ec2_metric? method' do
+    is_expected.to respond_to(:component_ec2_metric?)
+  end
+  it 'because it responds to .component_log_event? method' do
+    is_expected.to respond_to(:component_log_event?)
+  end
+  it 'because it responds to .component_loggroup? method' do
+    is_expected.to respond_to(:component_loggroup?)
+  end
+  it 'because it responds to .component_log_stream? method' do
+    is_expected.to respond_to(:component_log_stream?)
+  end
+  it 'because it responds to .alarm? method' do
+    is_expected.to respond_to(:alarm?)
+  end
   it 'because it responds to .metric? method' do
     is_expected.to respond_to(:metric?)
   end
-  it 'because it responds to .metric_instances method' do
-    is_expected.to respond_to(:metric_instances)
+  it 'because it responds to .log_stream? method' do
+    is_expected.to respond_to(:log_stream?)
+  end
+  it 'because it responds to .log_event? method' do
+    is_expected.to respond_to(:log_event?)
+  end
+  it 'because it responds to .loggroup? method' do
+    is_expected.to respond_to(:loggroup?)
   end
 end
 
@@ -29,19 +56,19 @@ shared_examples 'metrics via single verifier' do
     @metric_2_name = 'Unmocked'.freeze
   end
 
-  it '.metric? verifies metric exists' do
-    add_instance(environment, @instance_1_id, INSTANCE_STATE_HEALTHY)
+  it '.component_ec2_metric? verifies metric exists' do
+    add_instance(environment, @instance_1_id, INSTANCE_STATE_HEALTHY, INSTANCE_STATE_CODE_RUNNING)
     add_metric(environment, @metric_1_name, [@instance_1_id])
 
     component = create_component.call(environment)
-    expect(component.metric?(@metric_1_name)).to equal true
+    expect(component.component_ec2_metric?(@metric_1_name)).to equal true
   end
 
-  it '.metric? verifies metric does not exist' do
-    add_instance(environment, @instance_1_id, INSTANCE_STATE_HEALTHY)
+  it '.component_ec2_metric? verifies metric does not exist' do
+    add_instance(environment, @instance_1_id, INSTANCE_STATE_HEALTHY, INSTANCE_STATE_CODE_RUNNING)
     add_metric(environment, @metric_1_name, [@instance_1_id])
 
     component = create_component.call(environment)
-    expect(component.metric?(@metric_2_name)).to equal false
+    expect(component.component_ec2_metric?(@metric_2_name)).to equal false || nil
   end
 end

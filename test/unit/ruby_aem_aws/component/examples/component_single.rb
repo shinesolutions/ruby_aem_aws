@@ -29,8 +29,8 @@ shared_examples_for 'single instance accessibility' do
 
   it 'should fail when there are multiple healthy instances' do
     # @instance_count = 2
-    add_instance(environment, @instance_1_id, INSTANCE_STATE_HEALTHY, {})
-    add_instance(environment, @instance_2_id, INSTANCE_STATE_HEALTHY, {})
+    add_instance(environment, @instance_1_id, INSTANCE_STATE_HEALTHY, INSTANCE_STATE_CODE_RUNNING, {})
+    add_instance(environment, @instance_2_id, INSTANCE_STATE_HEALTHY, INSTANCE_STATE_CODE_RUNNING, {})
 
     component = create_component.call(environment)
     # TODO: checked exceptions seem not to work well, so using string regex instead.
@@ -40,8 +40,8 @@ shared_examples_for 'single instance accessibility' do
 
   it 'should not fail when there are multiple instances but only one healthy' do
     # @instance_count = 2
-    add_instance(environment, @instance_1_id, INSTANCE_STATE_UNHEALTHY, {})
-    add_instance(environment, @instance_2_id, INSTANCE_STATE_HEALTHY, {})
+    add_instance(environment, @instance_1_id, INSTANCE_STATE_UNHEALTHY, INSTANCE_STATE_CODE_UNHEALTHY, {})
+    add_instance(environment, @instance_2_id, INSTANCE_STATE_HEALTHY, INSTANCE_STATE_CODE_RUNNING, {})
 
     component = create_component.call(environment)
     expect(component.get_instance.instance_id).to eq(@instance_2_id)
@@ -50,7 +50,7 @@ shared_examples_for 'single instance accessibility' do
   it 'should get single instance' do
     # @instance_count = 1
     instance_id = @instance_1_id
-    add_instance(environment, instance_id, INSTANCE_STATE_HEALTHY, {})
+    add_instance(environment, instance_id, INSTANCE_STATE_HEALTHY, INSTANCE_STATE_CODE_RUNNING, {})
 
     component = create_component.call(environment)
     expect(component.get_instance.instance_id).to eq(instance_id)

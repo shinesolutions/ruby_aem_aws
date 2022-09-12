@@ -13,15 +13,20 @@
 # limitations under the License.
 
 require_relative '../spec_helper'
-require_relative '../../../lib/ruby_aem_aws/consolidated_stack'
+require_relative '../../../lib/ruby_aem_aws/architecture/full_set_stack'
 
 describe 'FullSetStack' do
   before do
+    params = {
+      AutoScalingClient: nil,
+      CloudWatchClient: nil,
+      CloudWatchLogsClient: nil,
+      Ec2Resource: nil,
+      ElbClient: nil,
+      CloudFormationClient: nil
+    }
     @full_set_stack = RubyAemAws::FullSetStack.new(TEST_STACK_PREFIX,
-                                                   double('mock_ec2'),
-                                                   double('mock_asg'),
-                                                   double('mock_elb'),
-                                                   double('mock_cloud_watch'))
+                                                   params)
   end
 
   it 'should create author_dispatcher' do

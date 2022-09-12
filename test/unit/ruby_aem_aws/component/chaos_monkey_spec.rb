@@ -13,19 +13,26 @@
 # limitations under the License.
 
 require_relative '../../spec_helper'
-require_relative 'examples/component_single'
-require_relative 'examples/describe_single'
-require_relative 'examples/verify_health_single'
-require_relative 'examples/verify_metric_single'
+require_relative 'examples/component_grouped'
+require_relative 'examples/describe_grouped'
+require_relative 'examples/verify_health_grouped'
+require_relative 'examples/verify_metric_grouped'
 require_relative '../../../../lib/ruby_aem_aws/component/chaos_monkey'
 
-chaos_monkey = RubyAemAws::Component::ChaosMonkey.new(nil, nil, nil, nil)
+params = {
+  AutoScalingClient: nil,
+  CloudWatchClient: nil,
+  CloudWatchLogsClient: nil,
+  Ec2Resource: nil
+}
+
+chaos_monkey = RubyAemAws::Component::ChaosMonkey.new(nil, params)
 
 describe chaos_monkey do
-  it_behaves_like 'a single instance accessor'
-  it_behaves_like 'a single instance describer'
-  it_behaves_like 'a health by state verifier'
-  it_behaves_like 'a single metric_verifier'
+  it_behaves_like 'a grouped instance accessor'
+  it_behaves_like 'a grouped instance describer'
+  it_behaves_like 'a health by count verifier'
+  it_behaves_like 'a grouped metric_verifier'
 end
 
 describe 'ChaosMonkey' do
@@ -33,22 +40,22 @@ describe 'ChaosMonkey' do
     @environment = environment_creator
   end
 
-  it_has_behaviour 'single instance accessibility' do
+  it_has_behaviour 'grouped instance accessibility' do
     let(:environment) { @environment }
     let(:create_component) { ->(env) { component_creator(env) } }
   end
 
-  it_has_behaviour 'single instance description' do
+  it_has_behaviour 'grouped instance description' do
     let(:environment) { @environment }
     let(:create_component) { ->(env) { component_creator(env) } }
   end
 
-  it_has_behaviour 'health via single verifier' do
+  it_has_behaviour 'health via grouped verifier' do
     let(:environment) { @environment }
     let(:create_component) { ->(env) { component_creator(env) } }
   end
 
-  it_has_behaviour 'metrics via single verifier' do
+  it_has_behaviour 'metrics via grouped verifier' do
     let(:environment) { @environment }
     let(:create_component) { ->(env) { component_creator(env) } }
   end
@@ -56,10 +63,14 @@ describe 'ChaosMonkey' do
   private
 
   def component_creator(environment)
+    params = {
+      AutoScalingClient: environment.asg_client,
+      CloudWatchClient: environment.cloud_watch_client,
+      CloudWatchLogsClient: nil,
+      Ec2Resource: environment.ec2_resource
+    }
     RubyAemAws::Component::ChaosMonkey.new(TEST_STACK_PREFIX,
-                                           environment.ec2_resource,
-                                           environment.asg_client,
-                                           environment.cloud_watch_client)
+                                           params)
   end
 
   def environment_creator

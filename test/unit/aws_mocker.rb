@@ -13,10 +13,10 @@
 # limitations under the License.
 
 module AwsMocker
-  def add_instance(env, id, state, tags = {})
+  def add_instance(env, id, state_name, state_code, tags = {})
     @instances = Hash.new {} if @instances.nil?
     ec2_resource = env.ec2_resource
-    @instances[id] = mock_ec2_instance(ec2_resource, id, state, tags)
+    @instances[id] = mock_ec2_instance(ec2_resource, id, state_name, state_code, tags)
     add_ec2_instance(ec2_resource, @instances, ec2_resource.instance_filter)
     add_elb_instances(env.elb_client, @instances) if env.elb_client
     add_asg_instances(env.asg_client, @instances) if env.asg_client
@@ -81,6 +81,7 @@ module AwsAutoScalingMocker
   def mock_as_groups_type(*as_groups)
     as_groups_type = double('as_groups_type')
     allow(as_groups_type).to receive(:auto_scaling_groups) { as_groups }
+    allow(as_groups_type).to receive(:next_token) { nil }
     as_groups_type
   end
 end
@@ -91,28 +92,108 @@ module AwsElasticLoadBalancerMocker
     instances.each_key do |instance_id|
       elb_instances.push(mock_elb_instance(instance_id))
     end
-    allow(mock_elb).to receive(:describe_load_balancers) {
+    allow(mock_elb).to receive(:load_balancers) {
       mock_elb_access_points(mock_lb_description(mock_elb.load_balancer_name, elb_instances))
     }
   end
 
-  def mock_elb_client(load_balancer_id, load_balancer_name)
-    mock_elb = double('mock_elb')
-
-    # Store the load_balancer_name in a non-doubled method for convenience in testing
-    allow(mock_elb).to receive(:load_balancer_name) { load_balancer_name }
-
-    allow(mock_elb).to receive(:describe_tags) {
-      mock_elb_describe_tags_output(
-        mock_elb_tag_description(load_balancer_name,
-                                 mock_elb_tag('StackPrefix', TEST_STACK_PREFIX),
-                                 mock_elb_tag('aws:cloudformation:logical-id', load_balancer_id))
-      )
-    }
-    allow(mock_elb).to receive(:describe_load_balancers) {
-      mock_elb_access_points(mock_lb_description(load_balancer_name, []))
-    }
-    mock_elb
+  def mock_elb_client(load_balancer_id, load_balancer_name, stack_prefix)
+    client = Aws::ElasticLoadBalancingV2::Client.new(stub_responses: true)
+    client.stub_responses(:describe_load_balancers, {
+    load_balancers: [
+        {
+          availability_zones: [
+            {
+              subnet_id: "subnet-8360a9e7",
+              zone_name: "us-west-2a",
+            },
+            {
+              subnet_id: "subnet-b7d581c0",
+              zone_name: "us-west-2b",
+            },
+          ],
+          canonical_hosted_zone_id: "Z2P70J7EXAMPLE",
+          created_time: Time.parse("2016-03-25T21:26:12.920Z"),
+          dns_name: "my-load-balancer-424835706.us-west-2.elb.amazonaws.com",
+          load_balancer_arn: "arn:aws:elasticloadbalancing:us-west-2:123456789012:#{load_balancer_id}/50dc6c495c0c9188",
+          load_balancer_name: load_balancer_name,
+          scheme: "internet-facing",
+          security_groups: [
+            "sg-5943793c",
+          ],
+          state: {
+            code: "active",
+          },
+          type: "application",
+          vpc_id: "vpc-3ac0fb5f",
+        },
+      ]
+    })
+    client.stub_responses(:describe_tags, {
+      tag_descriptions: [
+        {
+          resource_arn: "arn:aws:elasticloadbalancing:us-west-2:123456789012:#{load_balancer_id}/50dc6c495c0c9188",
+          tags: [
+            {
+              key: "StackPrefix",
+              value: stack_prefix,
+            },
+            {
+              key: "Name",
+              value: load_balancer_name,
+            },
+          ],
+        },
+      ],
+    })
+    client.stub_responses(:describe_target_groups, {
+      target_groups: [
+        {
+          health_check_interval_seconds: 30,
+          health_check_path: "/",
+          health_check_port: "traffic-port",
+          health_check_protocol: "HTTP",
+          health_check_timeout_seconds: 5,
+          healthy_threshold_count: 5,
+          load_balancer_arns: [
+            "arn:aws:elasticloadbalancing:us-west-2:123456789012:#{load_balancer_id}/50dc6c495c0c9188",
+          ],
+          matcher: {
+            http_code: "200",
+          },
+          port: 80,
+          protocol: "HTTP",
+          target_group_arn: "arn:aws:elasticloadbalancing:us-west-2:123456789012:targetgroup/my-targets/73e2d6bc24d8a067",
+          target_group_name: "my-targets",
+          unhealthy_threshold_count: 2,
+          vpc_id: "vpc-3ac0fb5f",
+        },
+      ],
+    })
+    client.stub_responses(:describe_target_health, {
+      target_health_descriptions: [
+        {
+          target: {
+            id: "i-0f76fade",
+            port: 80,
+          },
+          target_health: {
+            state: "healthy",
+          },
+        },
+        {
+          health_check_port: "80",
+          target: {
+            id: "i-0f76fade",
+            port: 80,
+          },
+          target_health: {
+            state: "healthy",
+          },
+        },
+      ],
+    })
+    client
   end
 
   def mock_elb_instance(id)
@@ -121,10 +202,11 @@ module AwsElasticLoadBalancerMocker
     elb_instance
   end
 
-  def mock_lb_description(elb_name, instances)
+  def mock_lb_description(elb_name)
     lb_description = double('lb_description')
     allow(lb_description).to receive(:load_balancer_name) { elb_name }
-    allow(lb_description).to receive(:instances) { instances }
+    allow(lb_description).to receive(:load_balancer_arn) { 'arn:aws:elasticloadbalancing:us-west-2:123456789012:loadbalancer/app/my-load-balancer/50dc6c495c0c9188' }
+    # allow(lb_description).to receive(:instances) { instances }
     lb_description
   end
 
@@ -153,7 +235,7 @@ module AwsElasticLoadBalancerMocker
 
   def mock_elb_access_points(*lb_descriptions)
     elb_access_points = double('elb_access_points')
-    allow(elb_access_points).to receive(:load_balancer_descriptions) { lb_descriptions }
+    allow(elb_access_points).to receive(:load_balancers) { lb_descriptions }
     elb_access_points
   end
 end
@@ -186,14 +268,16 @@ module AwsEc2Mocker
     mock_ec2
   end
 
-  def mock_ec2_instance_state(name)
+  def mock_ec2_instance_state(name, code)
     ec2_instance_state = double('ec2_instance_state')
     # Possible values: pending, running, shutting-down, terminated, stopping, stopped
     allow(ec2_instance_state).to receive(:name) { name }
+    # Possible values: 0, 16, 32, 48, 64, 80
+    allow(ec2_instance_state).to receive(:code) { code }
     ec2_instance_state
   end
 
-  def mock_ec2_instance(ec2_resource, id, state, tags)
+  def mock_ec2_instance(ec2_resource, id, state_name, state_code, tags)
     # Add default tags.
     tags[:StackPrefix] = TEST_STACK_PREFIX if tags[:StackPrefix].nil?
     tags[:Component] = ec2_resource.ec2_component if tags[:Component].nil?
@@ -201,7 +285,7 @@ module AwsEc2Mocker
 
     ec2_instance = double('ec2_instance')
     allow(ec2_instance).to receive(:instance_id) { id }
-    allow(ec2_instance).to receive(:state) { mock_ec2_instance_state(state) }
+    allow(ec2_instance).to receive(:state) { mock_ec2_instance_state(state_name, state_code) }
     ec2_tags = []
     tags.each do |key, value|
       ec2_tags.push(ec2_tag(id, key.to_s, value))
@@ -246,6 +330,7 @@ module AwsCloudWatchMocker
     mock_cloud_watch = double('mock_cloud_watch')
     mock_list_metrics_output = double('mock_list_metrics_output')
     allow(mock_list_metrics_output).to receive(:metrics) { [] }
+    allow(mock_list_metrics_output).to receive(:next_token) { nil }
     allow(mock_cloud_watch).to receive(:list_metrics) { mock_list_metrics_output }
     mock_cloud_watch
   end
@@ -270,6 +355,7 @@ module AwsCloudWatchMocker
   def add_metrics(mock_cloud_watch, metrics, metric_name, instance_ids)
     instance_ids.each do |instance_id|
       mock_list_metrics_output = double('mock_list_metrics_output')
+      allow(mock_list_metrics_output).to receive(:next_token) { nil }
       allow(mock_list_metrics_output).to receive(:metrics) { filter_by_instance(metrics[metric_name], instance_id) }
       allow(mock_cloud_watch).to receive(:list_metrics).with(
         hash_including(metric_name: metric_name,
@@ -287,3 +373,16 @@ module AwsCloudWatchMocker
     }
   end
 end
+
+# module AwsCloudWatchLogsMocker
+#   def mock_cloud_watch_logs
+#     mock_cloud_watch_logs = double('mock_cloud_watch_logs')
+#
+#     # loggroup_name = "#{@descriptor.stack_prefix_in}#{log_stream_name}"
+#     # log_stream_name = "#{@descriptor.ec2.component}/#{instance_id}"
+#
+#     allow(mock_list_metrics_output).to receive(:metrics) { [] }
+#     allow(mock_cloud_watch).to receive(:list_metrics) { mock_list_metrics_output }
+#     mock_cloud_watch
+#   end
+# end

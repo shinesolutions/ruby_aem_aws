@@ -28,15 +28,15 @@ shared_examples_for 'grouped instance accessibility' do
   end
 
   it 'should count instances' do
-    add_instance(environment, @instance_1_id, INSTANCE_STATE_HEALTHY, {})
-    add_instance(environment, @instance_2_id, INSTANCE_STATE_UNHEALTHY, {})
+    add_instance(environment, @instance_1_id, INSTANCE_STATE_HEALTHY, INSTANCE_STATE_CODE_RUNNING, {})
+    add_instance(environment, @instance_2_id, INSTANCE_STATE_UNHEALTHY, INSTANCE_STATE_CODE_UNHEALTHY, {})
 
     component = create_component.call(environment)
     expect(component.get_num_of_instances).to eq(2)
   end
 
   it 'should get random instance' do
-    add_instance(environment, @instance_1_id, INSTANCE_STATE_HEALTHY, {})
+    add_instance(environment, @instance_1_id, INSTANCE_STATE_HEALTHY, INSTANCE_STATE_CODE_RUNNING, {})
 
     component = create_component.call(environment)
     expect(component.get_random_instance).to eq(component.get_all_instances[0])

@@ -28,7 +28,7 @@ module RubyAemAws
     end
 
     def describe_instance(instance)
-      "#{instance.instance_id} (#{instance.state.name})"
+      "#{instance.instance_id} (#{instance.state.name} #{instance.state.code})"
     end
   end
 end

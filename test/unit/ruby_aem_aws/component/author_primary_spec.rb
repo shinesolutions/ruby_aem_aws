@@ -19,7 +19,13 @@ require_relative 'examples/verify_health_single'
 require_relative 'examples/verify_metric_single'
 require_relative '../../../../lib/ruby_aem_aws/component/author'
 
-author_primary = RubyAemAws::Component::AuthorPrimary.new(nil, nil, nil)
+params = {
+  CloudWatchClient: nil,
+  CloudWatchLogsClient: nil,
+  Ec2Resource: nil
+}
+
+author_primary = RubyAemAws::Component::AuthorPrimary.new(nil, params)
 
 describe author_primary do
   it_behaves_like 'a single instance accessor'
@@ -56,10 +62,13 @@ describe 'AuthorPrimary' do
   private
 
   def component_creator(environment)
+    params = {
+      CloudWatchClient: environment.cloud_watch_client,
+      CloudWatchLogsClient: nil,
+      Ec2Resource: environment.ec2_resource
+    }
     author = RubyAemAws::Component::Author.new(TEST_STACK_PREFIX,
-                                               environment.ec2_resource,
-                                               nil,
-                                               environment.cloud_watch_client)
+                                               params)
     author.author_primary
   end
 

@@ -19,7 +19,15 @@ require_relative 'examples/verify_health_grouped'
 require_relative 'examples/verify_metric_grouped'
 require_relative '../../../../lib/ruby_aem_aws/component/publish_dispatcher'
 
-publish_dispatcher = RubyAemAws::Component::PublishDispatcher.new(nil, nil, nil, nil, nil)
+params = {
+  AutoScalingClient: nil,
+  CloudWatchClient: nil,
+  CloudWatchLogsClient: nil,
+  Ec2Resource: nil,
+  ElbClient: nil
+}
+
+publish_dispatcher = RubyAemAws::Component::PublishDispatcher.new(nil, params)
 
 describe publish_dispatcher do
   it_behaves_like 'a grouped instance accessor'
@@ -56,11 +64,15 @@ describe 'PublishDispatcher.healthy?' do
   private
 
   def component_creator(environment)
+    params = {
+      AutoScalingClient: environment.asg_client,
+      CloudWatchClient: environment.cloud_watch_client,
+      CloudWatchLogsClient: nil,
+      Ec2Resource: environment.ec2_resource,
+      ElbClient: environment.elb_client
+    }
     RubyAemAws::Component::PublishDispatcher.new(TEST_STACK_PREFIX,
-                                                 environment.ec2_resource,
-                                                 environment.asg_client,
-                                                 environment.elb_client,
-                                                 environment.cloud_watch_client)
+                                                 params)
   end
 
   def environment_creator
@@ -68,7 +80,8 @@ describe 'PublishDispatcher.healthy?' do
                                               RubyAemAws::Component::PublishDispatcher::EC2_NAME),
                             mock_asg_client(RubyAemAws::Component::PublishDispatcher::EC2_COMPONENT),
                             mock_elb_client(RubyAemAws::Component::PublishDispatcher::ELB_ID,
-                                            RubyAemAws::Component::PublishDispatcher::ELB_NAME),
+                                            RubyAemAws::Component::PublishDispatcher::ELB_NAME,
+                                            TEST_STACK_PREFIX),
                             mock_cloud_watch)
   end
 end

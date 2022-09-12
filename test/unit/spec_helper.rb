@@ -12,6 +12,15 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+require 'aws-sdk-autoscaling'
+require 'aws-sdk-cloudformation'
+require 'aws-sdk-cloudwatch'
+require 'aws-sdk-cloudwatchlogs'
+require 'aws-sdk-dynamodb'
+require 'aws-sdk-ec2'
+require 'aws-sdk-elasticloadbalancingv2'
+require 'aws-sdk-sns'
+require 'aws-sdk-s3'
 require 'simplecov'
 SimpleCov.start
 
@@ -43,4 +52,6 @@ TEST_STACK_PREFIX = 'test-prefix'.freeze
 TEST_REGION = 'test-region'.freeze
 
 INSTANCE_STATE_HEALTHY = RubyAemAws::Constants::INSTANCE_STATE_HEALTHY
+INSTANCE_STATE_CODE_RUNNING = RubyAemAws::Constants::INSTANCE_STATE_CODE_RUNNING
+INSTANCE_STATE_CODE_UNHEALTHY = RubyAemAws::InstanceStateCode::TERMINATED
 INSTANCE_STATE_UNHEALTHY = 'not-so-good'.freeze
