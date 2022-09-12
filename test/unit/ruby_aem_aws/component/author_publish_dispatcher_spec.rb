@@ -43,7 +43,7 @@ describe 'AuthorPublishDispatcher' do
     let(:environment) { @environment }
     let(:create_component) { ->(env) { component_creator(env) } }
   end
-  
+
   it_has_behaviour 'single instance description' do
     let(:environment) { @environment }
     let(:create_component) { ->(env) { component_creator(env) } }

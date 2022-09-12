@@ -39,7 +39,7 @@ describe 'AuthorDispatcher' do
   before :each do
     @environment = environment_creator
   end
-  
+
   it_has_behaviour 'grouped instance accessibility' do
     let(:environment) { @environment }
     let(:create_component) { ->(env) { component_creator(env) } }
