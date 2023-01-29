@@ -139,7 +139,6 @@ module RubyAemAws
       dimension_filter = dimensions_filter_for_cloudwatch_metric(dimension_values)
 
       response = get_metrics(namespace, metric_name, dimension_filter)
-
       return true unless response.metrics.empty?
     end
 

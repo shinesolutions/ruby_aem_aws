@@ -26,30 +26,30 @@ shared_examples 'grouped instance description' do
   end
 
   it 'describe_instances for single healthy instance' do
-    add_instance(environment, @instance_1_id, INSTANCE_STATE_HEALTHY)
+    add_instance(environment, @instance_1_id, INSTANCE_STATE_HEALTHY, INSTANCE_STATE_CODE_RUNNING)
 
     component = create_component.call(environment)
     description = component.describe_instances.split(', ')
 
     expect(description[0]).to include(@instance_1_id)
-    expect(description[0]).to include(INSTANCE_STATE_HEALTHY)
+    expect(description[0]).to include(INSTANCE_STATE_HEALTHY, INSTANCE_STATE_CODE_RUNNING.to_s)
   end
 
   it 'describe_instances for multiple instances with different states' do
-    add_instance(environment, @instance_1_id, INSTANCE_STATE_HEALTHY)
-    add_instance(environment, @instance_2_id, INSTANCE_STATE_UNHEALTHY)
-    add_instance(environment, @instance_3_id, INSTANCE_STATE_HEALTHY)
+    add_instance(environment, @instance_1_id, INSTANCE_STATE_HEALTHY, INSTANCE_STATE_CODE_RUNNING)
+    add_instance(environment, @instance_2_id, INSTANCE_STATE_UNHEALTHY, INSTANCE_STATE_CODE_UNHEALTHY)
+    add_instance(environment, @instance_3_id, INSTANCE_STATE_HEALTHY, INSTANCE_STATE_CODE_RUNNING)
 
     component = create_component.call(environment)
     description = component.describe_instances.split(', ')
 
     expect(description[0]).to include(@instance_1_id)
-    expect(description[0]).to include(INSTANCE_STATE_HEALTHY)
+    expect(description[0]).to include(INSTANCE_STATE_HEALTHY, INSTANCE_STATE_CODE_RUNNING.to_s)
 
     expect(description[1]).to include(@instance_2_id)
-    expect(description[1]).to include(INSTANCE_STATE_UNHEALTHY)
+    expect(description[1]).to include(INSTANCE_STATE_UNHEALTHY, INSTANCE_STATE_CODE_UNHEALTHY.to_s)
 
     expect(description[2]).to include(@instance_3_id)
-    expect(description[2]).to include(INSTANCE_STATE_HEALTHY)
+    expect(description[2]).to include(INSTANCE_STATE_HEALTHY, INSTANCE_STATE_CODE_RUNNING.to_s)
   end
 end

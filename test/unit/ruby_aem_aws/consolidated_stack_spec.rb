@@ -13,13 +13,17 @@
 # limitations under the License.
 
 require_relative '../spec_helper'
-require_relative '../../../lib/ruby_aem_aws/consolidated_stack'
+require_relative '../../../lib/ruby_aem_aws/architecture/consolidated_stack'
 
 describe 'ConsolidatedStack' do
   before do
+    params = {
+      CloudWatchClient: double('mock_cloud_watch'),
+      CloudWatchLogsClient: double('mock_cloud_watch_logs'),
+      Ec2Resource: double('mock_ec2')
+    }
     @consolidated_stack = RubyAemAws::ConsolidatedStack.new(TEST_STACK_PREFIX,
-                                                            double('mock_ec2'),
-                                                            double('mock_cloud_watch'))
+                                                            params)
   end
 
   it 'should create author_publish_dispatcher' do

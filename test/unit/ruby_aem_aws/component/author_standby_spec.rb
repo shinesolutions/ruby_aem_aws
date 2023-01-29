@@ -13,18 +13,25 @@
 # limitations under the License.
 
 require_relative '../../spec_helper'
-require_relative 'examples/component_grouped'
-require_relative 'examples/describe_grouped'
-require_relative 'examples/verify_metric_grouped'
+require_relative 'examples/component_single'
+require_relative 'examples/describe_single'
+require_relative 'examples/verify_health_single'
+require_relative 'examples/verify_metric_single'
 require_relative '../../../../lib/ruby_aem_aws/component/author'
 
-author_standby = RubyAemAws::Component::AuthorStandby.new(nil, nil, nil)
+params = {
+  CloudWatchClient: nil,
+  CloudWatchLogsClient: nil,
+  Ec2Resource: nil
+}
+
+author_standby = RubyAemAws::Component::AuthorStandby.new(nil, params)
 
 describe author_standby do
-  it_behaves_like 'a grouped instance accessor'
-  it_behaves_like 'a grouped instance describer'
+  it_behaves_like 'a single instance accessor'
+  it_behaves_like 'a single instance describer'
   it_behaves_like 'a health by state verifier'
-  it_behaves_like 'a grouped metric_verifier'
+  it_behaves_like 'a single metric_verifier'
 end
 
 describe 'AuthorStandby' do
@@ -32,12 +39,12 @@ describe 'AuthorStandby' do
     @environment = environment_creator
   end
 
-  it_has_behaviour 'grouped instance accessibility' do
+  it_has_behaviour 'single instance accessibility' do
     let(:environment) { @environment }
     let(:create_component) { ->(env) { component_creator(env) } }
   end
 
-  it_has_behaviour 'grouped instance description' do
+  it_has_behaviour 'single instance description' do
     let(:environment) { @environment }
     let(:create_component) { ->(env) { component_creator(env) } }
   end
@@ -47,7 +54,7 @@ describe 'AuthorStandby' do
     let(:create_component) { ->(env) { component_creator(env) } }
   end
 
-  it_has_behaviour 'metrics via grouped verifier' do
+  it_has_behaviour 'metrics via single verifier' do
     let(:environment) { @environment }
     let(:create_component) { ->(env) { component_creator(env) } }
   end
@@ -55,10 +62,13 @@ describe 'AuthorStandby' do
   private
 
   def component_creator(environment)
+    params = {
+      CloudWatchClient: environment.cloud_watch_client,
+      CloudWatchLogsClient: nil,
+      Ec2Resource: environment.ec2_resource
+    }
     author = RubyAemAws::Component::Author.new(TEST_STACK_PREFIX,
-                                               environment.ec2_resource,
-                                               nil,
-                                               environment.cloud_watch_client)
+                                               params)
     author.author_standby
   end
 

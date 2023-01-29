@@ -13,19 +13,25 @@
 # limitations under the License.
 
 require_relative '../../spec_helper'
-require_relative 'examples/component_single'
-require_relative 'examples/describe_single'
-require_relative 'examples/verify_health_single'
-require_relative 'examples/verify_metric_single'
+require_relative 'examples/component_grouped'
+require_relative 'examples/describe_grouped'
+require_relative 'examples/verify_health_grouped'
+require_relative 'examples/verify_metric_grouped'
 require_relative '../../../../lib/ruby_aem_aws/component/orchestrator'
 
-orchestrator = RubyAemAws::Component::Orchestrator.new(nil, nil, nil, nil)
+params = {
+  AutoScalingClient: nil,
+  CloudWatchClient: nil,
+  CloudWatchLogsClient: nil,
+  Ec2Resource: nil
+}
+orchestrator = RubyAemAws::Component::Orchestrator.new(nil, params)
 
 describe orchestrator do
-  it_behaves_like 'a single instance accessor'
-  it_behaves_like 'a single instance describer'
-  it_behaves_like 'a health by state verifier'
-  it_behaves_like 'a single metric_verifier'
+  it_behaves_like 'a grouped instance accessor'
+  it_behaves_like 'a grouped instance describer'
+  it_behaves_like 'a health by count verifier'
+  it_behaves_like 'a grouped metric_verifier'
 end
 
 describe 'Orchestrator' do
@@ -33,22 +39,22 @@ describe 'Orchestrator' do
     @environment = environment_creator
   end
 
-  it_has_behaviour 'single instance accessibility' do
+  it_has_behaviour 'grouped instance accessibility' do
     let(:environment) { @environment }
     let(:create_component) { ->(env) { component_creator(env) } }
   end
 
-  it_has_behaviour 'single instance description' do
+  it_has_behaviour 'grouped instance description' do
     let(:environment) { @environment }
     let(:create_component) { ->(env) { component_creator(env) } }
   end
 
-  it_has_behaviour 'health via single verifier' do
+  it_has_behaviour 'health via grouped verifier' do
     let(:environment) { @environment }
     let(:create_component) { ->(env) { component_creator(env) } }
   end
 
-  it_has_behaviour 'metrics via single verifier' do
+  it_has_behaviour 'metrics via grouped verifier' do
     let(:environment) { @environment }
     let(:create_component) { ->(env) { component_creator(env) } }
   end
@@ -56,10 +62,14 @@ describe 'Orchestrator' do
   private
 
   def component_creator(environment)
+    params = {
+      AutoScalingClient: environment.asg_client,
+      CloudWatchClient: environment.cloud_watch_client,
+      CloudWatchLogsClient: nil,
+      Ec2Resource: environment.ec2_resource
+    }
     RubyAemAws::Component::Orchestrator.new(TEST_STACK_PREFIX,
-                                            environment.ec2_resource,
-                                            environment.asg_client,
-                                            environment.cloud_watch_client)
+                                            params)
   end
 
   def environment_creator

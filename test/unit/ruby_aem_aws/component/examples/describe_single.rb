@@ -26,12 +26,13 @@ shared_examples 'single instance description' do
   end
 
   it 'describe_instances for single healthy instance' do
-    add_instance(environment, @instance_1_id, INSTANCE_STATE_HEALTHY)
+    add_instance(environment, @instance_1_id, INSTANCE_STATE_HEALTHY, INSTANCE_STATE_CODE_RUNNING)
 
     component = create_component.call(environment)
     description = component.describe_instances.split(', ')
 
     expect(description[0]).to include(@instance_1_id)
     expect(description[0]).to include(INSTANCE_STATE_HEALTHY)
+    expect(description[0]).to include(INSTANCE_STATE_CODE_RUNNING.to_s)
   end
 end

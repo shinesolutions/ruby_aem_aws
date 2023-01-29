@@ -19,7 +19,15 @@ require_relative 'examples/verify_health_grouped'
 require_relative 'examples/verify_metric_grouped'
 require_relative '../../../../lib/ruby_aem_aws/component/author_dispatcher'
 
-author_dispatcher = RubyAemAws::Component::AuthorDispatcher.new(nil, nil, nil, nil, nil)
+params = {
+  AutoScalingClient: nil,
+  CloudWatchClient: nil,
+  CloudWatchLogsClient: nil,
+  Ec2Resource: nil,
+  ElbClient: nil
+}
+
+author_dispatcher = RubyAemAws::Component::AuthorDispatcher.new(nil, params)
 describe author_dispatcher do
   it_behaves_like 'a grouped instance accessor'
   it_behaves_like 'a grouped instance describer'
@@ -55,11 +63,14 @@ describe 'AuthorDispatcher' do
   private
 
   def component_creator(environment)
-    RubyAemAws::Component::AuthorDispatcher.new(TEST_STACK_PREFIX,
-                                                environment.ec2_resource,
-                                                environment.asg_client,
-                                                environment.elb_client,
-                                                environment.cloud_watch_client)
+    params = {
+      AutoScalingClient: environment.asg_client,
+      CloudWatchClient: environment.cloud_watch_client,
+      CloudWatchLogsClient: nil,
+      Ec2Resource: environment.ec2_resource,
+      ElbClient: environment.elb_client
+    }
+    RubyAemAws::Component::AuthorDispatcher.new(TEST_STACK_PREFIX, params)
   end
 
   def environment_creator
@@ -67,7 +78,8 @@ describe 'AuthorDispatcher' do
                                               RubyAemAws::Component::AuthorDispatcher::EC2_NAME),
                             mock_asg_client(RubyAemAws::Component::AuthorDispatcher::EC2_COMPONENT),
                             mock_elb_client(RubyAemAws::Component::AuthorDispatcher::ELB_ID,
-                                            RubyAemAws::Component::AuthorDispatcher::ELB_NAME),
+                                            RubyAemAws::Component::AuthorDispatcher::ELB_NAME,
+                                            TEST_STACK_PREFIX),
                             mock_cloud_watch)
   end
 end

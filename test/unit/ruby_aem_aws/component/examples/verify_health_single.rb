@@ -25,7 +25,7 @@ shared_examples_for 'health via single verifier' do
   end
 
   it 'should verify EC2 running instance' do
-    add_instance(environment, @instance_1_id, INSTANCE_STATE_HEALTHY)
+    add_instance(environment, @instance_1_id, INSTANCE_STATE_HEALTHY, INSTANCE_STATE_CODE_RUNNING)
 
     component = create_component.call(environment)
     expect(component.healthy?).to equal true
@@ -36,10 +36,10 @@ shared_examples_for 'health via single verifier' do
     expect(component.healthy?).to equal false
   end
 
-  it 'should discover wait_until_healthy is not yet implemented' do
-    component = create_component.call(environment)
-    # TODO: checked exceptions seem not to work well, so using string regex instead.
-    # expect(component.wait_until_healthy).to raise_error(NotYetImplementedError)
-    expect { component.wait_until_healthy }.to raise_error(/Not yet implemented/)
-  end
+  # it 'should wait_until_healthy' do
+  #   add_instance(environment, @instance_1_id, INSTANCE_STATE_HEALTHY, INSTANCE_STATE_CODE_RUNNING)
+  #
+  #   component = create_component.call(environment)
+  #   expect(component.wait_until_healthy).to equal true
+  # end
 end
