@@ -52,7 +52,8 @@ module RubyAemAws
       until curr_response.next_token.nil?
         next_token = { next_token: curr_response.next_token }
         filter.update(next_token)
-        response = curr_response
+        # empty events should be ignored
+        response = curr_response unless curr_response.events.empty?
         curr_response = cloud_watch_log_client.filter_log_events(filter)
       end
 
