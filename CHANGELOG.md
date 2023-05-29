@@ -8,10 +8,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 ### Changed
 - Disabled ELBv2 unit tests until its fixed
-- Fixed AWS Cloudwatch client log  events to return non empty response
 
 ### Fixed
 - Fixed existing unit tests
+- Fixed AWS Cloudwatch client log  events to return non empty response
 
 ## [2.3.1] - 2022-09-12
 
