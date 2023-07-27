@@ -18,6 +18,8 @@ require_relative '../component/chaos_monkey'
 require_relative '../component/orchestrator'
 require_relative '../component/publish_dispatcher'
 require_relative '../component/publish'
+require_relative '../component/preview_publish_dispatcher'
+require_relative '../component/preview_publish'
 require_relative '../mixins/metric_verifier'
 
 module RubyAemAws
@@ -96,9 +98,19 @@ module RubyAemAws
       RubyAemAws::Component::Publish.new(@stack_prefix, @publish_aws_clients)
     end
 
+    # @return new RubyAemAws::Component::PreviewPublish instance
+    def preview_publish
+      RubyAemAws::Component::PreviewPublish.new(@stack_prefix, @publish_aws_clients)
+    end
+
     # @return new RubyAemAws::Component::PublishDispatcher instance
     def publish_dispatcher
       RubyAemAws::Component::PublishDispatcher.new(@stack_prefix, @dispatcher_aws_clients)
+    end
+
+    # @return new RubyAemAws::Component::PreviewPublishDispatcher instance
+    def preview_publish_dispatcher
+      RubyAemAws::Component::PreviewPublishDispatcher.new(@stack_prefix, @dispatcher_aws_clients)
     end
   end
 end

@@ -21,8 +21,8 @@ require_relative '../mixins/snapshot_verifier'
 
 module RubyAemAws
   module Component
-    # Interface to the AWS instance running the Publish component of a full-set AEM stack.
-    class Publish
+    # Interface to the AWS instance running the Preview Publish component of a full-set AEM stack.
+    class PreviewPublish
       attr_reader :descriptor, :ec2_resource, :cloud_watch_client, :asg_client, :cloud_watch_log_client
 
       include AbstractGroupedComponent
@@ -31,8 +31,8 @@ module RubyAemAws
       include MetricVerifier
       include SnapshotVerifier
 
-      EC2_COMPONENT = 'publish'.freeze
-      EC2_NAME = 'AEM Publish'.freeze
+      EC2_COMPONENT = 'preview-publish'.freeze
+      EC2_NAME = 'AEM Preview Publish'.freeze
 
       # @param stack_prefix AWS tag: StackPrefix
       # @param params Array of AWS Clients and Resource connections:
@@ -40,7 +40,7 @@ module RubyAemAws
       # - CloudWatchClient: AWS Cloudwatch Client.
       # - CloudWatchLogsClient: AWS Cloudwatch Logs Client.
       # - Ec2Resource: AWS EC2 Resource connection.
-      # @return new RubyAemAws::FullSet::Publish
+      # @return new RubyAemAws::FullSet::PreviewPublish
       def initialize(stack_prefix, params)
         @descriptor = ComponentDescriptor.new(stack_prefix,
                                               EC2Descriptor.new(EC2_COMPONENT, EC2_NAME))

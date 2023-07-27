@@ -21,9 +21,9 @@ require_relative '../mixins/snapshot_verifier'
 
 module RubyAemAws
   module Component
-    # Interface to the AWS instance running the Publish component of a full-set AEM stack.
-    class Publish
-      attr_reader :descriptor, :ec2_resource, :cloud_watch_client, :asg_client, :cloud_watch_log_client
+    # Interface to the AWS instance running the Preview PublishDispatcher component of a full-set AEM stack.
+    class PreviewPublishDispatcher
+      attr_reader :descriptor, :ec2_resource, :asg_client, :elb_client, :cloud_watch_client, :cloud_watch_log_client
 
       include AbstractGroupedComponent
       include AbstractSnapshot
@@ -31,8 +31,10 @@ module RubyAemAws
       include MetricVerifier
       include SnapshotVerifier
 
-      EC2_COMPONENT = 'publish'.freeze
-      EC2_NAME = 'AEM Publish'.freeze
+      EC2_COMPONENT = 'preview-publish-dispatcher'.freeze
+      EC2_NAME = 'AEM Preview Publish Dispatcher'.freeze
+      ELB_ID = 'PreviewPublishDispatcherLoadBalancer'.freeze
+      ELB_NAME = 'AEM Preview Publish Dispatcher Load Balancer'.freeze
 
       # @param stack_prefix AWS tag: StackPrefix
       # @param params Array of AWS Clients and Resource connections:
@@ -40,14 +42,17 @@ module RubyAemAws
       # - CloudWatchClient: AWS Cloudwatch Client.
       # - CloudWatchLogsClient: AWS Cloudwatch Logs Client.
       # - Ec2Resource: AWS EC2 Resource connection.
-      # @return new RubyAemAws::FullSet::Publish
+      # - ElbClient: AWS ElasticLoadBalancer v2 Client.
+      # @return new RubyAemAws::FullSet::PreviewPublishDispatcher
       def initialize(stack_prefix, params)
         @descriptor = ComponentDescriptor.new(stack_prefix,
-                                              EC2Descriptor.new(EC2_COMPONENT, EC2_NAME))
+                                              EC2Descriptor.new(EC2_COMPONENT, EC2_NAME),
+                                              ELBDescriptor.new(ELB_ID, ELB_NAME))
         @asg_client = params[:AutoScalingClient]
         @cloud_watch_client = params[:CloudWatchClient]
         @cloud_watch_log_client = params[:CloudWatchLogsClient]
         @ec2_resource = params[:Ec2Resource]
+        @elb_client = params[:ElbClient]
       end
 
       def terminate_all_instances
