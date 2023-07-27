@@ -4,11 +4,12 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
-## [Unreleased]
-### Fixed
-- Fixed AWS Cloudwatch client log  events to return non empty response
 
 ## [Unreleased]
+
+## [2.4.1] - 2023-07-27
+### Fixed
+- Fixed AWS Cloudwatch client log  events to return non empty response
 
 ## [2.4.0] - 2023-05-29
 ### Changed
@@ -131,7 +132,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [#30]: https://github.com/shinesolutions/ruby_aem_aws/issues/30
 [#33]: https://github.com/shinesolutions/ruby_aem_aws/issues/33
 
-[Unreleased]: https://github.com/shinesolutions/ruby_aem_aws/compare/2.4.0...HEAD
+[Unreleased]: https://github.com/shinesolutions/ruby_aem_aws/compare/2.4.1...HEAD
+[2.4.1]: https://github.com/shinesolutions/ruby_aem_aws/compare/2.4.0...2.4.1
 [2.4.0]: https://github.com/shinesolutions/ruby_aem_aws/compare/2.3.1...2.4.0
 [2.3.1]: https://github.com/shinesolutions/ruby_aem_aws/compare/2.3.0...2.3.1
 [2.3.0]: https://github.com/shinesolutions/ruby_aem_aws/compare/2.2.1...2.3.0
