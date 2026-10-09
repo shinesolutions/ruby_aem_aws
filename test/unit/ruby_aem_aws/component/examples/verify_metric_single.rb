@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# rubocop:disable Metrics/BlockLength
+# rubocop:disable-next Metrics/BlockLength
 shared_examples 'a single metric_verifier' do
   it 'because it responds to .component_alarm? method' do
     is_expected.to respond_to(:component_alarm?)
@@ -48,7 +48,6 @@ shared_examples 'a single metric_verifier' do
     is_expected.to respond_to(:loggroup?)
   end
 end
-# rubocop:enable Metrics/BlockLength
 
 shared_examples 'metrics via single verifier' do
   before do
@@ -71,6 +70,6 @@ shared_examples 'metrics via single verifier' do
     add_metric(environment, @metric_1_name, [@instance_1_id])
 
     component = create_component.call(environment)
-    expect(component.component_ec2_metric?(@metric_2_name)).to equal false || nil
+    expect(component.component_ec2_metric?(@metric_2_name)).to equal nil
   end
 end

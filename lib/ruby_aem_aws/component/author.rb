@@ -49,7 +49,7 @@ module RubyAemAws
         instance = 0
         instance += 1 if author_primary.healthy?
         instance += 1 if author_standby.healthy?
-        return true unless instance < 2
+        true unless instance < 2
       end
 
       # @return true, if all author instances are healthy
@@ -57,7 +57,7 @@ module RubyAemAws
         instance = 0
         instance += 1 if author_primary.wait_until_healthy.eql? true
         instance += 1 if author_standby.wait_until_healthy.eql? true
-        return true unless instance < 2
+        true unless instance < 2
       end
 
       def get_tags

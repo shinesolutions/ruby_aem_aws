@@ -19,7 +19,7 @@ module RubyAemAws
     # @param snapshot_id AWS Snapshot ID
     # @return true if snapshot exists, nil if no snapshot exists
     def snapshot?(snapshot_id)
-      return true unless get_snapshot_by_id(snapshot_id).nil?
+      true unless get_snapshot_by_id(snapshot_id).nil?
     end
 
     # @param snapshot_type AEM snapshot type

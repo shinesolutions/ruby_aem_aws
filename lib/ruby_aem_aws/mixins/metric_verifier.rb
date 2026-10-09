@@ -34,7 +34,7 @@ module RubyAemAws
       dimensions_name = 'FixedDimension'
       dimensions_value = "#{@descriptor.stack_prefix_in}-#{@descriptor.ec2.component}"
       response = metric?(namespace, metric_name, dimensions_name, dimensions_value)
-      return true if response.eql? true
+      true if response.eql? true
     end
 
     # @param metric_name Cloudwatch EC2 metric name
@@ -59,7 +59,7 @@ module RubyAemAws
 
       instances_with_metric = instances_with_metric.count
 
-      return true unless instances_with_metric < instances_found
+      true unless instances_with_metric < instances_found
     end
 
     # @param log_stream_name Cloudwatch log stream name
@@ -84,7 +84,7 @@ module RubyAemAws
       end
       instances_with_log_stream = instances_with_log_stream.count
 
-      return true unless instances_with_log_stream < instances_found
+      true unless instances_with_log_stream < instances_found
     end
 
     # @param log_stream_name Cloudwatch log stream name
@@ -94,7 +94,7 @@ module RubyAemAws
 
       response = loggroup?(loggroup_name)
 
-      return true if response.eql? true
+      true if response.eql? true
     end
 
     # @param log_stream_name Cloudwatch log stream name
@@ -118,7 +118,7 @@ module RubyAemAws
       end
       instances_with_log_stream = instances_with_log_stream.count
 
-      return true unless instances_with_log_stream < instances_found
+      true unless instances_with_log_stream < instances_found
     end
 
     # @param alarm_name name of the Cloudwatch alarm
@@ -126,7 +126,7 @@ module RubyAemAws
     def alarm?(alarm_name)
       response = get_alarm(alarm_name)
 
-      return true unless response.metric_alarms.empty?
+      true unless response.metric_alarms.empty?
     end
 
     # @param namespace Cloudwatch metric namespace
@@ -139,7 +139,7 @@ module RubyAemAws
       dimension_filter = dimensions_filter_for_cloudwatch_metric(dimension_values)
 
       response = get_metrics(namespace, metric_name, dimension_filter)
-      return true unless response.metrics.empty?
+      true unless response.metrics.empty?
     end
 
     # @param loggroup_name Cloudwatch loggroup name
@@ -151,7 +151,7 @@ module RubyAemAws
 
       response = get_log_streams(loggroup_name, log_stream_name)
 
-      return true unless response.log_streams.empty?
+      true unless response.log_streams.empty?
     end
 
     # @param loggroup_name Cloudwatch loggroup name
@@ -166,7 +166,7 @@ module RubyAemAws
       return false unless response.eql? true
 
       response = get_log_event(loggroup_name, log_stream_name, log_message)
-      return true unless response.events.empty?
+      true unless response.events.empty?
     end
 
     # @param loggroup_name Cloudwatch loggroup name
@@ -182,7 +182,7 @@ module RubyAemAws
 
       response = get_metrics(namespace, metric_name, dimension_filter)
 
-      return true unless response.metrics.empty?
+      true unless response.metrics.empty?
     end
   end
 end

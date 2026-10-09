@@ -21,7 +21,7 @@ shared_examples 'a grouped metric_verifier' do
   end
 end
 
-# rubocop:disable Metrics/BlockLength
+# rubocop:disable-next Metrics/BlockLength
 shared_examples 'metrics via grouped verifier' do
   before do
     @instance_1_id = 'i-00525b1a281aee5b9'.freeze
@@ -61,7 +61,6 @@ shared_examples 'metrics via grouped verifier' do
     add_metric(environment, @metric_1_name, [@instance_1_id])
 
     component = create_component.call(environment)
-    expect(component.component_ec2_metric?(@metric_1_name)).to equal false || nil
+    expect(component.component_ec2_metric?(@metric_1_name)).to equal nil
   end
 end
-# rubocop:enable Metrics/BlockLength

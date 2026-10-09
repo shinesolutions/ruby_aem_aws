@@ -14,7 +14,7 @@
 
 module AwsMocker
   def add_instance(env, id, state_name, state_code, tags = {})
-    @instances = Hash.new {} if @instances.nil?
+    @instances = {} if @instances.nil?
     ec2_resource = env.ec2_resource
     @instances[id] = mock_ec2_instance(ec2_resource, id, state_name, state_code, tags)
     add_ec2_instance(ec2_resource, @instances, ec2_resource.instance_filter)
@@ -23,7 +23,7 @@ module AwsMocker
   end
 
   def add_metric(env, metric_name, instance_ids)
-    @metrics = Hash.new {} if @metrics.nil?
+    @metrics = {} if @metrics.nil?
     @metrics[metric_name] = mock_cloud_watch_metric(@metrics, metric_name, instance_ids)
     add_metrics(env.cloud_watch_client, @metrics, metric_name, instance_ids)
   end
@@ -31,9 +31,8 @@ end
 
 module AwsAutoScalingMocker
   def add_asg_instances(mock_asg, instances)
-    asg_instances = []
-    instances.each do |id, instance|
-      asg_instances.push(mock_as_instance(id, instance.state))
+    asg_instances = instances.map do |id, instance|
+      mock_as_instance(id, instance.state)
     end
     allow(mock_asg).to receive(:instances) { asg_instances }
   end
@@ -86,7 +85,7 @@ module AwsAutoScalingMocker
   end
 end
 
-# rubocop:disable Metrics/MethodLength
+# rubocop:disable-next Metrics/MethodLength
 module AwsElasticLoadBalancerMocker
   def mock_elb_client(load_balancer_id, load_balancer_name, stack_prefix)
     client = Aws::ElasticLoadBalancingV2::Client.new(stub_responses: true)
@@ -199,7 +198,6 @@ module AwsElasticLoadBalancerMocker
     client
   end
 end
-# rubocop:enable Metrics/MethodLength
 
 module AwsEc2Mocker
   def add_ec2_instance(mock_ec2, instances, instance_filter = [])
@@ -224,8 +222,8 @@ module AwsEc2Mocker
       ].freeze
     }
 
-    allow(mock_ec2).to receive(:instances).with(anything) { Hash.new {} }
-    allow(mock_ec2).to receive(:instances).with(no_args) { Hash.new {} }
+    allow(mock_ec2).to receive(:instances).with(anything) { {} }
+    allow(mock_ec2).to receive(:instances).with(no_args) { {} }
     mock_ec2
   end
 
@@ -247,9 +245,8 @@ module AwsEc2Mocker
     ec2_instance = double('ec2_instance')
     allow(ec2_instance).to receive(:instance_id) { id }
     allow(ec2_instance).to receive(:state) { mock_ec2_instance_state(state_name, state_code) }
-    ec2_tags = []
-    tags.each do |key, value|
-      ec2_tags.push(ec2_tag(id, key.to_s, value))
+    ec2_tags = tags.map do |key, value|
+      ec2_tag(id, key.to_s, value)
     end
     allow(ec2_instance).to receive(:tags) { ec2_tags }
     allow(ec2_instance).to receive(:inspect) { "mock_ec2_instance [#{ec2_instance.tags}]" }

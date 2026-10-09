@@ -109,14 +109,14 @@ module RubyAemAws
       raise ELBMisconfiguration if health_state_elb.eql?(:misconfigured)
 
       sleep 60 while health_state_elb.eql?(:recovering) || health_state_elb.eql?(:scaling)
-      return true if health_state_elb.eql?(:ready)
+      true if health_state_elb.eql?(:ready)
     end
 
     def wait_until_healthy_asg
       raise ASGMisconfiguration if health_state_asg.eql?(:misconfigured)
 
       sleep 60 while health_state_asg.eql?(:recovering) || health_state_asg.eql?(:scaling)
-      return true if health_state_asg.eql?(:ready)
+      true if health_state_asg.eql?(:ready)
     end
 
     private
@@ -133,7 +133,7 @@ module RubyAemAws
         find_auto_scaling_group = find_auto_scaling_group_name(autoscaling_groups)
         return find_auto_scaling_group unless find_auto_scaling_group.nil?
       end
-      return nil if find_auto_scaling_group.nil?
+      nil if find_auto_scaling_group.nil?
     end
 
     def find_auto_scaling_group_name(autoscaling_groups)
