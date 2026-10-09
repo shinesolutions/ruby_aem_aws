@@ -1,12 +1,10 @@
 # Changelog
-
 All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## Unreleased
-
+## [4.0.0] - 2026-10-09
 ### Changed
 - Simplify GitHub Actions release workflows to not use custom action
 - Switch publish workflow to use Rubygems.org trusted publisher
@@ -140,7 +138,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Fix instance handling while getting health state
 
-## 0.9.0 - 2018-01-11
+## [0.9.0] - 2018-01-11
 ### Added
 - Initial version
 
@@ -151,7 +149,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [#30]: https://github.com/shinesolutions/ruby_aem_aws/issues/30
 [#33]: https://github.com/shinesolutions/ruby_aem_aws/issues/33
 
-[Unreleased]: https://github.com/shinesolutions/ruby_aem_aws/compare/3.0.0...HEAD
+[4.0.0]: https://github.com/shinesolutions/ruby_aem_aws/compare/3.0.0...4.0.0
 [3.0.0]: https://github.com/shinesolutions/ruby_aem_aws/compare/2.4.1...3.0.0
 [2.4.1]: https://github.com/shinesolutions/ruby_aem_aws/compare/2.4.0...2.4.1
 [2.4.0]: https://github.com/shinesolutions/ruby_aem_aws/compare/2.3.1...2.4.0
@@ -172,3 +170,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [0.9.3]: https://github.com/shinesolutions/ruby_aem_aws/compare/0.9.2...0.9.3
 [0.9.2]: https://github.com/shinesolutions/ruby_aem_aws/compare/0.9.1...0.9.2
 [0.9.1]: https://github.com/shinesolutions/ruby_aem_aws/compare/0.9.0...0.9.1
+[0.9.0]: https://github.com/shinesolutions/ruby_aem_aws/releases/tag/0.9.0
