@@ -20,6 +20,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fix release workflows to use SHINEOPENSOURCE_GITHUB_TOKEN instead of SHINEWORKS_GITHUB_TOKEN, matching this repo's original token
 - Fix .rtk.json jobs.build.steps property path to use array bracket notation (steps[0] instead of steps.0)
 - Fix double coverage check start
+- Fix integration test stack prefix type and region key property name
 
 ## [Unreleased]
 

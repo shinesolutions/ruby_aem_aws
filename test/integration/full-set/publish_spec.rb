@@ -17,7 +17,7 @@ require_relative '../examples/verify_health'
 require_relative '../examples/verify_metric'
 require_relative '../../../lib/ruby_aem_aws'
 
-describe 'Author Standby' do
+describe 'Publish' do
   before do
     @component = init_full_set.publish
   end
