@@ -18,7 +18,7 @@ gem install ruby_aem_aws
 
 ## Usage
 
-Initialise client:
+### Initialise client
 
 ```ruby
 require 'ruby_aem_aws'
