@@ -27,6 +27,11 @@ describe 'AemAws' do
       }
     }
 
+    # Unit tests must not depend on AWS profiles or instance metadata of the machine running them.
+    mock_credentials = Aws::Credentials.new('test-access-key-id', 'test-secret-access-key')
+    allow(Aws::SharedCredentials).to receive(:new) { mock_credentials }
+    allow(Aws::InstanceProfileCredentials).to receive(:new) { mock_credentials }
+
     @aem_aws = RubyAemAws::AemAws.new(region: RubyAemAws::Constants::REGION_DEFAULT)
   end
 

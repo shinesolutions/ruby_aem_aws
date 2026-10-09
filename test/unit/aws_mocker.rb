@@ -18,7 +18,6 @@ module AwsMocker
     ec2_resource = env.ec2_resource
     @instances[id] = mock_ec2_instance(ec2_resource, id, state_name, state_code, tags)
     add_ec2_instance(ec2_resource, @instances, ec2_resource.instance_filter)
-    add_elb_instances(env.elb_client, @instances) if env.elb_client
     add_asg_instances(env.asg_client, @instances) if env.asg_client
   end
 

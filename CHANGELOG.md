@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Increase min Ruby support to 4.0
 - Upgrade dependencies to latest
 - Disable inline Naming/PredicateMethod and Style/MapIntoArray
+- Improve unit tests by stubbing credential lookups
 
 ### Fixed
 - Fix release workflows to use SHINEOPENSOURCE_GITHUB_TOKEN instead of SHINEWORKS_GITHUB_TOKEN, matching this repo's original token
