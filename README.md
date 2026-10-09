@@ -2,8 +2,7 @@
 [![Published Version](https://badge.fury.io/rb/ruby_aem_aws.svg)](https://rubygems.org/gems/ruby_aem_aws)
 [![Known Vulnerabilities](https://snyk.io/test/github/shinesolutions/ruby_aem_aws/badge.svg)](https://snyk.io/test/github/shinesolutions/ruby_aem_aws)
 
-ruby_aem_aws
-------------
+# ruby_aem_aws
 
 ruby_aem_aws is a Ruby client for Shine Solutions [Adobe Experience Manager (AEM)](http://www.adobe.com/au/marketing-cloud/enterprise-content-management.html) Platform on AWS.
 
@@ -11,22 +10,22 @@ This library provides an API which enables the interaction with the platform via
 
 ruby_aem_aws is part of [AEM OpenCloud](https://aemopencloud.io) platform.
 
-Installation
-------------
+## Installation
 
-    gem install ruby_aem_aws
+```shell
+gem install ruby_aem_aws
+```
 
-Usage
------
+## Usage
 
 Initialise client:
 
-    require 'ruby_aem_aws'
+```ruby
+require 'ruby_aem_aws'
 
-    aem = RubyAemAws::AemAws.new({
-    })
-
-    TODO
+aem = RubyAemAws::AemAws.new({
+})
+```
 
 Required parameters:
 
