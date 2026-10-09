@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - Simplify GitHub Actions release workflows to not use custom action
+- Switch publish workflow to use Rubygems.org trusted publisher
+- Update build containers to use aem-platform-buildenv 6.x
 
 ### Fixed
 - Fix release workflows to use SHINEOPENSOURCE_GITHUB_TOKEN instead of SHINEWORKS_GITHUB_TOKEN, matching this repo's original token
