@@ -22,8 +22,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fix double coverage check start
 - Fix integration test stack prefix type and region key property name
 
-## [Unreleased]
-
 ## [3.0.0] - 2023-07-27
 ### Added
 - Added Preview-Publish & Preview-Publish-Dispatcher components
