@@ -78,7 +78,7 @@ GEM
       diff-lcs (>= 1.2.0, < 2.0)
       rspec-support (~> 3.13.0)
     rspec-support (3.13.7)
-    rubocop (1.91.0)
+    rubocop (1.90.0)
       json (>= 2.3)
       language_server-protocol (~> 3.17.0.2)
       lint_roller (~> 1.1.0)
@@ -107,11 +107,11 @@ GEM
     yard (0.9.45)
 
 PLATFORMS
-  aarch64-linux
   ruby
+  x86_64-linux
 
 DEPENDENCIES
-  aws-sdk-autoscaling (= 1.168.0)
+  aws-sdk-autoscaling (>= 1.92.0)
   aws-sdk-cloudformation (= 1.160.0)
   aws-sdk-cloudwatch (= 1.149.0)
   aws-sdk-cloudwatchlogs (= 1.165.0)
@@ -119,11 +119,11 @@ DEPENDENCIES
   aws-sdk-ec2 (= 1.655.0)
   aws-sdk-elasticloadbalancingv2 (= 1.159.0)
   aws-sdk-s3 (= 1.233.2)
-  aws-sdk-sns (= 1.121.0)
+  aws-sdk-sns (>= 1.70.0)
   retries (= 0.0.5)
   rspec (= 3.13.2)
   rspec-mocks (= 3.13.8)
-  rubocop (= 1.91.0)
+  rubocop (= 1.90.0)
   simplecov (= 0.21.2)
   tuples (= 0.1.0)
   yaml-lint (= 0.1.2)
@@ -168,7 +168,7 @@ CHECKSUMS
   rspec-expectations (3.13.5) sha256=33a4d3a1d95060aea4c94e9f237030a8f9eae5615e9bd85718fe3a09e4b58836
   rspec-mocks (3.13.8) sha256=086ad3d3d17533f4237643de0b5c42f04b66348c28bf6b9c2d3f4a3b01af1d47
   rspec-support (3.13.7) sha256=0640e5570872aafefd79867901deeeeb40b0c9875a36b983d85f54fb7381c47c
-  rubocop (1.91.0) sha256=9c82b7bf391c5d7e3798c5b9996e22a1fe3bd7468e351dfdeb96140c058296d0
+  rubocop (1.90.0) sha256=9eb4c065b5c5154e4ef554c547972f3905a9eb6b53e657e580b6796b54bf8242
   rubocop-ast (1.50.0) sha256=b9ca88300da0803ee222ad20cdb30494c0a784eed06fdc35d254b06d662788db
   ruby-progressbar (1.13.0) sha256=80fc9c47a9b640d6834e0dc7b3c94c9df37f08cb072b7761e4a71e22cff29b33
   simplecov (0.21.2) sha256=990db6aedb55086d6bf8874993ff1f796e4830abfa11937468ca502a0d013bc3
