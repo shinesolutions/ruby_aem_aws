@@ -1,4 +1,5 @@
 [![Build Status](https://github.com/shinesolutions/ruby_aem_aws/workflows/CI/badge.svg)](https://github.com/shinesolutions/ruby_aem_aws/actions?query=workflow%3ACI)
+[![Code Scanning Status](https://github.com/shinesolutions/ruby_aem_aws/workflows/CodeQL/badge.svg)](https://github.com/shinesolutions/ruby_aem_aws/actions?query=workflow%3ACodeQL)
 [![Published Version](https://badge.fury.io/rb/ruby_aem_aws.svg)](https://rubygems.org/gems/ruby_aem_aws)
 [![Known Vulnerabilities](https://snyk.io/test/github/shinesolutions/ruby_aem_aws/badge.svg)](https://snyk.io/test/github/shinesolutions/ruby_aem_aws)
 
