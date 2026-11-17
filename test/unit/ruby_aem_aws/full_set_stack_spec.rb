@@ -37,10 +37,6 @@ describe 'FullSetStack' do
     expect(@full_set_stack.author).to_not be_nil
   end
 
-  it 'should create chaos_monkey' do
-    expect(@full_set_stack.chaos_monkey).to_not be_nil
-  end
-
   it 'should create orchestrator' do
     expect(@full_set_stack.orchestrator).to_not be_nil
   end

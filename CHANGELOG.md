@@ -9,6 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Upgrade aem-platform-buildenv to 6.5.0, which has RTK 4.4.0
 - Upgrade release-action to 2.2.0
 
+### Removed
+- Remove the `ChaosMonkey` component and `FullSetStack#chaos_monkey`, because AEM OpenCloud no longer has Chaos Monkey. This is a breaking change for code that still calls `chaos_monkey` #AOC-I231
+
 ## [4.0.2] - 2026-10-12
 
 ## [4.0.1] - 2026-10-12
