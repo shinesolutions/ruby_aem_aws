@@ -9,6 +9,8 @@ permissions:
   id-token: write
 jobs:
   build:
+    # Fail a hung build instead of running to GitHub's 6 hour default
+    timeout-minutes: 60
     runs-on: ubuntu-26.04
     steps:
       - uses: actions/checkout@v7
@@ -18,7 +20,7 @@ jobs:
       - uses: rubygems/configure-rubygems-credentials@v2.1.0
       - uses: cliffano/command-docker-action@v2.1.0
         with:
-          image: shinesolutions/aem-platform-buildenv:6.5.0
+          image: shinesolutions/aem-platform-buildenv:6.6.0
           shell: bash
           extra_args: '-e GEM_HOST_API_KEY'
           command: |
