@@ -14,7 +14,6 @@
 
 require_relative '../component/author_dispatcher'
 require_relative '../component/author'
-require_relative '../component/chaos_monkey'
 require_relative '../component/orchestrator'
 require_relative '../component/publish_dispatcher'
 require_relative '../component/publish'
@@ -81,11 +80,6 @@ module RubyAemAws
     # @return new RubyAemAws::Component::Author instance
     def author
       RubyAemAws::Component::Author.new(@stack_prefix, @author_aws_clients)
-    end
-
-    # @return new RubyAemAws::Component::ChaosMonkey instance
-    def chaos_monkey
-      RubyAemAws::Component::ChaosMonkey.new(@stack_prefix, @aem_java_aws_clients)
     end
 
     # @return new RubyAemAws::Component::Orchestrator instance
