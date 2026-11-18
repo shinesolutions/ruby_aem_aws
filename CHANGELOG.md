@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
 ## [4.0.3] - 2026-11-18
 ### Changed
 - Speed up CI: skip CI for release tags, same-repo pull requests and version bump commits, cancel superseded branch runs, and add job timeouts
@@ -165,6 +167,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [#30]: https://github.com/shinesolutions/ruby_aem_aws/issues/30
 [#33]: https://github.com/shinesolutions/ruby_aem_aws/issues/33
 
+[Unreleased]: https://github.com/shinesolutions/ruby_aem_aws/compare/4.0.3...HEAD
 [4.0.3]: https://github.com/shinesolutions/ruby_aem_aws/compare/4.0.2...4.0.3
 [4.0.2]: https://github.com/shinesolutions/ruby_aem_aws/compare/4.0.1...4.0.2
 [4.0.1]: https://github.com/shinesolutions/ruby_aem_aws/compare/4.0.0...4.0.1
