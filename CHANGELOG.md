@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [4.0.3] - 2026-11-18
 ### Changed
+- Stop `make clean` deleting Gemfile.lock, so `make deps` installs the committed gem versions, including Dependabot's lock file fixes
 - Speed up CI: skip CI for release tags, same-repo pull requests and version bump commits, cancel superseded branch runs, and add job timeouts
 - Make the GitHub Actions workflows' GITHUB_TOKEN read-only
 - Upgrade aem-platform-buildenv to 6.6.0, which has RTK 4.4.0
